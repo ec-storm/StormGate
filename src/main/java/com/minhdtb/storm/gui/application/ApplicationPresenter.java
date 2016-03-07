@@ -1,21 +1,16 @@
 package com.minhdtb.storm.gui.application;
 
-import com.minhdtb.storm.gui.newprofile.NewProfileView;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -36,8 +31,6 @@ public class ApplicationPresenter implements Initializable {
 
     @Autowired
     ProfileService service;
-    @Autowired
-    NewProfileView dialogView;
 
     @FXML
     Label labelStatus;
@@ -49,8 +42,6 @@ public class ApplicationPresenter implements Initializable {
     MenuItem menuOpenProfile;
     @FXML
     public MenuItem menuSave;
-    @FXML
-    private Parent application;
 
     private void initGUI() {
         labelStatus.setText("Stopped.");
@@ -78,22 +69,7 @@ public class ApplicationPresenter implements Initializable {
     }
 
     public void actionNewProfile() {
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("New Profile");
-        dialogStage.resizableProperty().setValue(Boolean.FALSE);
-        dialogStage.initModality(Modality.WINDOW_MODAL);
 
-        Window parent = application.getScene().getWindow();
-        dialogStage.initOwner(parent);
-
-        if (dialogView.getView().getScene() == null) {
-            Scene scene = new Scene(dialogView.getView());
-            dialogStage.setScene(scene);
-        } else {
-            dialogStage.setScene(dialogView.getView().getScene());
-        }
-
-        dialogStage.showAndWait();
     }
 
     class TimeDisplayTask extends TimerTask {

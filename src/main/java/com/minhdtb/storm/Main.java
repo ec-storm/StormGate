@@ -14,12 +14,10 @@ import org.springframework.context.annotation.Lazy;
 public class Main extends AbstractJavaFxApplicationSupport {
 
     @Autowired
-    private ApplicationView view;
+    private ApplicationView applicationView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(view.getView());
-        primaryStage.setScene(scene);
         primaryStage.setTitle("Storm Gateway Service - Copyright © 2016");
         primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
         primaryStage.setOnCloseRequest(t -> {
@@ -27,7 +25,7 @@ public class Main extends AbstractJavaFxApplicationSupport {
             System.exit(0);
         });
 
-        primaryStage.show();
+        applicationView.setStage(primaryStage).show();
     }
 
     public static void main(String[] args) {
