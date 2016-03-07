@@ -2,7 +2,6 @@ package com.minhdtb.storm;
 
 import com.minhdtb.storm.gui.application.ApplicationView;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
