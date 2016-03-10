@@ -20,9 +20,6 @@ import com.minhdtb.storm.entities.Channel;
 
 import java.util.List;
 
-/**
- * @author Thomas Darimont
- */
 public interface ProfileService {
 
     List<Profile> findAllProfile();
