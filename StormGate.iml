@@ -69,5 +69,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.2" level="project" />
     <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.40.10" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.h2database:h2:1.4.191" level="project" />
+    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:2.5.0.M2" level="project" />
+    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.0" level="project" />
   </component>
 </module>
