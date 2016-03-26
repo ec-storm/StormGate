@@ -3,7 +3,9 @@ package com.minhdtb.storm.gui.application;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -67,7 +69,7 @@ public class ApplicationController extends AbstractController {
         System.exit(0);
     }
 
-    public void actionNewProfile() {
+    public void actionNewProfile(ActionEvent event) {
         this.application.newProfile();
     }
 

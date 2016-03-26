@@ -1,8 +1,10 @@
 package com.minhdtb.storm;
 
 import com.minhdtb.storm.gui.application.ApplicationView;
+import com.minhdtb.storm.gui.newprofile.NewProfileView;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +16,11 @@ public class StormGateApplication extends AbstractJavaFxApplicationSupport {
 
     @Autowired
     private ApplicationView applicationView;
+
+    @Autowired
+    private NewProfileView newProfileView;
+
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -28,10 +35,20 @@ public class StormGateApplication extends AbstractJavaFxApplicationSupport {
                 .setApplication(this)
                 .setStage(primaryStage)
                 .show();
+
+        this.primaryStage = primaryStage;
     }
 
     public void newProfile() {
-        System.out.println("xxxxx");
+        Stage stage = new Stage();
+        stage.setTitle("New Profile");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(this.primaryStage.getScene().getWindow());
+
+        newProfileView
+                .setApplication(this)
+                .setStage(stage)
+                .show();
     }
 
     public static void main(String[] args) {

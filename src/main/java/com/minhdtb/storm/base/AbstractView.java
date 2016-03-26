@@ -1,6 +1,5 @@
 package com.minhdtb.storm.base;
 
-
 import com.minhdtb.storm.StormGateApplication;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
