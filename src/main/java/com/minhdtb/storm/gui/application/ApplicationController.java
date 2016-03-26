@@ -1,9 +1,9 @@
 package com.minhdtb.storm.gui.application;
 
+import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -25,7 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Component
-public class ApplicationPresenter implements Initializable {
+public class ApplicationController extends AbstractController {
     private GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
     @Autowired
@@ -68,7 +68,7 @@ public class ApplicationPresenter implements Initializable {
     }
 
     public void actionNewProfile() {
-
+        this.application.newProfile();
     }
 
     class TimeDisplayTask extends TimerTask {

@@ -42,7 +42,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.minhdtb.storm.Main</start-class>
+        <start-class>com.minhdtb.storm.StormGateApplication</start-class>
         <java.version>1.8</java.version>
         <lombok.version>1.16.2</lombok.version>
     </properties>

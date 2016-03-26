@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Lazy;
 
 @Lazy
 @SpringBootApplication
-public class Main extends AbstractJavaFxApplicationSupport {
+public class StormGateApplication extends AbstractJavaFxApplicationSupport {
 
     @Autowired
     private ApplicationView applicationView;
@@ -24,10 +24,17 @@ public class Main extends AbstractJavaFxApplicationSupport {
             System.exit(0);
         });
 
-        applicationView.setStage(primaryStage).show();
+        applicationView
+                .setApplication(this)
+                .setStage(primaryStage)
+                .show();
+    }
+
+    public void newProfile() {
+        System.out.println("xxxxx");
     }
 
     public static void main(String[] args) {
-        launchApp(Main.class, args);
+        launchApp(StormGateApplication.class, args);
     }
 }
