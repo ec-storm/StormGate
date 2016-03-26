@@ -1,7 +1,7 @@
 package com.minhdtb.storm;
 
 import com.minhdtb.storm.gui.application.ApplicationView;
-import com.minhdtb.storm.gui.newprofile.NewProfileView;
+import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -18,7 +18,7 @@ public class StormGateApplication extends AbstractJavaFxApplicationSupport {
     private ApplicationView applicationView;
 
     @Autowired
-    private NewProfileView newProfileView;
+    private DialogNewProfileView dialogNewProfileView;
 
     private Stage primaryStage;
 
@@ -45,7 +45,7 @@ public class StormGateApplication extends AbstractJavaFxApplicationSupport {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(this.primaryStage.getScene().getWindow());
 
-        newProfileView
+        dialogNewProfileView
                 .setApplication(this)
                 .setStage(stage)
                 .show();

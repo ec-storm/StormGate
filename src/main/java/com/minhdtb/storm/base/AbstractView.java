@@ -44,7 +44,7 @@ public class AbstractView implements ApplicationContextAware {
     }
 
     public AbstractView setApplication(StormGateApplication application) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(this.fxmlName));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + this.fxmlName));
         fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             Parent parent = fxmlLoader.load();

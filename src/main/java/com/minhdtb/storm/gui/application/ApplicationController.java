@@ -1,11 +1,8 @@
 package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -15,7 +12,6 @@ import javafx.scene.paint.Color;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -29,9 +25,6 @@ import java.util.TimerTask;
 @Component
 public class ApplicationController extends AbstractController {
     private GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-
-    @Autowired
-    ProfileService service;
 
     @FXML
     Label labelStatus;
@@ -69,7 +62,7 @@ public class ApplicationController extends AbstractController {
         System.exit(0);
     }
 
-    public void actionNewProfile(ActionEvent event) {
+    public void actionNewProfile() {
         this.application.newProfile();
     }
 

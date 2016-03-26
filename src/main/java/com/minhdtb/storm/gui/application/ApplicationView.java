@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class ApplicationView extends AbstractView {
-    
+
     @PostConstruct
     public void init() {
         setFxml("Application.fxml");

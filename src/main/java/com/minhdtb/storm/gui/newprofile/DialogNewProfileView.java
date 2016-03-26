@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class NewProfileView extends AbstractView {
+public class DialogNewProfileView extends AbstractView {
 
     @PostConstruct
     public void init() {
