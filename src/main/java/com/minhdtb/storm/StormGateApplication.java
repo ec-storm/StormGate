@@ -3,6 +3,7 @@ package com.minhdtb.storm;
 import com.minhdtb.storm.base.AbstractApplication;
 import com.minhdtb.storm.gui.application.ApplicationView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
+import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -20,9 +21,10 @@ public class StormGateApplication extends AbstractApplication {
 
     @Autowired
     private ApplicationView applicationView;
-
     @Autowired
     private DialogNewProfileView dialogNewProfileView;
+    @Autowired
+    private DialogOpenProfileView dialogOpenProfileView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -42,6 +44,15 @@ public class StormGateApplication extends AbstractApplication {
     public void showDialogNewProfile() {
         dialogNewProfileView
                 .setTitle("New Profile")
+                .setModality(Modality.WINDOW_MODAL)
+                .setOwner(applicationView)
+                .setApplication(this)
+                .show();
+    }
+
+    public void showDialogOpenProfile() {
+        dialogOpenProfileView
+                .setTitle("Open Profile")
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(applicationView)
                 .setApplication(this)

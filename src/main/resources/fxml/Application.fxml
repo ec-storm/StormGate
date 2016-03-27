@@ -9,7 +9,7 @@
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem text="New Profile        " fx:id="menuNewProfile" onAction="#actionNewProfile"/>
-            <MenuItem text="Open Profile" fx:id="menuOpenProfile"/>
+            <MenuItem text="Open Profile" fx:id="menuOpenProfile" onAction="#actionOpenProfile"/>
             <MenuItem text="Save" fx:id="menuSave"/>
             <SeparatorMenuItem/>
             <MenuItem text="Close" onAction="#actionCloseApplication"/>

@@ -5,6 +5,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -89,6 +90,10 @@ public class ApplicationController extends AbstractController {
 
         treeViewProfile.setRoot(root);
         treeViewProfile.setShowRoot(false);
+    }
+
+    public void actionOpenProfile() {
+        ((StormGateApplication) this.application).showDialogOpenProfile();
     }
 
     class TimeDisplayTask extends TimerTask {
