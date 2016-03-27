@@ -1,5 +1,6 @@
 package com.minhdtb.storm;
 
+import com.minhdtb.storm.base.AbstractApplication;
 import com.minhdtb.storm.gui.application.ApplicationView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import javafx.application.Platform;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Lazy;
 
 @Lazy
 @SpringBootApplication
-public class StormGateApplication extends AbstractJavaFxApplicationSupport {
+public class StormGateApplication extends AbstractApplication {
 
     @Autowired
     private ApplicationView applicationView;

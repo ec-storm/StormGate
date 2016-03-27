@@ -1,11 +1,10 @@
 package com.minhdtb.storm.gui.newprofile;
 
+import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,7 @@ public class DialogNewProfileController extends AbstractController {
         if (!service.profileExists(editNewProfileName.getText())) {
             this.close();
         } else {
-            this.application.showError(this.stage, "");
+            ((StormGateApplication) this.application).showError(this.stage, "");
         }
     }
 }

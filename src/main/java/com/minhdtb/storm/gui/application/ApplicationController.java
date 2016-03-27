@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.application;
 
+import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -63,7 +64,7 @@ public class ApplicationController extends AbstractController {
     }
 
     public void actionNewProfile() {
-        this.application.showDialogNewProfile();
+        ((StormGateApplication) this.application).showDialogNewProfile();
     }
 
     class TimeDisplayTask extends TimerTask {

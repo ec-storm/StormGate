@@ -1,6 +1,5 @@
 package com.minhdtb.storm.base;
 
-import com.minhdtb.storm.StormGateApplication;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
@@ -8,10 +7,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AbstractController implements Initializable {
-    protected StormGateApplication application;
+    protected AbstractApplication application;
     protected Stage stage;
 
-    public void setApplication(StormGateApplication application) {
+    public void setApplication(AbstractApplication application) {
         this.application = application;
     }
 

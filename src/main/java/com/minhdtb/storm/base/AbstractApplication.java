@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.minhdtb.storm;
+package com.minhdtb.storm.base;
 
 import javafx.application.Application;
 
@@ -23,7 +23,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 /**
  * @author Thomas Darimont
  */
-public abstract class AbstractJavaFxApplicationSupport extends Application {
+public abstract class AbstractApplication extends Application {
 
     private static String[] savedArgs;
 
@@ -42,9 +42,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         applicationContext.close();
     }
 
-    protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass, String[] args) {
+    protected static void launchApp(Class<? extends AbstractApplication> appClass, String[] args) {
 
-        AbstractJavaFxApplicationSupport.savedArgs = args;
+        AbstractApplication.savedArgs = args;
         Application.launch(appClass, args);
     }
 }

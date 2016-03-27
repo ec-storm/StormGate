@@ -1,6 +1,5 @@
 package com.minhdtb.storm.base;
 
-import com.minhdtb.storm.StormGateApplication;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,7 +46,7 @@ public class AbstractView implements ApplicationContextAware {
         return this;
     }
 
-    public AbstractView setApplication(StormGateApplication application) {
+    public AbstractView setApplication(AbstractApplication application) {
         this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + this.fxmlName));
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
