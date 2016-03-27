@@ -1,9 +1,11 @@
 package com.minhdtb.storm.base;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,16 +20,26 @@ public class AbstractView implements ApplicationContextAware {
 
     private Stage stage;
 
-    private String fxmlName;
-
     private FXMLLoader fxmlLoader;
+
+    private String title;
+
+    private Modality modality;
+
+    private Window owner;
 
     private Object createControllerForType(Class<?> type) {
         return this.applicationContext.getBean(type);
     }
 
     protected void setFxml(String fxml) {
-        this.fxmlName = fxml;
+        this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + fxml));
+        this.fxmlLoader.setControllerFactory(this::createControllerForType);
+        try {
+            this.scene = new Scene(this.fxmlLoader.load());
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     @Override
@@ -39,29 +51,53 @@ public class AbstractView implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    public AbstractView setStage(Stage stage) {
-        this.stage = stage;
+    public AbstractView setApplication(AbstractApplication application) {
         AbstractController controller = this.fxmlLoader.getController();
-        controller.setStage(stage);
+        controller.setApplication(application);
         return this;
     }
 
-    public AbstractView setApplication(AbstractApplication application) {
-        this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + this.fxmlName));
-        this.fxmlLoader.setControllerFactory(this::createControllerForType);
-        try {
-            Parent parent = this.fxmlLoader.load();
-            AbstractController controller = this.fxmlLoader.getController();
-            controller.setApplication(application);
-            this.scene = new Scene(parent);
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public AbstractView setStage(Stage stage) {
+        this.stage = stage;
+        return this;
+    }
 
+    public Stage getStage() {
+        return this.stage;
+    }
+
+    public Window getWindow() {
+        return this.getStage().getScene().getWindow();
+    }
+
+    public AbstractView setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public AbstractView setModality(Modality modality) {
+        this.modality = modality;
+        return this;
+    }
+
+    public AbstractView setOwner(Window owner) {
+        this.owner = owner;
         return this;
     }
 
     public void show() {
+        if (this.stage == null) {
+            this.stage = new Stage();
+            this.stage.setTitle(this.title);
+            this.stage.setResizable(false);
+            this.stage.initModality(this.modality);
+            this.stage.initOwner(this.owner);
+            this.stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
+        }
+
+        AbstractController controller = this.fxmlLoader.getController();
+        controller.setStage(this.stage);
+
         this.stage.setScene(this.scene);
         this.stage.show();
     }

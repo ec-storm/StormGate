@@ -24,8 +24,6 @@ public class StormGateApplication extends AbstractApplication {
     @Autowired
     private DialogNewProfileView dialogNewProfileView;
 
-    private Stage primaryStage;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Storm Gateway Service - Copyright © 2016");
@@ -39,21 +37,14 @@ public class StormGateApplication extends AbstractApplication {
                 .setApplication(this)
                 .setStage(primaryStage)
                 .show();
-
-        this.primaryStage = primaryStage;
     }
 
     public void showDialogNewProfile() {
-        Stage stage = new Stage();
-        stage.setTitle("New Profile");
-        stage.setResizable(false);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(this.primaryStage.getScene().getWindow());
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
-
         dialogNewProfileView
+                .setTitle("New Profile")
+                .setModality(Modality.WINDOW_MODAL)
+                .setOwner(applicationView.getWindow())
                 .setApplication(this)
-                .setStage(stage)
                 .show();
     }
 
