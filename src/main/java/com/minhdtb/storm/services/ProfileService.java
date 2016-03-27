@@ -26,6 +26,8 @@ public interface ProfileService {
 
     List<Channel> findAllChannelByProfile(Profile profile);
 
+    boolean profileExists(String profileName);
+
     Channel save(Channel channel);
 
     Profile save(Profile profile);

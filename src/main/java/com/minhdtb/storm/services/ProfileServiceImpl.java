@@ -27,6 +27,11 @@ class ProfileServiceImpl implements ProfileService {
         return channelRepository.findByProfile(profile);
     }
 
+    @Override
+    public boolean profileExists(String profileName) {
+        return profileRepository.findByName(profileName) != null;
+    }
+
     @Transactional
     public Channel save(Channel channel) {
         return channelRepository.save(channel);

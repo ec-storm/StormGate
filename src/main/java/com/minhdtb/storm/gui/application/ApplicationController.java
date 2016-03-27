@@ -63,7 +63,7 @@ public class ApplicationController extends AbstractController {
     }
 
     public void actionNewProfile() {
-        this.application.newProfile();
+        this.application.showDialogNewProfile();
     }
 
     class TimeDisplayTask extends TimerTask {

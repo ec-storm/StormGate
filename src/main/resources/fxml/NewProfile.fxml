@@ -16,7 +16,7 @@
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
-    <Button layoutX="164.0" layoutY="65.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="112.0" text="OK"/>
+    <Button layoutX="164.0" layoutY="65.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="112.0" text="OK" onAction="#actionOK"/>
     <GridPane layoutX="10.0" layoutY="10.0" prefHeight="55.0" prefWidth="455.0" AnchorPane.leftAnchor="5.0"
               AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <columnConstraints>
@@ -31,7 +31,7 @@
                 <Font size="14.0"/>
             </font>
         </Label>
-        <TextField GridPane.columnIndex="1"/>
+        <TextField fx:id="editNewProfileName" GridPane.columnIndex="1"/>
     </GridPane>
     <Button layoutX="279.0" layoutY="65.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="112.0"
             text="Cancel" onAction="#actionCancel"/>

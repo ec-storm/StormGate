@@ -21,6 +21,8 @@ public class AbstractView implements ApplicationContextAware {
 
     private String fxmlName;
 
+    private FXMLLoader fxmlLoader;
+
     private Object createControllerForType(Class<?> type) {
         return this.applicationContext.getBean(type);
     }
@@ -40,15 +42,17 @@ public class AbstractView implements ApplicationContextAware {
 
     public AbstractView setStage(Stage stage) {
         this.stage = stage;
+        AbstractController controller = this.fxmlLoader.getController();
+        controller.setStage(stage);
         return this;
     }
 
     public AbstractView setApplication(StormGateApplication application) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + this.fxmlName));
-        fxmlLoader.setControllerFactory(this::createControllerForType);
+        this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + this.fxmlName));
+        this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
-            Parent parent = fxmlLoader.load();
-            AbstractController controller = fxmlLoader.getController();
+            Parent parent = this.fxmlLoader.load();
+            AbstractController controller = this.fxmlLoader.getController();
             controller.setApplication(application);
             this.scene = new Scene(parent);
         } catch (IOException exception) {
