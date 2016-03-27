@@ -12,11 +12,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="109.0"
             prefWidth="401.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.minhdtb.storm.gui.newprofile.DialogNewProfileController" fx:id="dialogNewProfile">
+            fx:controller="com.minhdtb.storm.gui.newprofile.DialogNewProfileController">
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
-    <Button layoutX="164.0" layoutY="65.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="112.0" text="OK" onAction="#actionOK"/>
+    <Button layoutX="164.0" layoutY="65.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="112.0" text="OK"
+            onAction="#actionOK"/>
     <GridPane layoutX="10.0" layoutY="10.0" prefHeight="55.0" prefWidth="455.0" AnchorPane.leftAnchor="5.0"
               AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <columnConstraints>

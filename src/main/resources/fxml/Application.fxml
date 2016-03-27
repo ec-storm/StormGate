@@ -41,7 +41,7 @@
                                         SplitPane.resizableWithParent="false">
                                 <TreeView focusTraversable="false" layoutX="14.0" layoutY="14.0"
                                           AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0"
-                                          AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0"/>
+                                          AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0" fx:id="treeViewProfile"/>
                             </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0"/>
                         </SplitPane>
