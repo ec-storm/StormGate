@@ -80,8 +80,8 @@ public class AbstractView implements ApplicationContextAware {
         return this;
     }
 
-    public AbstractView setOwner(Window owner) {
-        this.owner = owner;
+    public AbstractView setOwner(AbstractView owner) {
+        this.owner = owner.getWindow();
         return this;
     }
 

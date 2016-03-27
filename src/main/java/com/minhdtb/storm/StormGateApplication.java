@@ -43,7 +43,7 @@ public class StormGateApplication extends AbstractApplication {
         dialogNewProfileView
                 .setTitle("New Profile")
                 .setModality(Modality.WINDOW_MODAL)
-                .setOwner(applicationView.getWindow())
+                .setOwner(applicationView)
                 .setApplication(this)
                 .show();
     }
