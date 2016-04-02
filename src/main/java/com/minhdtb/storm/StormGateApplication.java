@@ -13,9 +13,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Bean;
+import reactor.Environment;
+import reactor.bus.EventBus;
 
-@Lazy
 @SpringBootApplication
 public class StormGateApplication extends AbstractApplication {
 
@@ -25,6 +26,17 @@ public class StormGateApplication extends AbstractApplication {
     private DialogNewProfileView dialogNewProfileView;
     @Autowired
     private DialogOpenProfileView dialogOpenProfileView;
+
+    @Bean
+    Environment env() {
+        return Environment.initializeIfEmpty()
+                .assignErrorJournal();
+    }
+
+    @Bean
+    EventBus createEventBus(Environment env) {
+        return EventBus.create(env, Environment.THREAD_POOL);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
