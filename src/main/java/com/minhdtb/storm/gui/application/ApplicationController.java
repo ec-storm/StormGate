@@ -19,7 +19,6 @@ import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.bus.EventBus;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -28,8 +27,6 @@ import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static reactor.bus.selector.Selectors.$;
 
 
 @Component
@@ -54,7 +51,7 @@ public class ApplicationController extends AbstractController {
     ProfileService service;
 
     @Autowired
-    private EventBus eventBus;
+    private Subscriber<Profile> subscriber;
 
     private void initGUI() {
         labelStatus.setText("Stopped.");
@@ -74,7 +71,7 @@ public class ApplicationController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        eventBus.on($("application:openProfile"), new Subscriber<>(this::openProfile));
+        subscriber.on("application:openProfile", this::openProfile);
 
         initGUI();
 

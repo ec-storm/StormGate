@@ -1,18 +1,26 @@
 package com.minhdtb.storm.base;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import reactor.bus.Event;
+import reactor.bus.EventBus;
 import reactor.fn.Consumer;
 
-public class Subscriber<T> implements Consumer<Event<T>> {
+import static reactor.bus.selector.Selectors.$;
 
-    private Consumer<T> localCallback;
+@Service
+public class Subscriber<T> {
 
-    public Subscriber(Consumer<T> callback) {
-        localCallback = callback;
-    }
+    @Autowired
+    EventBus eventBus;
 
-    @Override
-    public void accept(Event<T> event) {
-        localCallback.accept(event.getData());
+    public void on(String key, Consumer<T> callback) {
+        eventBus.on($(key), new Consumer<Event<T>>() {
+            @Override
+            public void accept(Event<T> event) {
+                callback.accept(event.getData());
+            }
+        });
     }
 }
+
