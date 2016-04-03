@@ -31,7 +31,7 @@ public class Channel {
     private Profile profile;
 
     @PostLoad
-    public void afterLoad() {
+    public void load() {
         if (type == null) {
             type = ChannelType.CT_OPC_CLIENT;
         }

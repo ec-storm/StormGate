@@ -34,6 +34,7 @@ public class Profile {
     private Long id;
 
     private String name;
+
     private String description;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

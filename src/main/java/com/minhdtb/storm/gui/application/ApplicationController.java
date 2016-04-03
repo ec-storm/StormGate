@@ -9,11 +9,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
+import org.controlsfx.control.PropertySheet;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -46,6 +48,8 @@ public class ApplicationController extends AbstractController {
     MenuItem menuSave;
     @FXML
     TreeView<String> treeViewProfile;
+    @FXML
+    public PropertySheet propertySheetInformation;
 
     @Autowired
     ProfileService service;
@@ -63,10 +67,21 @@ public class ApplicationController extends AbstractController {
 
         menuSave.setGraphic(fontAwesome.create(FontAwesome.Glyph.SAVE).color(Color.BLACK));
         menuSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+
+        treeViewProfile.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    System.out.println("Selected Text : " + newValue.getValue());
+                });
     }
 
     private void openProfile(Profile profile) {
-        System.out.println(profile.getName());
+        Platform.runLater(() -> {
+            TreeItem<String> rootItem = new TreeItem<>(profile.getName(),
+                    fontAwesome.create(FontAwesome.Glyph.ROCKET));
+
+            treeViewProfile.setRoot(rootItem);
+            rootItem.setExpanded(true);
+        });
     }
 
     @Override
