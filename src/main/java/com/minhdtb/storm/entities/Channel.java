@@ -1,15 +1,9 @@
 package com.minhdtb.storm.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PostLoad;
-
 import lombok.Data;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,6 +23,9 @@ public class Channel {
     @ManyToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Variable> variables;
 
     @PostLoad
     public void load() {

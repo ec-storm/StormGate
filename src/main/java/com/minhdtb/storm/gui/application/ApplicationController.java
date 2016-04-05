@@ -3,14 +3,15 @@ package com.minhdtb.storm.gui.application;
 import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.base.Subscriber;
+import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
+import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -29,6 +30,7 @@ import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -47,7 +49,7 @@ public class ApplicationController extends AbstractController {
     @FXML
     MenuItem menuSave;
     @FXML
-    TreeView<String> treeViewProfile;
+    TreeView<Object> treeViewProfile;
     @FXML
     public PropertySheet propertySheetInformation;
 
@@ -67,17 +69,16 @@ public class ApplicationController extends AbstractController {
 
         menuSave.setGraphic(fontAwesome.create(FontAwesome.Glyph.SAVE).color(Color.BLACK));
         menuSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-
-        treeViewProfile.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    System.out.println("Selected Text : " + newValue.getValue());
-                });
     }
 
     private void openProfile(Profile profile) {
         Platform.runLater(() -> {
-            TreeItem<String> rootItem = new TreeItem<>(profile.getName(),
+            TreeItem<Object> rootItem = new TreeItem<>(profile,
                     fontAwesome.create(FontAwesome.Glyph.ROCKET));
+
+            for (Channel channel : profile.getChannels()) {
+                rootItem.getChildren().add(createNode(channel));
+            }
 
             treeViewProfile.setRoot(rootItem);
             rootItem.setExpanded(true);
@@ -92,6 +93,8 @@ public class ApplicationController extends AbstractController {
 
         Timer timer = new Timer();
         timer.schedule(new TimeDisplayTask(), 1000, 1000);
+
+        treeViewProfile.setCellFactory(p -> new TreeCellFactory());
     }
 
     public void actionCloseApplication() {
@@ -107,13 +110,112 @@ public class ApplicationController extends AbstractController {
         ((StormGateApplication) this.application).showDialogOpenProfile();
     }
 
-    class TimeDisplayTask extends TimerTask {
+    private TreeItem<Object> createNode(Object o) {
+        TreeItem<Object> treeItem = new TreeItem<Object>(o) {
+            private boolean isLeaf;
+            private boolean isFirstTimeChildren = true;
+            private boolean isFirstTimeLeaf = true;
+
+            @Override
+            public ObservableList<TreeItem<Object>> getChildren() {
+                if (isFirstTimeChildren) {
+                    isFirstTimeChildren = false;
+
+                    super.getChildren().setAll(buildChildren(this));
+                }
+
+                return super.getChildren();
+            }
+
+            @Override
+            public boolean isLeaf() {
+                if (isFirstTimeLeaf) {
+                    isFirstTimeLeaf = false;
+
+                    if (o instanceof Variable) {
+                        isLeaf = true;
+                    }
+                }
+
+                return isLeaf;
+            }
+
+            private ObservableList<TreeItem<Object>> buildChildren(TreeItem<Object> treeItem) {
+                if (treeItem.getValue() instanceof Channel) {
+                    ObservableList<TreeItem<Object>> children = FXCollections.observableArrayList();
+
+                    children.addAll(((Channel) treeItem.getValue())
+                            .getVariables().stream().map(variable -> createNode(variable)).collect(Collectors.toList()));
+
+                    return children;
+                }
+
+                return FXCollections.emptyObservableList();
+            }
+        };
+
+        treeItem.setExpanded(true);
+
+        return treeItem;
+    }
+
+    private final class TimeDisplayTask extends TimerTask {
         public void run() {
             Platform.runLater(() -> {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss ");
                 Calendar cal = Calendar.getInstance();
                 labelSystemTime.setText(String.format("Now is %s", dateFormat.format(cal.getTime())));
             });
+        }
+    }
+
+    private final class TreeCellFactory extends TreeCell<Object> {
+
+        private ContextMenu variableMenu = new ContextMenu();
+        private ContextMenu channelMenu = new ContextMenu();
+        private ContextMenu profileMenu = new ContextMenu();
+
+        public TreeCellFactory() {
+            variableMenu.getItems().add(new MenuItem("Delete Variable"));
+
+            channelMenu.getItems().add(new MenuItem("Add Variable"));
+            channelMenu.getItems().add(new MenuItem("Delete Channel"));
+
+            MenuItem menuItem = new MenuItem("Add Channel");
+            menuItem.setOnAction(event -> ((StormGateApplication) application).showDialogOpenProfile());
+            profileMenu.getItems().add(menuItem);
+            profileMenu.getItems().add(new MenuItem("Delete Profile"));
+        }
+
+        @Override
+        public void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+            } else {
+                if (item instanceof Channel) {
+                    setText(((Channel) item).getName());
+                } else if (item instanceof Variable) {
+                    setText(((Variable) item).getName());
+                } else if (item instanceof Profile) {
+                    setText(((Profile) item).getName());
+                } else {
+                    setText(item.toString());
+                }
+            }
+
+            if (item instanceof Variable) {
+                setContextMenu(variableMenu);
+            }
+
+            if (item instanceof Channel) {
+                setContextMenu(channelMenu);
+            }
+
+            if (item instanceof Profile) {
+                setContextMenu(profileMenu);
+            }
         }
     }
 }

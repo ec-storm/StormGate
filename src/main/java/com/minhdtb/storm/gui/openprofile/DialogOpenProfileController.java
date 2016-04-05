@@ -8,6 +8,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,17 @@ public class DialogOpenProfileController extends AbstractController {
         columnChannels.setPrefWidth(120);
         columnChannels.setStyle("-fx-alignment: CENTER;");
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getChannels().size()));
+
+        tableProfile.setRowFactory(tv -> {
+            TableRow<Profile> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    actionOK();
+                }
+            });
+
+            return row;
+        });
 
         tableProfile.getColumns().add(columnName);
         tableProfile.getColumns().add(columnChannels);
