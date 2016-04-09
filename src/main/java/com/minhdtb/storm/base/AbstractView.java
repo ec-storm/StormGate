@@ -39,6 +39,7 @@ public class AbstractView implements ApplicationContextAware {
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());
+            this.scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
             AbstractController controller = this.fxmlLoader.getController();
             controller.setView(this);
         } catch (IOException exception) {

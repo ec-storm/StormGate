@@ -1,0 +1,8 @@
+/* Custom CSS */
+
+.context-menu {
+    -fx-background-color: #eee;
+    -fx-border-color: #ccc;
+    -fx-padding: 2 2 2 2;
+    -fx-min-width: 160px;
+}
