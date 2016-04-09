@@ -1,12 +1,14 @@
 package com.minhdtb.storm.repo;
 
+import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.entities.Profile;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.CrudRepository;
+
 import java.util.List;
 
-import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.entities.Channel;
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface ChannelRepository extends CrudRepository<Channel, Long> {
 
-public interface ChannelRepository extends JpaRepository<Channel, Long> {
-
+    @Modifying(clearAutomatically = true)
     List<Channel> findByProfile(Profile profile);
 }

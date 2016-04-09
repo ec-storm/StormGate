@@ -23,9 +23,9 @@
       fx:controller="com.minhdtb.storm.gui.application.ApplicationController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
-            <MenuItem fx:id="menuNewProfile" onAction="#actionNewProfile" text="New Profile        "/>
-            <MenuItem fx:id="menuOpenProfile" onAction="#actionOpenProfile" text="Open Profile"/>
-            <MenuItem fx:id="menuSave" text="Save"/>
+            <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="New Profile        "/>
+            <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="Open Profile"/>
+            <MenuItem fx:id="menuItemSave" text="Save"/>
             <SeparatorMenuItem/>
             <MenuItem onAction="#actionCloseApplication" text="Close"/>
         </Menu>
@@ -51,6 +51,8 @@
                             <AnchorPane minHeight="0.0" minWidth="150.0" prefHeight="160.0" prefWidth="100.0"
                                         SplitPane.resizableWithParent="false">
                                 <TreeView fx:id="treeViewProfile" focusTraversable="false" layoutX="14.0" layoutY="14.0"
+                                          onContextMenuRequested="#onTreeViewShowContextMenu"
+                                          onMousePressed="#onHideMenu"
                                           AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0"
                                           AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0"/>
                             </AnchorPane>

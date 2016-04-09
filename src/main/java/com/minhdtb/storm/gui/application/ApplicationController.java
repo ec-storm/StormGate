@@ -2,6 +2,7 @@ package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.base.MenuItemBuilder;
 import com.minhdtb.storm.base.Subscriber;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
@@ -12,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -39,36 +41,42 @@ public class ApplicationController extends AbstractController {
     private GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
     @FXML
-    Label labelStatus;
+    private Label labelStatus;
     @FXML
-    Label labelSystemTime;
+    private Label labelSystemTime;
     @FXML
-    MenuItem menuNewProfile;
+    private MenuItem menuItemNewProfile;
     @FXML
-    MenuItem menuOpenProfile;
+    private MenuItem menuItemOpenProfile;
     @FXML
-    MenuItem menuSave;
+    private MenuItem menuItemSave;
     @FXML
-    TreeView<Object> treeViewProfile;
+    private TreeView<Object> treeViewProfile;
     @FXML
     public PropertySheet propertySheetInformation;
 
     @Autowired
-    ProfileService service;
+    private ProfileService service;
 
     @Autowired
     private Subscriber<Profile> subscriber;
 
+    private ContextMenu menuTreeView = new ContextMenu();
+
     private void initGUI() {
         labelStatus.setText("Stopped.");
 
-        menuNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
+        menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
-        menuOpenProfile.setGraphic(fontAwesome.create(FontAwesome.Glyph.FOLDER_OPEN).color(Color.BLACK));
-        menuOpenProfile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+        menuItemOpenProfile.setGraphic(fontAwesome.create(FontAwesome.Glyph.FOLDER_OPEN).color(Color.BLACK));
+        menuItemOpenProfile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
-        menuSave.setGraphic(fontAwesome.create(FontAwesome.Glyph.SAVE).color(Color.BLACK));
-        menuSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+        menuItemSave.setGraphic(fontAwesome.create(FontAwesome.Glyph.SAVE).color(Color.BLACK));
+        menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+
+        menuTreeView.getItems().add(MenuItemBuilder.create()
+                .setText("New Profile")
+                .setAction(event -> ((StormGateApplication) application).showDialogNewProfile()).build());
     }
 
     private void openProfile(Profile profile) {
@@ -159,6 +167,19 @@ public class ApplicationController extends AbstractController {
         return treeItem;
     }
 
+    @FXML
+    public void onTreeViewShowContextMenu(ContextMenuEvent event) {
+        if (treeViewProfile.getRoot() == null) {
+            menuTreeView.show(treeViewProfile, event.getScreenX(), event.getScreenY());
+            event.consume();
+        }
+    }
+
+    @FXML
+    public void onHideMenu() {
+        menuTreeView.hide();
+    }
+
     private final class TimeDisplayTask extends TimerTask {
         public void run() {
             Platform.runLater(() -> {
@@ -171,20 +192,27 @@ public class ApplicationController extends AbstractController {
 
     private final class TreeCellFactory extends TreeCell<Object> {
 
-        private ContextMenu variableMenu = new ContextMenu();
-        private ContextMenu channelMenu = new ContextMenu();
-        private ContextMenu profileMenu = new ContextMenu();
+        private ContextMenu menuVariable = new ContextMenu();
+        private ContextMenu menuChannel = new ContextMenu();
+        private ContextMenu menuProfile = new ContextMenu();
 
         public TreeCellFactory() {
-            variableMenu.getItems().add(new MenuItem("Delete Variable"));
+            menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
-            channelMenu.getItems().add(new MenuItem("Add Variable"));
-            channelMenu.getItems().add(new MenuItem("Delete Channel"));
+            menuChannel.getItems().add(new MenuItem("Add Variable"));
+            menuChannel.getItems().add(new MenuItem("Delete Channel"));
 
-            MenuItem menuItem = new MenuItem("Add Channel");
-            menuItem.setOnAction(event -> ((StormGateApplication) application).showDialogOpenProfile());
-            profileMenu.getItems().add(menuItem);
-            profileMenu.getItems().add(new MenuItem("Delete Profile"));
+            menuProfile.getItems().add(MenuItemBuilder.create()
+                    .setText("Add Channel")
+                    .setAction(event -> ((StormGateApplication) application).showDialogOpenProfile()).build());
+            menuProfile.getItems().add(MenuItemBuilder.create()
+                    .setText("Delete Profile")
+                    .setAction(event -> {
+                        service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue());
+                    }).build());
+            menuProfile.getItems().add(MenuItemBuilder.create()
+                    .setText("Close Profile")
+                    .setAction(event -> treeViewProfile.setRoot(null)).build());
         }
 
         @Override
@@ -206,15 +234,15 @@ public class ApplicationController extends AbstractController {
             }
 
             if (item instanceof Variable) {
-                setContextMenu(variableMenu);
+                setContextMenu(menuVariable);
             }
 
             if (item instanceof Channel) {
-                setContextMenu(channelMenu);
+                setContextMenu(menuChannel);
             }
 
             if (item instanceof Profile) {
-                setContextMenu(profileMenu);
+                setContextMenu(menuProfile);
             }
         }
     }

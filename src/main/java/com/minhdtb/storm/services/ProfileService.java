@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface ProfileService {
 
-    List<Profile> findAllProfile();
+    Iterable<Profile> findAllProfile();
 
     List<Channel> findAllChannelByProfile(Profile profile);
 
@@ -31,4 +31,8 @@ public interface ProfileService {
     Channel save(Channel channel);
 
     Profile save(Profile profile);
+
+    void delete(Channel channel);
+
+    void delete(Profile profile);
 }

@@ -19,7 +19,7 @@ class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ChannelRepository channelRepository;
 
-    public List<Profile> findAllProfile() {
+    public Iterable<Profile> findAllProfile() {
         return profileRepository.findAll();
     }
 
@@ -40,5 +40,15 @@ class ProfileServiceImpl implements ProfileService {
     @Transactional
     public Profile save(Profile profile) {
         return profileRepository.save(profile);
+    }
+
+    @Override
+    public void delete(Channel channel) {
+        channelRepository.delete(channel);
+    }
+
+    @Override
+    public void delete(Profile profile) {
+        profileRepository.delete(profile);
     }
 }
