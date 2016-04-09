@@ -2,11 +2,8 @@ package com.minhdtb.storm;
 
 import com.minhdtb.storm.base.AbstractApplication;
 import com.minhdtb.storm.gui.application.ApplicationView;
-import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
-import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,10 +16,6 @@ public class StormGateApplication extends AbstractApplication {
 
     @Autowired
     private ApplicationView applicationView;
-    @Autowired
-    private DialogNewProfileView dialogNewProfileView;
-    @Autowired
-    private DialogOpenProfileView dialogOpenProfileView;
 
     @Bean
     Environment env() {
@@ -47,24 +40,6 @@ public class StormGateApplication extends AbstractApplication {
         applicationView
                 .setApplication(this)
                 .setStage(primaryStage)
-                .show();
-    }
-
-    public void showDialogNewProfile() {
-        dialogNewProfileView
-                .setTitle("New Profile")
-                .setModality(Modality.WINDOW_MODAL)
-                .setOwner(applicationView)
-                .setApplication(this)
-                .show();
-    }
-
-    public void showDialogOpenProfile() {
-        dialogOpenProfileView
-                .setTitle("Open Profile")
-                .setModality(Modality.WINDOW_MODAL)
-                .setOwner(applicationView)
-                .setApplication(this)
                 .show();
     }
 

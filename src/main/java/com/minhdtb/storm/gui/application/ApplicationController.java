@@ -1,12 +1,14 @@
 package com.minhdtb.storm.gui.application;
 
-import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.base.AbstractView;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
+import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
+import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -62,6 +64,12 @@ public class ApplicationController extends AbstractController {
     @Autowired
     private Subscriber<Profile> subscriber;
 
+    @Autowired
+    DialogNewProfileView dialogNewProfileView;
+
+    @Autowired
+    DialogOpenProfileView dialogOpenProfileView;
+
     private ContextMenu menuTreeView = new ContextMenu();
 
     private void initGUI() {
@@ -77,7 +85,7 @@ public class ApplicationController extends AbstractController {
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
                 .setText("New Profile")
-                .setAction(event -> ((StormGateApplication) getView().getApplication()).showDialogNewProfile()).build());
+                .setAction(event -> dialogNewProfileView.showDialog(getView())).build());
     }
 
     private void openProfile(Profile profile) {
@@ -108,7 +116,7 @@ public class ApplicationController extends AbstractController {
         Timer timer = new Timer();
         timer.schedule(new TimeDisplayTask(), 1000, 1000);
 
-        treeViewProfile.setCellFactory(p -> new TreeCellFactory());
+        treeViewProfile.setCellFactory(p -> new TreeCellFactory(getView()));
     }
 
     public void actionCloseApplication() {
@@ -117,11 +125,11 @@ public class ApplicationController extends AbstractController {
     }
 
     public void actionNewProfile() {
-        ((StormGateApplication) getView().getApplication()).showDialogNewProfile();
+        dialogNewProfileView.showDialog(getView());
     }
 
     public void actionOpenProfile() {
-        ((StormGateApplication) getView().getApplication()).showDialogOpenProfile();
+        dialogOpenProfileView.showDialog(getView());
     }
 
     private TreeItem<Object> createNode(Object o) {
@@ -202,7 +210,11 @@ public class ApplicationController extends AbstractController {
         private ContextMenu menuChannel = new ContextMenu();
         private ContextMenu menuProfile = new ContextMenu();
 
-        public TreeCellFactory() {
+        private AbstractView owner;
+
+        public TreeCellFactory(AbstractView owner) {
+            owner = owner;
+
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
             menuChannel.getItems().add(new MenuItem("Add Variable"));
@@ -210,10 +222,14 @@ public class ApplicationController extends AbstractController {
 
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Add Channel")
-                    .setAction(event -> ((StormGateApplication) getView().getApplication()).showDialogOpenProfile()).build());
+                    .setAction(event -> {
+                    }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
-                    .setAction(event -> service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue())).build());
+                    .setAction(event -> {
+                        service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue());
+                        treeViewProfile.setRoot(null);
+                    }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close Profile")
                     .setAction(event -> treeViewProfile.setRoot(null)).build());

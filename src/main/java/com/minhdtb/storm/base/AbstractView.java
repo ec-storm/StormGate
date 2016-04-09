@@ -28,7 +28,7 @@ public class AbstractView implements ApplicationContextAware {
 
     private Modality modality;
 
-    private Window owner;
+    private AbstractView owner;
 
     private Object createControllerForType(Class<?> type) {
         return this.applicationContext.getBean(type);
@@ -88,8 +88,12 @@ public class AbstractView implements ApplicationContextAware {
     }
 
     public AbstractView setOwner(AbstractView owner) {
-        this.owner = owner.getWindow();
+        this.owner = owner;
         return this;
+    }
+
+    public AbstractView getOwner() {
+        return this.owner;
     }
 
     public void show() {
@@ -98,7 +102,7 @@ public class AbstractView implements ApplicationContextAware {
             this.stage.setTitle(this.title);
             this.stage.setResizable(false);
             this.stage.initModality(this.modality);
-            this.stage.initOwner(this.owner);
+            this.stage.initOwner(this.owner.getWindow());
             this.stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
         }
 
