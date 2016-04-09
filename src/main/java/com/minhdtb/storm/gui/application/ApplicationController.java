@@ -32,10 +32,7 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -110,8 +107,12 @@ public class ApplicationController extends AbstractController {
 
     private void deleteProfile(Profile profile) {
         Platform.runLater(() -> {
+            Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
+            if (Objects.equals(profileCurrent.getId(), profile.getId())) {
+                treeViewProfile.setRoot(null);
+            }
+
             service.delete(profile);
-            treeViewProfile.setRoot(null);
         });
     }
 

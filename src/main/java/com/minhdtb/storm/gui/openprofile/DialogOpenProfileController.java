@@ -67,9 +67,8 @@ public class DialogOpenProfileController extends AbstractController {
                     Utils.showConfirm(this.getView(),
                             String.format("Do you really want to delete \"%s\"?", profile.getName()),
                             e -> {
-                                tableProfile.getItems().remove(1);
+                                tableProfile.getItems().remove(profile);
                                 publisher.publish("application:deleteProfile", profile);
-                                onShow(null);
                             });
                 }).build());
 
