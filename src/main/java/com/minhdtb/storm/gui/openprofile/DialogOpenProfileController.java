@@ -60,7 +60,7 @@ public class DialogOpenProfileController extends AbstractController {
     public void actionOK() {
         Profile profile = tableProfile.getSelectionModel().getSelectedItem();
         if (profile != null) {
-            this.close();
+            close();
             publisher.publish("application:openProfile", profile);
         }
     }

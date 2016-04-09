@@ -32,10 +32,7 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -94,8 +91,10 @@ public class ApplicationController extends AbstractController {
             TreeItem<Object> rootItem = new TreeItem<>(profile,
                     fontAwesome.create(FontAwesome.Glyph.ROCKET));
 
-            for (Channel channel : profile.getChannels()) {
-                rootItem.getChildren().add(createNode(channel));
+            if (profile.getChannels() != null) {
+                for (Channel channel : profile.getChannels()) {
+                    rootItem.getChildren().add(createNode(channel));
+                }
             }
 
             treeViewProfile.setRoot(rootItem);
@@ -227,10 +226,15 @@ public class ApplicationController extends AbstractController {
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
-                    .setAction(event -> Utils.showConfirm(this.owner, "Do you really want to delete profile?", confirmEvent -> {
-                        service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue());
-                        treeViewProfile.setRoot(null);
-                    })).build());
+                    .setAction(event -> {
+                        Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                        Utils.showConfirm(this.owner,
+                                String.format("Do you really want to delete \"%s\"?", profile.getName()),
+                                e -> {
+                                    service.delete(profile);
+                                    treeViewProfile.setRoot(null);
+                                });
+                    }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close Profile")
                     .setAction(event -> treeViewProfile.setRoot(null)).build());

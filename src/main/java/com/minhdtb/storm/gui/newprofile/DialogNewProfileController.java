@@ -1,6 +1,7 @@
 package com.minhdtb.storm.gui.newprofile;
 
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.ProfileService;
@@ -22,6 +23,9 @@ public class DialogNewProfileController extends AbstractController {
     @Autowired
     ProfileService service;
 
+    @Autowired
+    private Publisher<Profile> publisher;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         editNewProfileName.setText("New Profile");
@@ -34,9 +38,8 @@ public class DialogNewProfileController extends AbstractController {
     public void actionOK() {
         if (!service.profileExists(editNewProfileName.getText())) {
             Profile profile = new Profile(editNewProfileName.getText());
-            service.save(profile);
-
-            this.close();
+            publisher.publish("application:openProfile", service.save(profile));
+            close();
         } else {
             Utils.showError(this.getView(), "Profile already exists.");
         }
