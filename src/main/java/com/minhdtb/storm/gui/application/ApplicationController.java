@@ -77,7 +77,7 @@ public class ApplicationController extends AbstractController {
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
                 .setText("New Profile")
-                .setAction(event -> ((StormGateApplication) application).showDialogNewProfile()).build());
+                .setAction(event -> ((StormGateApplication) getView().getApplication()).showDialogNewProfile()).build());
     }
 
     private void openProfile(Profile profile) {
@@ -96,7 +96,7 @@ public class ApplicationController extends AbstractController {
 
     @Override
     protected void onShow(WindowEvent event) {
-        
+
     }
 
     @Override
@@ -117,11 +117,11 @@ public class ApplicationController extends AbstractController {
     }
 
     public void actionNewProfile() {
-        ((StormGateApplication) this.application).showDialogNewProfile();
+        ((StormGateApplication) getView().getApplication()).showDialogNewProfile();
     }
 
     public void actionOpenProfile() {
-        ((StormGateApplication) this.application).showDialogOpenProfile();
+        ((StormGateApplication) getView().getApplication()).showDialogOpenProfile();
     }
 
     private TreeItem<Object> createNode(Object o) {
@@ -210,7 +210,7 @@ public class ApplicationController extends AbstractController {
 
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Add Channel")
-                    .setAction(event -> ((StormGateApplication) application).showDialogOpenProfile()).build());
+                    .setAction(event -> ((StormGateApplication) getView().getApplication()).showDialogOpenProfile()).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
                     .setAction(event -> service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue())).build());

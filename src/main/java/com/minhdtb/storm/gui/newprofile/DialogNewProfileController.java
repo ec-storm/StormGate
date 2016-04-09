@@ -38,7 +38,7 @@ public class DialogNewProfileController extends AbstractController {
 
             this.close();
         } else {
-            Utils.showError(this.stage, "Profile already exists.");
+            Utils.showError(this.getView().getStage(), "Profile already exists.");
         }
     }
 

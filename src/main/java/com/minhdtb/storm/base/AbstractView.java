@@ -14,6 +14,8 @@ import java.io.IOException;
 
 public class AbstractView implements ApplicationContextAware {
 
+    protected AbstractApplication application;
+
     private ApplicationContext applicationContext;
 
     private Scene scene;
@@ -37,6 +39,8 @@ public class AbstractView implements ApplicationContextAware {
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());
+            AbstractController controller = this.fxmlLoader.getController();
+            controller.setView(this);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -52,9 +56,12 @@ public class AbstractView implements ApplicationContextAware {
     }
 
     public AbstractView setApplication(AbstractApplication application) {
-        AbstractController controller = this.fxmlLoader.getController();
-        controller.setApplication(application);
+        this.application = application;
         return this;
+    }
+
+    public AbstractApplication getApplication() {
+        return this.application;
     }
 
     public AbstractView setStage(Stage stage) {
@@ -97,8 +104,6 @@ public class AbstractView implements ApplicationContextAware {
 
         AbstractController controller = this.fxmlLoader.getController();
         this.stage.setOnShowing(controller::onShow);
-        controller.setStage(this.stage);
-
         this.stage.setScene(this.scene);
         this.stage.show();
     }
