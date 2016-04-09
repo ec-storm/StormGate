@@ -71,16 +71,6 @@ public class StormGateApplication extends AbstractApplication {
                 .show();
     }
 
-    public void showError(Window owner, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, "");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(owner);
-        alert.getDialogPane().setContentText(message);
-        alert.getDialogPane().setHeaderText(null);
-        alert.showAndWait()
-                .filter(response -> response == ButtonType.OK);
-    }
-
     public static void main(String[] args) {
         launchApp(StormGateApplication.class, args);
     }
