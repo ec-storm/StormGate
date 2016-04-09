@@ -1,12 +1,15 @@
 package com.minhdtb.storm.gui.openprofile;
 
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -55,6 +58,22 @@ public class DialogOpenProfileController extends AbstractController {
 
         tableProfile.getColumns().add(columnName);
         tableProfile.getColumns().add(columnChannels);
+
+        ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getItems().add(MenuItemBuilder.create()
+                .setText("Delete Profile").setAction(event -> {
+                    Profile profile = tableProfile.getSelectionModel().getSelectedItem();
+
+                    Utils.showConfirm(this.getView(),
+                            String.format("Do you really want to delete \"%s\"?", profile.getName()),
+                            e -> {
+                                tableProfile.getItems().remove(1);
+                                publisher.publish("application:deleteProfile", profile);
+                                onShow(null);
+                            });
+                }).build());
+
+        tableProfile.setContextMenu(contextMenu);
     }
 
     public void actionOK() {

@@ -1,8 +1,8 @@
 package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.base.AbstractView;
 import com.minhdtb.storm.common.MenuItemBuilder;
+import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Channel;
@@ -32,7 +32,10 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 
@@ -61,6 +64,9 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     private Subscriber<Profile> subscriber;
+
+    @Autowired
+    private Publisher<Profile> publisher;
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
@@ -102,6 +108,13 @@ public class ApplicationController extends AbstractController {
         });
     }
 
+    private void deleteProfile(Profile profile) {
+        Platform.runLater(() -> {
+            service.delete(profile);
+            treeViewProfile.setRoot(null);
+        });
+    }
+
     @Override
     protected void onShow(WindowEvent event) {
 
@@ -110,13 +123,14 @@ public class ApplicationController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         subscriber.on("application:openProfile", this::openProfile);
+        subscriber.on("application:deleteProfile", this::deleteProfile);
 
         initGUI();
 
         Timer timer = new Timer();
         timer.schedule(new TimeDisplayTask(), 1000, 1000);
 
-        treeViewProfile.setCellFactory(p -> new TreeCellFactory(getView()));
+        treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
     }
 
     public void actionCloseApplication() {
@@ -210,10 +224,10 @@ public class ApplicationController extends AbstractController {
         private ContextMenu menuChannel = new ContextMenu();
         private ContextMenu menuProfile = new ContextMenu();
 
-        private AbstractView owner;
+        private AbstractController controller;
 
-        public TreeCellFactory(AbstractView owner) {
-            this.owner = owner;
+        public TreeCellFactory(AbstractController controller) {
+            this.controller = controller;
 
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
@@ -228,12 +242,9 @@ public class ApplicationController extends AbstractController {
                     .setText("Delete Profile")
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-                        Utils.showConfirm(this.owner,
+                        Utils.showConfirm(this.controller.getView(),
                                 String.format("Do you really want to delete \"%s\"?", profile.getName()),
-                                e -> {
-                                    service.delete(profile);
-                                    treeViewProfile.setRoot(null);
-                                });
+                                e -> publisher.publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close Profile")
