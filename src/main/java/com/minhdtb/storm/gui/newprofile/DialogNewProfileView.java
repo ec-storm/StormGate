@@ -1,6 +1,5 @@
 package com.minhdtb.storm.gui.newprofile;
 
-import com.minhdtb.storm.base.AbstractApplication;
 import com.minhdtb.storm.base.AbstractView;
 import javafx.stage.Modality;
 import org.springframework.stereotype.Component;

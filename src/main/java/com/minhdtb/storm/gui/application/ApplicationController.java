@@ -4,6 +4,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.base.AbstractView;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Subscriber;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -213,7 +214,7 @@ public class ApplicationController extends AbstractController {
         private AbstractView owner;
 
         public TreeCellFactory(AbstractView owner) {
-            owner = owner;
+            this.owner = owner;
 
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
@@ -226,10 +227,10 @@ public class ApplicationController extends AbstractController {
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
-                    .setAction(event -> {
+                    .setAction(event -> Utils.showConfirm(this.owner, "Do you really want to delete profile?", confirmEvent -> {
                         service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue());
                         treeViewProfile.setRoot(null);
-                    }).build());
+                    })).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close Profile")
                     .setAction(event -> treeViewProfile.setRoot(null)).build());

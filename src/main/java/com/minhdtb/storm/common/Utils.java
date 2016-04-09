@@ -1,19 +1,37 @@
 package com.minhdtb.storm.common;
 
+import com.minhdtb.storm.base.AbstractView;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
-import javafx.stage.Window;
+
+import java.util.Optional;
 
 public class Utils {
-    
-    public static void showError(Window owner, String message) {
+
+    public static void showError(AbstractView owner, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, "");
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(owner);
-        alert.getDialogPane().setContentText(message);
-        alert.getDialogPane().setHeaderText(null);
+        alert.initOwner(owner.getWindow());
+        alert.setHeaderText(message);
+        alert.setContentText(null);
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK);
+    }
+
+    public static void showConfirm(AbstractView owner, String message, EventHandler<Event> Ok) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(owner.getWindow());
+        alert.setHeaderText(message);
+        alert.setContentText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Ok.handle(null);
+        } else {
+            alert.close();
+        }
     }
 }
