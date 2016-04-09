@@ -19,10 +19,12 @@ class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ChannelRepository channelRepository;
 
+    @Transactional(readOnly = true)
     public Iterable<Profile> findAllProfile() {
         return profileRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Channel> findAllChannelByProfile(Profile profile) {
         return channelRepository.findByProfile(profile);
     }
@@ -34,12 +36,12 @@ class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     public Channel save(Channel channel) {
-        return channelRepository.save(channel);
+        return channelRepository.saveAndFlush(channel);
     }
 
     @Transactional
     public Profile save(Profile profile) {
-        return profileRepository.save(profile);
+        return profileRepository.saveAndFlush(profile);
     }
 
     @Override

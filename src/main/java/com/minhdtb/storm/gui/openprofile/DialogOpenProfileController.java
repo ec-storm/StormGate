@@ -1,7 +1,7 @@
 package com.minhdtb.storm.gui.openprofile;
 
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.base.Publisher;
+import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,8 +55,6 @@ public class DialogOpenProfileController extends AbstractController {
 
         tableProfile.getColumns().add(columnName);
         tableProfile.getColumns().add(columnChannels);
-
-        tableProfile.setItems(FXCollections.observableArrayList((List<Profile>) service.findAllProfile()));
     }
 
     public void actionOK() {
@@ -64,6 +63,11 @@ public class DialogOpenProfileController extends AbstractController {
             this.close();
             publisher.publish("application:openProfile", profile);
         }
+    }
+
+    @Override
+    protected void onShow(WindowEvent event) {
+        tableProfile.setItems(FXCollections.observableArrayList((List<Profile>) service.findAllProfile()));
     }
 
     public void actionCancel() {

@@ -2,11 +2,12 @@ package com.minhdtb.storm.base;
 
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AbstractController implements Initializable {
+public abstract class AbstractController implements Initializable {
     protected AbstractApplication application;
     protected Stage stage;
 
@@ -21,6 +22,8 @@ public class AbstractController implements Initializable {
     public void close() {
         this.stage.close();
     }
+
+    protected  abstract void onShow(WindowEvent event);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

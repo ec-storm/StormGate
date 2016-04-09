@@ -2,8 +2,8 @@ package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.StormGateApplication;
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.base.MenuItemBuilder;
-import com.minhdtb.storm.base.Subscriber;
+import com.minhdtb.storm.common.MenuItemBuilder;
+import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -18,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -91,6 +92,11 @@ public class ApplicationController extends AbstractController {
             treeViewProfile.setRoot(rootItem);
             rootItem.setExpanded(true);
         });
+    }
+
+    @Override
+    protected void onShow(WindowEvent event) {
+        
     }
 
     @Override
@@ -207,9 +213,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> ((StormGateApplication) application).showDialogOpenProfile()).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
-                    .setAction(event -> {
-                        service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue());
-                    }).build());
+                    .setAction(event -> service.delete((Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue())).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close Profile")
                     .setAction(event -> treeViewProfile.setRoot(null)).build());

@@ -96,6 +96,7 @@ public class AbstractView implements ApplicationContextAware {
         }
 
         AbstractController controller = this.fxmlLoader.getController();
+        this.stage.setOnShowing(controller::onShow);
         controller.setStage(this.stage);
 
         this.stage.setScene(this.scene);

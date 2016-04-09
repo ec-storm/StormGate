@@ -1,4 +1,4 @@
-package com.minhdtb.storm.base;
+package com.minhdtb.storm.common;
 
 import javafx.scene.control.MenuItem;
 import javafx.event.ActionEvent;

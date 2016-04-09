@@ -6,6 +6,7 @@ import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.ProfileService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,5 +40,10 @@ public class DialogNewProfileController extends AbstractController {
         } else {
             ((StormGateApplication) this.application).showError(this.stage, "Profile already exists.");
         }
+    }
+
+    @Override
+    protected void onShow(WindowEvent event) {
+
     }
 }
