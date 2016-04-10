@@ -11,6 +11,9 @@ import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.ProfileService;
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,12 +23,7 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
-import org.controlsfx.control.PropertySheet;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.GlyphFont;
-import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +37,6 @@ import java.util.stream.Collectors;
 @Component
 public class ApplicationController extends AbstractController {
 
-    private GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-
     @FXML
     private Label labelStatus;
     @FXML
@@ -53,8 +49,6 @@ public class ApplicationController extends AbstractController {
     private MenuItem menuItemSave;
     @FXML
     private TreeView<Object> treeViewProfile;
-    @FXML
-    public PropertySheet propertySheetInformation;
 
     @Autowired
     private ProfileService service;
@@ -78,21 +72,27 @@ public class ApplicationController extends AbstractController {
 
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
-        menuItemOpenProfile.setGraphic(fontAwesome.create(FontAwesome.Glyph.FOLDER_OPEN).color(Color.BLACK));
+        GlyphsDude.setIcon(menuItemOpenProfile, MaterialDesignIcon.FOLDER, "1.5em");
+        System.out.println(menuItemOpenProfile.getGraphic().getStyleClass());
         menuItemOpenProfile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
-        menuItemSave.setGraphic(fontAwesome.create(FontAwesome.Glyph.SAVE).color(Color.BLACK));
+        GlyphsDude.setIcon(menuItemSave, MaterialDesignIcon.CONTENT_SAVE, "1.5em");
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
                 .setText("New Profile")
+                .setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
                 .setAction(event -> dialogNewProfileView.showDialog(getView())).build());
+        menuTreeView.getItems().add(MenuItemBuilder.create()
+                .setText("Open Profile")
+                .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
+                .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
+                .setAction(event -> dialogOpenProfileView.showDialog(getView())).build());
     }
 
     private void openProfile(Profile profile) {
         Platform.runLater(() -> {
-            TreeItem<Object> rootItem = new TreeItem<>(profile,
-                    fontAwesome.create(FontAwesome.Glyph.ROCKET));
+            TreeItem<Object> rootItem = new TreeItem<>(profile);
 
             if (profile.getChannels() != null) {
                 for (Channel channel : profile.getChannels()) {
@@ -232,23 +232,26 @@ public class ApplicationController extends AbstractController {
 
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
-            menuChannel.getItems().add(new MenuItem("Add Variable"));
+            menuChannel.getItems().add(new MenuItem("New Variable"));
             menuChannel.getItems().add(new MenuItem("Delete Channel"));
 
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText("Add Channel")
+                    .setText("New Channel")
                     .setAction(event -> {
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
+                    .setIcon(MaterialDesignIcon.DELETE, "1.5em")
+                    .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(this.controller.getView(),
                                 String.format("Do you really want to delete \"%s\"?", profile.getName()),
                                 e -> publisher.publish("application:deleteProfile", profile));
                     }).build());
+            menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText("Close Profile")
+                    .setText("Close")
                     .setAction(event -> treeViewProfile.setRoot(null)).build());
         }
 
