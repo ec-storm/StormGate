@@ -27,6 +27,9 @@ public class Channel {
     @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Variable> variables;
 
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<ChannelAttribute> attributes;
+
     @PostLoad
     public void load() {
         if (type == null) {

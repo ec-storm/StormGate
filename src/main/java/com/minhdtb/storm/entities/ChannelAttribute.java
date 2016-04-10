@@ -3,24 +3,20 @@ package com.minhdtb.storm.entities;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Entity
-public class Variable {
-
+public class ChannelAttribute {
+    
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
 
-    private String description;
+    private String value;
 
     @ManyToOne
     @JoinColumn(name = "channel_id")
     private Channel channel;
-
-   // @OneToMany(mappedBy = "variable", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  //  private List<VariableAttribute> attributes;
 }

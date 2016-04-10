@@ -5,6 +5,7 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.IecGateChannel;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -14,6 +15,7 @@ import com.minhdtb.storm.services.ProfileService;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,6 +25,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.WindowEvent;
+import org.controlsfx.control.PropertySheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +51,8 @@ public class ApplicationController extends AbstractController {
     private MenuItem menuItemSave;
     @FXML
     private TreeView<Object> treeViewProfile;
+    @FXML
+    private PropertySheet propDetail;
 
     @Autowired
     private ProfileService service;
@@ -72,7 +77,6 @@ public class ApplicationController extends AbstractController {
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
         GlyphsDude.setIcon(menuItemOpenProfile, MaterialDesignIcon.FOLDER, "1.5em");
-        System.out.println(menuItemOpenProfile.getGraphic().getStyleClass());
         menuItemOpenProfile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
         GlyphsDude.setIcon(menuItemSave, MaterialDesignIcon.CONTENT_SAVE, "1.5em");
@@ -87,6 +91,20 @@ public class ApplicationController extends AbstractController {
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(getView())).build());
+
+        treeViewProfile.setOnMouseClicked(event -> {
+            if (treeViewProfile.getSelectionModel().getSelectedItem() != null) {
+                Object selected = treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                if (selected instanceof Profile) {
+                    showProfileProperties((Profile) selected);
+                } else if (selected instanceof Channel) {
+                    IecGateChannel channel = new IecGateChannel((Channel) selected);
+                    System.out.println(channel.getHost());
+                } else {
+                    propDetail.getItems().clear();
+                }
+            }
+        });
     }
 
     private void openProfile(Profile profile) {
@@ -113,6 +131,12 @@ public class ApplicationController extends AbstractController {
 
             service.delete(profile);
         });
+    }
+
+    private void showProfileProperties(Profile profile) {
+        propDetail.getItems().clear();
+        propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
+        propDetail.getItems().add(new PropertyItem("General", "Description", profile.getDescription()));
     }
 
     @Override
@@ -218,6 +242,58 @@ public class ApplicationController extends AbstractController {
         }
     }
 
+    private final class PropertyItem implements PropertySheet.Item {
+
+        private String category;
+        private String name;
+        private Object value;
+
+        public PropertyItem(String category, String name, Object value) {
+            this.category = category;
+            this.name = name;
+            this.value = value;
+        }
+
+        @Override
+        public Class<?> getType() {
+            if (this.value != null) {
+                return this.value.getClass();
+            } else {
+                return "".getClass();
+            }
+        }
+
+        @Override
+        public String getCategory() {
+            return category;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public Object getValue() {
+            return this.value;
+        }
+
+        @Override
+        public void setValue(Object value) {
+            this.value = value;
+        }
+
+        @Override
+        public Optional<ObservableValue<?>> getObservableValue() {
+            return Optional.empty();
+        }
+    }
+
     private final class TreeCellFactory extends TreeCell<Object> {
 
         private ContextMenu menuVariable = new ContextMenu();
@@ -237,6 +313,15 @@ public class ApplicationController extends AbstractController {
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("New Channel")
                     .setAction(event -> {
+                        Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                        IecGateChannel channel = new IecGateChannel();
+                        channel.getChannel().setName("test");
+                        channel.getChannel().setDescription("test desc");
+                        channel.getChannel().setProfile(profile);
+                        channel.setHost("127.0.0.1");
+                        channel.setPort(1000);
+
+                        service.save(channel.getChannel());
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
