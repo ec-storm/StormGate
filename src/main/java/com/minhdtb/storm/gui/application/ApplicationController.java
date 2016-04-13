@@ -124,9 +124,11 @@ public class ApplicationController extends AbstractController {
 
     private void deleteProfile(Profile profile) {
         Platform.runLater(() -> {
-            Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
-            if (Objects.equals(profileCurrent.getId(), profile.getId())) {
-                treeViewProfile.setRoot(null);
+            if (treeViewProfile.getRoot() != null) {
+                Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
+                if (Objects.equals(profileCurrent.getId(), profile.getId())) {
+                    treeViewProfile.setRoot(null);
+                }
             }
 
             service.delete(profile);
@@ -336,7 +338,10 @@ public class ApplicationController extends AbstractController {
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Close")
-                    .setAction(event -> treeViewProfile.setRoot(null)).build());
+                    .setAction(event -> {
+                        treeViewProfile.getRoot().getChildren().clear();
+                        treeViewProfile.setRoot(null);
+                    }).build());
         }
 
         @Override
@@ -345,6 +350,7 @@ public class ApplicationController extends AbstractController {
 
             if (empty) {
                 setText(null);
+                setContextMenu(null);
             } else {
                 if (item instanceof Channel) {
                     setText(((Channel) item).getName());

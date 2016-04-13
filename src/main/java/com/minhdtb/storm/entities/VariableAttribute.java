@@ -14,7 +14,7 @@ public class VariableAttribute {
 
     private String name;
 
-    private Object value;
+    private String value;
 
     @ManyToOne
     @JoinColumn(name = "variable_id")
