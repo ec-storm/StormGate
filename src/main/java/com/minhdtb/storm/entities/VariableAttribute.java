@@ -12,11 +12,11 @@ public class VariableAttribute {
     @GeneratedValue
     private Long id;
 
-   // private String name;
+    private String name;
 
-   // private Object value;
+    private Object value;
 
-   // @ManyToOne
-   // @JoinColumn(name = "variable_id")
-   // private Variable variable;
+    @ManyToOne
+    @JoinColumn(name = "variable_id")
+    private Variable variable;
 }
