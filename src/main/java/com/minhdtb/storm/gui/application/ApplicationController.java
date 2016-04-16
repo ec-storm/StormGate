@@ -8,6 +8,7 @@ import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
+import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.ProfileService;
@@ -64,6 +65,9 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
+
+    @Autowired
+    DialogNewChannelView dialogNewChannelView;
 
     @Autowired
     DialogOpenProfileView dialogOpenProfileView;
@@ -346,7 +350,7 @@ public class ApplicationController extends AbstractController {
                     .setText("New Channel")
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-
+                        dialogNewChannelView.showDialog(getController().getView());
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
