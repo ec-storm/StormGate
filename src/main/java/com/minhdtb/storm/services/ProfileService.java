@@ -1,9 +1,7 @@
 package com.minhdtb.storm.services;
 
-import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Channel;
-
-import java.util.List;
+import com.minhdtb.storm.entities.Profile;
 
 public interface ProfileService {
 
