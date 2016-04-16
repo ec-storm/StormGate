@@ -25,10 +25,10 @@ public class Channel {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Variable> variables;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChannelAttribute> attributes;
 
     @PostLoad
@@ -41,13 +41,8 @@ public class Channel {
     public enum ChannelType {
         CT_OPC_CLIENT, CT_OPC_SERVER, CT_IEC_CLIENT, CT_IEC_SERVER;
 
-        private static ChannelType[] values = null;
-
         public static ChannelType fromInt(int i) {
-            if (ChannelType.values == null) {
-                ChannelType.values = ChannelType.values();
-            }
-            return ChannelType.values[i];
+            return ChannelType.values()[i];
         }
     }
 }
