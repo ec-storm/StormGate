@@ -45,4 +45,8 @@ public class CoreChannel {
             channel.getAttributes().add(attribute);
         }
     }
+
+    public Long getId() {
+        return channel.getId();
+    }
 }

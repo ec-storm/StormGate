@@ -2,7 +2,7 @@ package com.minhdtb.storm.core;
 
 import com.minhdtb.storm.entities.Channel;
 
-public class CoreChannelIECServer extends CoreChannel {
+public class CoreChannelIEC extends CoreChannel {
 
     public String getHost() {
         return getAttribute("host");
@@ -20,11 +20,11 @@ public class CoreChannelIECServer extends CoreChannel {
         setAttribute("port", String.valueOf(port));
     }
 
-    public CoreChannelIECServer() {
+    public CoreChannelIEC() {
         channel = new Channel();
     }
 
-    public CoreChannelIECServer(Channel channelNew) {
+    public CoreChannelIEC(Channel channelNew) {
         channel = channelNew;
     }
 }

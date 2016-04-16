@@ -28,7 +28,6 @@ public class DialogNewProfileController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        editNewProfileName.setText("New Profile");
     }
 
     public void actionCancel() {
@@ -47,6 +46,6 @@ public class DialogNewProfileController extends AbstractController {
 
     @Override
     protected void onShow(WindowEvent event) {
-
+        editNewProfileName.setText("New Profile");
     }
 }

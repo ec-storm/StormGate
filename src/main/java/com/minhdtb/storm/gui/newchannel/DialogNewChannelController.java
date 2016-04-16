@@ -2,7 +2,7 @@ package com.minhdtb.storm.gui.newchannel;
 
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.Publisher;
-import com.minhdtb.storm.core.CoreChannelIECServer;
+import com.minhdtb.storm.core.CoreChannelIEC;
 import com.minhdtb.storm.entities.Channel;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,6 +40,7 @@ public class DialogNewChannelController extends AbstractController {
 
     @Override
     protected void onShow(WindowEvent event) {
+        editChannelName.setText("New Channel");
         comboBoxChannelType.getSelectionModel().selectFirst();
     }
 
@@ -80,11 +81,23 @@ public class DialogNewChannelController extends AbstractController {
             case 0: {
                 loadFxml("NewChannelIECServer");
 
-                TextField editBindIp = (TextField) getView().getScene().lookup("#editBindIp");
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
                 editPort.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
 
-                editBindIp.setText("127.0.0.1");
+                editHost.setText("127.0.0.1");
+                editPort.setText("2405");
+
+                break;
+            }
+            case 1: {
+                loadFxml("NewChannelIECClient");
+
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
+                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+                editPort.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
+
+                editHost.setText("127.0.0.1");
                 editPort.setText("2404");
 
                 break;
@@ -98,8 +111,6 @@ public class DialogNewChannelController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        editChannelName.setText("New Channel");
-
         comboBoxChannelType.getItems().addAll(
                 new DisplayChannelType("IEC 60870 Server", 0),
                 new DisplayChannelType("IEC 60870 Client", 1),
@@ -115,11 +126,12 @@ public class DialogNewChannelController extends AbstractController {
         DisplayChannelType channelType = comboBoxChannelType.getValue();
 
         switch (channelType.getValue()) {
-            case 0: {
-                TextField editBindIp = (TextField) getView().getScene().lookup("#editBindIp");
+            case 0:
+            case 1: {
+                TextField editBindIp = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
-                CoreChannelIECServer iecServer = new CoreChannelIECServer();
+                CoreChannelIEC iecServer = new CoreChannelIEC();
                 iecServer.getChannel().setName(editChannelName.getText());
                 iecServer.getChannel().setDescription(editChannelDescription.getText());
                 iecServer.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
