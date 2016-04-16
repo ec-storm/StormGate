@@ -24,10 +24,10 @@ public class Channel {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Variable> variables;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ChannelAttribute> attributes;
 
     @PostLoad

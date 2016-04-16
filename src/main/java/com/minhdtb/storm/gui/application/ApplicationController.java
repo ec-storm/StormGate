@@ -5,7 +5,6 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.IecGateChannel;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -58,10 +57,10 @@ public class ApplicationController extends AbstractController {
     private ProfileService service;
 
     @Autowired
-    private Subscriber<Profile> subscriber;
+    private Subscriber<Object> subscriber;
 
     @Autowired
-    private Publisher<Profile> publisher;
+    private Publisher<Object> publisher;
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
@@ -98,8 +97,7 @@ public class ApplicationController extends AbstractController {
                 if (selected instanceof Profile) {
                     showProfileProperties((Profile) selected);
                 } else if (selected instanceof Channel) {
-                    IecGateChannel channel = new IecGateChannel((Channel) selected);
-                    System.out.println(channel.getHost());
+                    propDetail.getItems().clear();
                 } else {
                     propDetail.getItems().clear();
                 }
@@ -107,32 +105,51 @@ public class ApplicationController extends AbstractController {
         });
     }
 
-    private void openProfile(Profile profile) {
-        Platform.runLater(() -> {
-            TreeItem<Object> rootItem = new TreeItem<>(profile);
-
-            if (profile.getChannels() != null) {
-                for (Channel channel : profile.getChannels()) {
-                    rootItem.getChildren().add(createNode(channel));
+    private void openProfile(Object profile) {
+        if (profile instanceof Profile) {
+            Platform.runLater(() -> {
+                Profile profileInternal = (Profile) profile;
+                TreeItem<Object> rootItem = new TreeItem<>(profile);
+                if (profileInternal.getChannels() != null) {
+                    for (Channel channel : profileInternal.getChannels()) {
+                        rootItem.getChildren().add(createNode(channel));
+                    }
                 }
-            }
 
-            treeViewProfile.setRoot(rootItem);
-            rootItem.setExpanded(true);
-        });
+                treeViewProfile.setRoot(rootItem);
+                rootItem.setExpanded(true);
+
+            });
+        }
     }
 
-    private void deleteProfile(Profile profile) {
-        Platform.runLater(() -> {
-            if (treeViewProfile.getRoot() != null) {
-                Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
-                if (Objects.equals(profileCurrent.getId(), profile.getId())) {
-                    treeViewProfile.setRoot(null);
-                }
-            }
+    private void deleteProfile(Object profile) {
+        if (profile instanceof Profile) {
+            Platform.runLater(() -> {
+                Profile profileInternal = (Profile) profile;
 
-            service.delete(profile);
-        });
+                if (treeViewProfile.getRoot() != null) {
+                    Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
+                    if (Objects.equals(profileCurrent.getId(), profileInternal.getId())) {
+                        treeViewProfile.setRoot(null);
+                    }
+                }
+
+                service.delete(profileInternal);
+            });
+        }
+    }
+
+    private void deleteChannel(Object channel) {
+        if (channel instanceof Channel) {
+            Platform.runLater(() -> {
+                Channel channelInternal = (Channel) channel;
+                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
+                item.getParent().getChildren().remove(item);
+
+                service.delete(channelInternal);
+            });
+        }
     }
 
     private void showProfileProperties(Profile profile) {
@@ -150,6 +167,7 @@ public class ApplicationController extends AbstractController {
     public void initialize(URL location, ResourceBundle resources) {
         subscriber.on("application:openProfile", this::openProfile);
         subscriber.on("application:deleteProfile", this::deleteProfile);
+        subscriber.on("application:deleteChannel", this::deleteChannel);
 
         initGUI();
 
@@ -304,26 +322,31 @@ public class ApplicationController extends AbstractController {
 
         private AbstractController controller;
 
+        private AbstractController getController() {
+            return this.controller;
+        }
+
         public TreeCellFactory(AbstractController controller) {
             this.controller = controller;
 
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
             menuChannel.getItems().add(new MenuItem("New Variable"));
-            menuChannel.getItems().add(new MenuItem("Delete Channel"));
+            menuChannel.getItems().add(MenuItemBuilder.create()
+                    .setText("Delete Channel")
+                    .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
+                    .setAction(event -> {
+                        Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                        Utils.showConfirm(getController().getView(),
+                                String.format("Do you really want to delete \"%s\"?", channel.getName()),
+                                e -> publisher.publish("application:deleteChannel", channel));
+                    }).build());
 
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("New Channel")
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-                        IecGateChannel channel = new IecGateChannel();
-                        channel.getChannel().setName("test");
-                        channel.getChannel().setDescription("test desc");
-                        channel.getChannel().setProfile(profile);
-                        channel.setHost("127.0.0.1");
-                        channel.setPort(1000);
 
-                        service.save(channel.getChannel());
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
@@ -331,7 +354,7 @@ public class ApplicationController extends AbstractController {
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-                        Utils.showConfirm(this.controller.getView(),
+                        Utils.showConfirm(getController().getView(),
                                 String.format("Do you really want to delete \"%s\"?", profile.getName()),
                                 e -> publisher.publish("application:deleteProfile", profile));
                     }).build());

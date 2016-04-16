@@ -21,6 +21,6 @@ public class Variable {
     @JoinColumn(name = "channel_id")
     private Channel channel;
 
-    @OneToMany(mappedBy = "variable", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "variable", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<VariableAttribute> attributes;
 }

@@ -12,9 +12,6 @@ public interface ProfileRepository extends CrudRepository<Profile, Long>, JpaRep
     @Transactional(readOnly = true)
     Profile findByName(String name);
 
-    @Override
     @Modifying(clearAutomatically = true)
     void delete(Profile profile);
-
-
 }

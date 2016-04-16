@@ -9,13 +9,12 @@ import java.util.Date;
 import java.util.Objects;
 
 @Data
-public class GateChannel {
+public class CoreChannel {
 
     private Channel channel;
 
     protected String getAttribute(String name) {
         for (ChannelAttribute attribute : this.getChannel().getAttributes()) {
-            System.out.println(attribute.getName());
             if (Objects.equals(attribute.getName(), name)) {
                 return attribute.getValue();
             }
@@ -48,11 +47,11 @@ public class GateChannel {
         }
     }
 
-    public GateChannel() {
+    public CoreChannel() {
         this.channel = new Channel();
     }
 
-    public GateChannel(Channel channel) {
+    public CoreChannel(Channel channel) {
         this.channel = channel;
     }
 

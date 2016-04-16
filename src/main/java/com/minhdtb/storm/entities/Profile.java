@@ -3,10 +3,13 @@ package com.minhdtb.storm.entities;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.*;
 
 @Data
 @ToString(exclude = "channels")
@@ -22,7 +25,7 @@ public class Profile {
 
     private String description;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Channel> channels;
 
     public Profile(String name) {
