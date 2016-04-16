@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Channel {
 
     @Id
@@ -38,6 +39,15 @@ public class Channel {
     }
 
     public enum ChannelType {
-        CT_OPC_CLIENT, CT_OPC_SERVER, CT_IEC_CLIENT, CT_IEC_SERVER
+        CT_OPC_CLIENT, CT_OPC_SERVER, CT_IEC_CLIENT, CT_IEC_SERVER;
+
+        private static ChannelType[] values = null;
+
+        public static ChannelType fromInt(int i) {
+            if (ChannelType.values == null) {
+                ChannelType.values = ChannelType.values();
+            }
+            return ChannelType.values[i];
+        }
     }
 }

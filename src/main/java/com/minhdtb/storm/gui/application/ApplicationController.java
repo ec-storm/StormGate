@@ -5,6 +5,7 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.CoreChannel;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -144,6 +145,18 @@ public class ApplicationController extends AbstractController {
         }
     }
 
+    private void addChannel(Object channel) {
+        if (channel instanceof Channel) {
+            Platform.runLater(() -> {
+                Channel channelInternal = (Channel) channel;
+                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
+                channelInternal.setProfile((Profile) item.getValue());
+
+                service.save(channelInternal);
+            });
+        }
+    }
+
     private void deleteChannel(Object channel) {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
@@ -171,7 +184,10 @@ public class ApplicationController extends AbstractController {
     public void initialize(URL location, ResourceBundle resources) {
         subscriber.on("application:openProfile", this::openProfile);
         subscriber.on("application:deleteProfile", this::deleteProfile);
+
+        subscriber.on("application:addChannel", this::addChannel);
         subscriber.on("application:deleteChannel", this::deleteChannel);
+
 
         initGUI();
 
@@ -349,7 +365,6 @@ public class ApplicationController extends AbstractController {
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("New Channel")
                     .setAction(event -> {
-                        Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         dialogNewChannelView.showDialog(getController().getView());
                     }).build());
             menuProfile.getItems().add(MenuItemBuilder.create()

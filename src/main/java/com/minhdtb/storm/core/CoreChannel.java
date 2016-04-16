@@ -5,16 +5,15 @@ import com.minhdtb.storm.entities.ChannelAttribute;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 @Data
 public class CoreChannel {
 
-    private Channel channel;
+    protected Channel channel;
 
     protected String getAttribute(String name) {
-        for (ChannelAttribute attribute : this.getChannel().getAttributes()) {
+        for (ChannelAttribute attribute : channel.getAttributes()) {
             if (Objects.equals(attribute.getName(), name)) {
                 return attribute.getValue();
             }
@@ -25,8 +24,8 @@ public class CoreChannel {
 
     protected void setAttribute(String name, String value) {
         boolean found = false;
-        if (this.getChannel().getAttributes() != null) {
-            for (ChannelAttribute attribute : this.getChannel().getAttributes()) {
+        if (channel.getAttributes() != null) {
+            for (ChannelAttribute attribute : channel.getAttributes()) {
                 if (Objects.equals(attribute.getName(), name)) {
                     found = true;
                     attribute.setValue(value);
@@ -34,33 +33,16 @@ public class CoreChannel {
                 }
             }
         } else {
-            this.getChannel().setAttributes(new ArrayList<>());
+            channel.setAttributes(new ArrayList<>());
         }
 
         if (!found) {
             ChannelAttribute attribute = new ChannelAttribute();
-            attribute.setChannel(this.getChannel());
+            attribute.setChannel(channel);
             attribute.setName(name);
             attribute.setValue(value);
 
-            this.getChannel().getAttributes().add(attribute);
+            channel.getAttributes().add(attribute);
         }
-    }
-
-    public CoreChannel() {
-        this.channel = new Channel();
-    }
-
-    public CoreChannel(Channel channel) {
-        this.channel = channel;
-    }
-
-    public Long getId() {
-        Long id = this.channel.getId();
-        if (id == null) {
-            id = (new Date()).getTime();
-        }
-
-        return id;
     }
 }

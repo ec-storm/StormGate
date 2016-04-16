@@ -30,6 +30,8 @@ public class AbstractView implements ApplicationContextAware {
 
     private AbstractView owner;
 
+    private AbstractController controller;
+
     private Object createControllerForType(Class<?> type) {
         return this.applicationContext.getBean(type);
     }
@@ -40,8 +42,8 @@ public class AbstractView implements ApplicationContextAware {
         try {
             this.scene = new Scene(this.fxmlLoader.load());
             this.scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
-            AbstractController controller = this.fxmlLoader.getController();
-            controller.setView(this);
+            this.controller = this.fxmlLoader.getController();
+            this.controller.setView(this);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -72,6 +74,14 @@ public class AbstractView implements ApplicationContextAware {
 
     public Stage getStage() {
         return this.stage;
+    }
+
+    public Scene getScene() {
+        return this.scene;
+    }
+
+    public AbstractController getController() {
+        return this.controller;
     }
 
     public Window getWindow() {
