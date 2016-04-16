@@ -119,15 +119,15 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editBindIp = (TextField) getView().getScene().lookup("#editBindIp");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
-                CoreChannelIECServer channel = new CoreChannelIECServer();
-                channel.getChannel().setName(editChannelName.getText());
-                channel.getChannel().setDescription(editChannelDescription.getText());
-                channel.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                CoreChannelIECServer iecServer = new CoreChannelIECServer();
+                iecServer.getChannel().setName(editChannelName.getText());
+                iecServer.getChannel().setDescription(editChannelDescription.getText());
+                iecServer.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
 
-                channel.setHost(editBindIp.getText());
-                channel.setPort(Integer.parseInt(editPort.getText()));
+                iecServer.setHost(editBindIp.getText());
+                iecServer.setPort(Integer.parseInt(editPort.getText()));
 
-                publisher.publish("application:addChannel", channel.getChannel());
+                publisher.publish("application:addChannel", iecServer.getChannel());
 
                 break;
             }

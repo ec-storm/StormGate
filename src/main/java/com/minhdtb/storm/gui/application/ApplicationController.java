@@ -5,7 +5,6 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Subscriber;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.CoreChannel;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -149,8 +148,10 @@ public class ApplicationController extends AbstractController {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
                 Channel channelInternal = (Channel) channel;
-                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
-                channelInternal.setProfile((Profile) item.getValue());
+                TreeItem<Object> selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
+                channelInternal.setProfile((Profile) selectedItem.getValue());
+
+                selectedItem.getChildren().add(new TreeItem<>(channelInternal));
 
                 service.save(channelInternal);
             });
@@ -187,7 +188,6 @@ public class ApplicationController extends AbstractController {
 
         subscriber.on("application:addChannel", this::addChannel);
         subscriber.on("application:deleteChannel", this::deleteChannel);
-
 
         initGUI();
 
@@ -354,6 +354,7 @@ public class ApplicationController extends AbstractController {
             menuChannel.getItems().add(new MenuItem("New Variable"));
             menuChannel.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Channel")
+                    .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
@@ -364,9 +365,8 @@ public class ApplicationController extends AbstractController {
 
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("New Channel")
-                    .setAction(event -> {
-                        dialogNewChannelView.showDialog(getController().getView());
-                    }).build());
+                    .setAction(event -> dialogNewChannelView.showDialog(getController().getView()))
+                    .build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Profile")
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
