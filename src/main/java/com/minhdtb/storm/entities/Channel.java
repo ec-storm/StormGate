@@ -39,7 +39,7 @@ public class Channel {
     }
 
     public enum ChannelType {
-        CT_OPC_CLIENT, CT_OPC_SERVER, CT_IEC_CLIENT, CT_IEC_SERVER;
+        CT_IEC_SERVER, CT_IEC_CLIENT, CT_OPC_CLIENT;
 
         public static ChannelType fromInt(int i) {
             return ChannelType.values()[i];

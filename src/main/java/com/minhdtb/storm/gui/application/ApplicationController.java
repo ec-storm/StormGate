@@ -149,11 +149,17 @@ public class ApplicationController extends AbstractController {
             Platform.runLater(() -> {
                 Channel channelInternal = (Channel) channel;
                 TreeItem<Object> selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
-                channelInternal.setProfile((Profile) selectedItem.getValue());
+                Profile selectedProfile = (Profile) selectedItem.getValue();
 
-                selectedItem.getChildren().add(new TreeItem<>(channelInternal));
+                if (!service.channelExists(selectedProfile, channelInternal.getName())) {
+                    channelInternal.setProfile(selectedProfile);
 
-                service.save(channelInternal);
+                    selectedItem.getChildren().add(new TreeItem<>(channelInternal));
+
+                    service.save(channelInternal);
+                } else {
+                    Utils.showError(this.getView(), "Channel already exists.");
+                }
             });
         }
     }

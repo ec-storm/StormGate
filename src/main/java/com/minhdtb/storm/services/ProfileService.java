@@ -9,9 +9,9 @@ public interface ProfileService {
 
     Iterable<Profile> findAllProfile();
 
-    List<Channel> findAllChannelByProfile(Profile profile);
-
     boolean profileExists(String profileName);
+
+    boolean channelExists(Profile profile, String channelName);
 
     Channel save(Channel channel);
 

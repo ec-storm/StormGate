@@ -3,6 +3,7 @@ package com.minhdtb.storm.gui.newchannel;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.core.CoreChannelIEC;
+import com.minhdtb.storm.core.CoreChannelOPC;
 import com.minhdtb.storm.entities.Channel;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -102,6 +103,18 @@ public class DialogNewChannelController extends AbstractController {
 
                 break;
             }
+            case 2: {
+                loadFxml("NewChannelOPCClient");
+
+                TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
+                TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
+                editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
+
+                editProgId.setText("");
+                editRefreshRate.setText("1000");
+
+                break;
+            }
             default: {
                 paneAttribute.getChildren().clear();
                 break;
@@ -114,8 +127,7 @@ public class DialogNewChannelController extends AbstractController {
         comboBoxChannelType.getItems().addAll(
                 new DisplayChannelType("IEC 60870 Server", 0),
                 new DisplayChannelType("IEC 60870 Client", 1),
-                new DisplayChannelType("OPC Server", 2),
-                new DisplayChannelType("OPC Client", 3));
+                new DisplayChannelType("OPC Client", 2));
 
         comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> {
             loadChannelAttribute(newValue);
@@ -128,18 +140,34 @@ public class DialogNewChannelController extends AbstractController {
         switch (channelType.getValue()) {
             case 0:
             case 1: {
-                TextField editBindIp = (TextField) getView().getScene().lookup("#editHost");
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
-                CoreChannelIEC iecServer = new CoreChannelIEC();
-                iecServer.getChannel().setName(editChannelName.getText());
-                iecServer.getChannel().setDescription(editChannelDescription.getText());
-                iecServer.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                CoreChannelIEC channelIEC = new CoreChannelIEC();
+                channelIEC.getChannel().setName(editChannelName.getText());
+                channelIEC.getChannel().setDescription(editChannelDescription.getText());
+                channelIEC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
 
-                iecServer.setHost(editBindIp.getText());
-                iecServer.setPort(Integer.parseInt(editPort.getText()));
+                channelIEC.setHost(editHost.getText());
+                channelIEC.setPort(Integer.parseInt(editPort.getText()));
 
-                publisher.publish("application:addChannel", iecServer.getChannel());
+                publisher.publish("application:addChannel", channelIEC.getChannel());
+
+                break;
+            }
+            case 2: {
+                TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
+                TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
+
+                CoreChannelOPC channelOPC = new CoreChannelOPC();
+                channelOPC.getChannel().setName(editChannelName.getText());
+                channelOPC.getChannel().setDescription(editChannelDescription.getText());
+                channelOPC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+
+                channelOPC.setProgId(editProgId.getText());
+                channelOPC.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
+
+                publisher.publish("application:addChannel", channelOPC.getChannel());
 
                 break;
             }

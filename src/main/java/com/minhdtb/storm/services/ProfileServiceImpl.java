@@ -24,14 +24,14 @@ class ProfileServiceImpl implements ProfileService {
         return profileRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public List<Channel> findAllChannelByProfile(Profile profile) {
-        return channelRepository.findByProfile(profile);
-    }
-
     @Override
     public boolean profileExists(String profileName) {
         return profileRepository.findByName(profileName) != null;
+    }
+
+    @Override
+    public boolean channelExists(Profile profile, String channelName) {
+        return channelRepository.findByProfileAndName(profile, channelName) != null;
     }
 
     @Transactional

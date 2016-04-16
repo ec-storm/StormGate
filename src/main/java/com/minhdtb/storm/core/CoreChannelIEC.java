@@ -19,12 +19,4 @@ public class CoreChannelIEC extends CoreChannel {
     public void setPort(int port) {
         setAttribute("port", String.valueOf(port));
     }
-
-    public CoreChannelIEC() {
-        channel = new Channel();
-    }
-
-    public CoreChannelIEC(Channel channelNew) {
-        channel = channelNew;
-    }
 }

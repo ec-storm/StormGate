@@ -13,7 +13,7 @@ import java.util.List;
 public interface ChannelRepository extends CrudRepository<Channel, Long>, JpaRepository<Channel, Long> {
 
     @Transactional(readOnly = true)
-    List<Channel> findByProfile(Profile profile);
+    Channel findByProfileAndName(Profile profile, String name);
 
     @Modifying(clearAutomatically = true)
     void delete(Channel channel);

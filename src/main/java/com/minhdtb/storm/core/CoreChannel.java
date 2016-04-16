@@ -49,4 +49,12 @@ public class CoreChannel {
     public Long getId() {
         return channel.getId();
     }
+
+    protected CoreChannel() {
+        channel = new Channel();
+    }
+
+    protected CoreChannel(Channel channelNew) {
+        channel = channelNew;
+    }
 }
