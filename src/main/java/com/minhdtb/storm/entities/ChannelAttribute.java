@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 public class ChannelAttribute {
-    
+
     @Id
     @GeneratedValue
     private Long id;
@@ -17,6 +17,6 @@ public class ChannelAttribute {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "channel_id")
+    @JoinColumn(name = "channel_id", nullable = false)
     private Channel channel;
 }

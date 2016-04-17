@@ -17,6 +17,6 @@ public class VariableAttribute {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "variable_id")
+    @JoinColumn(name = "variable_id", nullable = false)
     private Variable variable;
 }
