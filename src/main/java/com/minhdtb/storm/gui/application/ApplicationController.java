@@ -1,10 +1,8 @@
 package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.common.*;
 import com.minhdtb.storm.common.MenuItemBuilder;
-import com.minhdtb.storm.common.Publisher;
-import com.minhdtb.storm.common.Subscriber;
-import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -12,8 +10,11 @@ import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.ProfileService;
+import de.jensd.fx.glyphs.GlyphIcon;
+import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -154,7 +155,7 @@ public class ApplicationController extends AbstractController {
                 if (!service.channelExists(selectedProfile, channelInternal.getName())) {
                     channelInternal.setProfile(selectedProfile);
 
-                    selectedItem.getChildren().add(new TreeItem<>(channelInternal));
+                    selectedItem.getChildren().add(createNode(channelInternal));
 
                     service.save(channelInternal);
                 } else {
@@ -250,8 +251,12 @@ public class ApplicationController extends AbstractController {
                 if (treeItem.getValue() instanceof Channel) {
                     ObservableList<TreeItem<Object>> children = FXCollections.observableArrayList();
 
-                    children.addAll(((Channel) treeItem.getValue())
-                            .getVariables().stream().map(variable -> createNode(variable)).collect(Collectors.toList()));
+                    try {
+                        children.addAll(((Channel) treeItem.getValue())
+                                .getVariables().stream().map(variable -> createNode(variable)).collect(Collectors.toList()));
+                    } catch (NullPointerException ignored) {
+
+                    }
 
                     return children;
                 }
@@ -398,16 +403,45 @@ public class ApplicationController extends AbstractController {
 
             if (empty) {
                 setText(null);
+                setGraphic(null);
                 setContextMenu(null);
             } else {
                 if (item instanceof Channel) {
-                    setText(((Channel) item).getName());
+                    Channel channel = (Channel) item;
+                    String color = "red";
+                    switch (channel.getType()) {
+                        case CT_IEC_CLIENT:
+                            color = "green";
+                            break;
+                        case CT_OPC_CLIENT:
+                            color = "blue";
+                            break;
+                    }
+
+                    GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                            .glyph(MaterialDesignIcon.PANORAMA_FISHEYE)
+                            .size("1em")
+                            .style("-fx-fill: " + color)
+                            .build();
+                    setGraphic(GraphicItemBuilder.create()
+                            .setIcon(icon)
+                            .setText(channel.getName())
+                            .build());
                 } else if (item instanceof Variable) {
-                    setText(((Variable) item).getName());
+                    setGraphic(GlyphsDude.createIconLabel(MaterialDesignIcon.CONTENT_SAVE,
+                            ((Variable) item).getName(), "1.5em", null, ContentDisplay.LEFT));
                 } else if (item instanceof Profile) {
-                    setText(((Profile) item).getName());
+                    GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                            .glyph(MaterialDesignIcon.ACCOUNT)
+                            .size("1.5em")
+                            .build();
+                    setGraphic(GraphicItemBuilder.create()
+                            .setIcon(icon)
+                            .setText(null)
+                            .build());
                 } else {
-                    setText(item.toString());
+                    setText(null);
+                    setGraphic(null);
                 }
             }
 
