@@ -25,7 +25,7 @@ public class Profile {
 
     private String description;
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Channel> channels;
 
     public Profile(String name) {

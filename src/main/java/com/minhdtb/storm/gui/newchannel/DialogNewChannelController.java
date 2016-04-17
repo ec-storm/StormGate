@@ -2,10 +2,10 @@ package com.minhdtb.storm.gui.newchannel;
 
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.Publisher;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.CoreChannelIEC;
 import com.minhdtb.storm.core.CoreChannelOPC;
 import com.minhdtb.storm.entities.Channel;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
@@ -58,25 +58,6 @@ public class DialogNewChannelController extends AbstractController {
         }
     }
 
-    private EventHandler<KeyEvent> numericValidation(final Integer maxLength) {
-        return e -> {
-            TextField textField = (TextField) e.getSource();
-            if (textField.getText().length() >= maxLength) {
-                e.consume();
-            }
-
-            if (e.getCharacter().matches("[0-9.]")) {
-                if (textField.getText().contains(".") && e.getCharacter().matches("[.]")) {
-                    e.consume();
-                } else if (textField.getText().length() == 0 && e.getCharacter().matches("[.]")) {
-                    e.consume();
-                }
-            } else {
-                e.consume();
-            }
-        };
-    }
-
     private void loadChannelAttribute(DisplayChannelType type) {
         switch (type.getValue()) {
             case 0: {
@@ -84,7 +65,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
-                editPort.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
+                editPort.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editHost.setText("127.0.0.1");
                 editPort.setText("2405");
@@ -96,7 +77,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
-                editPort.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
+                editPort.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editHost.setText("127.0.0.1");
                 editPort.setText("2404");
@@ -108,7 +89,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
-                editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, numericValidation(5));
+                editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editProgId.setText("");
                 editRefreshRate.setText("1000");

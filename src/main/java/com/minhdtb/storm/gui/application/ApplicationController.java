@@ -8,6 +8,7 @@ import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
+import com.minhdtb.storm.gui.newvariable.DialogNewVariableIECView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.ProfileService;
 import de.jensd.fx.glyphs.GlyphIcon;
@@ -66,12 +67,12 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
-
     @Autowired
     DialogNewChannelView dialogNewChannelView;
-
     @Autowired
     DialogOpenProfileView dialogOpenProfileView;
+    @Autowired
+    DialogNewVariableIECView dialogNewVariableIECView;
 
     private ContextMenu menuTreeView = new ContextMenu();
 
@@ -149,13 +150,18 @@ public class ApplicationController extends AbstractController {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
                 Channel channelInternal = (Channel) channel;
-                TreeItem<Object> selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
-                Profile selectedProfile = (Profile) selectedItem.getValue();
+                Profile profile = (Profile) treeViewProfile.getRoot().getValue();
 
-                if (!service.channelExists(selectedProfile, channelInternal.getName())) {
-                    channelInternal.setProfile(selectedProfile);
+                if (!service.channelExists(profile, channelInternal.getName())) {
+                    channelInternal.setProfile(profile);
 
-                    selectedItem.getChildren().add(createNode(channelInternal));
+                    if (profile.getChannels() == null) {
+                        profile.setChannels(new ArrayList<>());
+                    }
+
+                    profile.getChannels().add(channelInternal);
+
+                    treeViewProfile.getRoot().getChildren().add(createNode(channelInternal));
 
                     service.save(channelInternal);
                 } else {
@@ -362,7 +368,17 @@ public class ApplicationController extends AbstractController {
 
             menuVariable.getItems().add(new MenuItem("Delete Variable"));
 
-            menuChannel.getItems().add(new MenuItem("New Variable"));
+            menuChannel.getItems().add(MenuItemBuilder.create()
+                    .setText("New Variable")
+                    .setAction(event -> {
+                        Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                        if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT ||
+                                channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                            dialogNewVariableIECView.showDialog(getController().getView());
+                        }
+                    })
+                    .build());
+
             menuChannel.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Channel")
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
