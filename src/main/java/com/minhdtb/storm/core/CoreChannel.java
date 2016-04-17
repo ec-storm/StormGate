@@ -52,6 +52,8 @@ public class CoreChannel {
 
     protected CoreChannel() {
         channel = new Channel();
+        channel.setVariables(new ArrayList<>());
+        channel.setAttributes(new ArrayList<>());
     }
 
     protected CoreChannel(Channel channelNew) {

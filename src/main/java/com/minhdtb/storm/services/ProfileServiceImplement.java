@@ -36,17 +36,17 @@ class ProfileServiceImplement implements ProfileService {
 
     @Transactional
     public Channel save(Channel channel) {
-        return channelRepository.saveAndFlush(channel);
+        return channelRepository.save(channel);
     }
 
     @Override
     public Variable save(Variable variable) {
-        return variableRepository.saveAndFlush(variable);
+        return variableRepository.save(variable);
     }
 
     @Transactional
     public Profile save(Profile profile) {
-        return profileRepository.saveAndFlush(profile);
+        return profileRepository.save(profile);
     }
 
     @Override

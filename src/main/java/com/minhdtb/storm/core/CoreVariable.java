@@ -53,6 +53,7 @@ public class CoreVariable {
 
     protected CoreVariable() {
         variable = new Variable();
+        variable.setAttributes(new ArrayList<>());
     }
 
     protected CoreVariable(Variable variableNew) {
