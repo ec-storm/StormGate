@@ -14,7 +14,11 @@ public class Utils {
     public static void showError(AbstractView owner, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, "");
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(owner.getWindow());
+        
+        if (owner != null) {
+            alert.initOwner(owner.getWindow());
+        }
+
         alert.setHeaderText(message);
         alert.setContentText(null);
         alert.showAndWait()
@@ -24,7 +28,11 @@ public class Utils {
     public static void showConfirm(AbstractView owner, String message, EventHandler<Event> Ok) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(owner.getWindow());
+
+        if (owner != null) {
+            alert.initOwner(owner.getWindow());
+        }
+
         alert.setHeaderText(message);
         alert.setContentText(null);
         Optional<ButtonType> result = alert.showAndWait();

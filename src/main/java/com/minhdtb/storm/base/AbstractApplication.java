@@ -1,7 +1,6 @@
 package com.minhdtb.storm.base;
 
 import javafx.application.Application;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -19,7 +18,6 @@ public abstract class AbstractApplication extends Application {
 
     @Override
     public void stop() throws Exception {
-
         super.stop();
         applicationContext.close();
     }
