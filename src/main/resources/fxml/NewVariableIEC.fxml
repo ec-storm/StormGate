@@ -49,7 +49,7 @@
                 <Insets right="3.0"/>
             </GridPane.margin>
         </Label>
-        <ComboBox fx:id="comboBoxChannelType" prefHeight="25.0" prefWidth="292.0" GridPane.columnIndex="1"
+        <ComboBox fx:id="comboBoxVariableType" prefHeight="25.0" prefWidth="292.0" GridPane.columnIndex="1"
                   GridPane.rowIndex="5">
             <GridPane.margin>
                 <Insets left="3.0" right="5.0"/>

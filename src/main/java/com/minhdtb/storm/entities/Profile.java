@@ -12,7 +12,7 @@ import lombok.ToString;
 import org.hibernate.annotations.*;
 
 @Data
-@ToString(exclude = "channels")
+@ToString(exclude = {"channels"})
 @Entity
 @NoArgsConstructor
 public class Profile {

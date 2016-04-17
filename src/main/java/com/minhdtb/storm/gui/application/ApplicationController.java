@@ -61,7 +61,6 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     private Subscriber<Object> subscriber;
-
     @Autowired
     private Publisher<Object> publisher;
 
@@ -183,6 +182,38 @@ public class ApplicationController extends AbstractController {
         }
     }
 
+    private void addVariable(Object variable) {
+        if (variable instanceof Variable) {
+            Platform.runLater(() -> {
+                Variable variableInternal = (Variable) variable;
+                Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                variableInternal.setChannel(channel);
+
+                if (channel.getVariables() == null) {
+                    channel.setVariables(new ArrayList<>());
+                }
+
+                channel.getVariables().add(variableInternal);
+
+                treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variableInternal));
+
+                service.save(variableInternal);
+            });
+        }
+    }
+
+    private void deleteVariable(Object variable) {
+        if (variable instanceof Variable) {
+            Platform.runLater(() -> {
+                Variable variableInternal = (Variable) variable;
+                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
+                item.getParent().getChildren().remove(item);
+
+                service.delete(variableInternal);
+            });
+        }
+    }
+
     private void showProfileProperties(Profile profile) {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
@@ -201,6 +232,9 @@ public class ApplicationController extends AbstractController {
 
         subscriber.on("application:addChannel", this::addChannel);
         subscriber.on("application:deleteChannel", this::deleteChannel);
+
+        subscriber.on("application:addVariable", this::addVariable);
+        subscriber.on("application:deleteVariable", this::deleteVariable);
 
         initGUI();
 
@@ -366,7 +400,16 @@ public class ApplicationController extends AbstractController {
         public TreeCellFactory(AbstractController controller) {
             this.controller = controller;
 
-            menuVariable.getItems().add(new MenuItem("Delete Variable"));
+            menuVariable.getItems().add(MenuItemBuilder.create()
+                    .setText("Delete Variable")
+                    .setIcon(MaterialDesignIcon.DELETE, "1.5em")
+                    .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
+                    .setAction(event -> {
+                        Variable variable = (Variable) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                        Utils.showConfirm(getController().getView(),
+                                String.format("Do you really want to delete variable \"%s\"?", variable.getName()),
+                                e -> publisher.publish("application:deleteVariable", variable));
+                    }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
                     .setText("New Variable")
@@ -386,7 +429,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format("Do you really want to delete \"%s\"?", channel.getName()),
+                                String.format("Do you really want to delete channel \"%s\"?", channel.getName()),
                                 e -> publisher.publish("application:deleteChannel", channel));
                     }).build());
 
@@ -401,7 +444,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format("Do you really want to delete \"%s\"?", profile.getName()),
+                                String.format("Do you really want to delete profile \"%s\"?", profile.getName()),
                                 e -> publisher.publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
@@ -411,6 +454,20 @@ public class ApplicationController extends AbstractController {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
                     }).build());
+        }
+
+        private String getColor(Channel.ChannelType type) {
+            String color = "red";
+            switch (type) {
+                case CT_IEC_CLIENT:
+                    color = "green";
+                    break;
+                case CT_OPC_CLIENT:
+                    color = "blue";
+                    break;
+            }
+
+            return color;
         }
 
         @Override
@@ -424,33 +481,36 @@ public class ApplicationController extends AbstractController {
             } else {
                 if (item instanceof Channel) {
                     Channel channel = (Channel) item;
-                    String color = "red";
-                    switch (channel.getType()) {
-                        case CT_IEC_CLIENT:
-                            color = "green";
-                            break;
-                        case CT_OPC_CLIENT:
-                            color = "blue";
-                            break;
-                    }
 
                     GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
                             .glyph(MaterialDesignIcon.PANORAMA_FISHEYE)
-                            .size("1em")
-                            .style("-fx-fill: " + color)
+                            .size("1.2em")
+                            .style("-fx-fill: " + getColor(channel.getType()))
                             .build();
+
                     setGraphic(GraphicItemBuilder.create()
                             .setIcon(icon)
                             .setText(channel.getName())
                             .build());
                 } else if (item instanceof Variable) {
-                    setGraphic(GlyphsDude.createIconLabel(MaterialDesignIcon.CONTENT_SAVE,
-                            ((Variable) item).getName(), "1.5em", null, ContentDisplay.LEFT));
+                    Variable variable = (Variable) item;
+
+                    GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                            .glyph(MaterialDesignIcon.TAG)
+                            .size("1.2em")
+                            .style("-fx-fill: " + getColor(variable.getChannel().getType()))
+                            .build();
+
+                    setGraphic(GraphicItemBuilder.create()
+                            .setIcon(icon)
+                            .setText(variable.getName())
+                            .build());
                 } else if (item instanceof Profile) {
                     GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
                             .glyph(MaterialDesignIcon.ACCOUNT)
                             .size("1.5em")
                             .build();
+
                     setGraphic(GraphicItemBuilder.create()
                             .setIcon(icon)
                             .setText(null)

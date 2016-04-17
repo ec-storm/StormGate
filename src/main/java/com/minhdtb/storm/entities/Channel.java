@@ -1,13 +1,14 @@
 package com.minhdtb.storm.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@ToString(exclude = {"variables", "attributes"})
 public class Channel {
 
     @Id

@@ -1,6 +1,7 @@
 package com.minhdtb.storm.gui.newchannel;
 
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.CoreChannelIEC;
@@ -14,9 +15,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +30,7 @@ public class DialogNewChannelController extends AbstractController {
     @FXML
     private TextField editChannelDescription;
     @FXML
-    private ComboBox<DisplayChannelType> comboBoxChannelType;
+    private ComboBox<NamedValueType> comboBoxChannelType;
     @FXML
     private AnchorPane paneAttribute;
 
@@ -58,7 +56,7 @@ public class DialogNewChannelController extends AbstractController {
         }
     }
 
-    private void loadChannelAttribute(DisplayChannelType type) {
+    private void loadChannelAttribute(NamedValueType type) {
         switch (type.getValue()) {
             case 0: {
                 loadFxml("NewChannelIECServer");
@@ -106,9 +104,9 @@ public class DialogNewChannelController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         comboBoxChannelType.getItems().addAll(
-                new DisplayChannelType("IEC 60870 Server", 0),
-                new DisplayChannelType("IEC 60870 Client", 1),
-                new DisplayChannelType("OPC Client", 2));
+                new NamedValueType("IEC 60870 Server", 0),
+                new NamedValueType("IEC 60870 Client", 1),
+                new NamedValueType("OPC Client", 2));
 
         comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> {
             loadChannelAttribute(newValue);
@@ -116,7 +114,7 @@ public class DialogNewChannelController extends AbstractController {
     }
 
     public void actionOK() {
-        DisplayChannelType channelType = comboBoxChannelType.getValue();
+        NamedValueType channelType = comboBoxChannelType.getValue();
 
         switch (channelType.getValue()) {
             case 0:
@@ -159,18 +157,5 @@ public class DialogNewChannelController extends AbstractController {
 
     public void actionCancel() {
         this.close();
-    }
-
-
-    @Data
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    private final class DisplayChannelType {
-        private String name;
-        private int value;
-
-        @Override
-        public String toString() {
-            return getName();
-        }
     }
 }

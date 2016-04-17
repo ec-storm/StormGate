@@ -2,6 +2,7 @@ package com.minhdtb.storm.services;
 
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
+import com.minhdtb.storm.entities.Variable;
 
 public interface ProfileService {
 
@@ -11,11 +12,15 @@ public interface ProfileService {
 
     boolean channelExists(Profile profile, String channelName);
 
+    Profile save(Profile profile);
+
     Channel save(Channel channel);
 
-    Profile save(Profile profile);
+    Variable save(Variable variable);
+
+    void delete(Profile profile);
 
     void delete(Channel channel);
 
-    void delete(Profile profile);
+    void delete(Variable variable);
 }
