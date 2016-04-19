@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,4 +24,12 @@ public class Variable {
 
     @OneToMany(mappedBy = "variable", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VariableAttribute> attributes;
+
+    public List<VariableAttribute> getAttributes() {
+        if (attributes == null) {
+            attributes = new ArrayList<>();
+        }
+
+        return attributes;
+    }
 }

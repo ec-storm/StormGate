@@ -1,8 +1,7 @@
 package com.minhdtb.storm.services;
 
-import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.entities.Variable;
+import org.springframework.data.jpa.repository.Modifying;
 
 public interface ProfileService {
 
@@ -14,13 +13,6 @@ public interface ProfileService {
 
     Profile save(Profile profile);
 
-    Channel save(Channel channel);
-
-    Variable save(Variable variable);
-
+    @Modifying(clearAutomatically = true)
     void delete(Profile profile);
-
-    void delete(Channel channel);
-
-    void delete(Variable variable);
 }

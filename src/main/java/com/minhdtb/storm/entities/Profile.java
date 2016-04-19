@@ -1,5 +1,6 @@
 package com.minhdtb.storm.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -30,5 +31,13 @@ public class Profile {
 
     public Profile(String name) {
         this.name = name;
+    }
+
+    public List<Channel> getChannels() {
+        if (channels == null) {
+            channels = new ArrayList<>();
+        }
+
+        return channels;
     }
 }

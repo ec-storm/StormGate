@@ -1,11 +1,9 @@
 package com.minhdtb.storm.core;
 
-
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.entities.VariableAttribute;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 @Data
@@ -25,16 +23,13 @@ public class CoreVariable {
 
     protected void setAttribute(String name, String value) {
         boolean found = false;
-        if (variable.getAttributes() != null) {
-            for (VariableAttribute attribute : variable.getAttributes()) {
-                if (Objects.equals(attribute.getName(), name)) {
-                    found = true;
-                    attribute.setValue(value);
-                    break;
-                }
+
+        for (VariableAttribute attribute : variable.getAttributes()) {
+            if (Objects.equals(attribute.getName(), name)) {
+                found = true;
+                attribute.setValue(value);
+                break;
             }
-        } else {
-            variable.setAttributes(new ArrayList<>());
         }
 
         if (!found) {
@@ -53,7 +48,6 @@ public class CoreVariable {
 
     protected CoreVariable() {
         variable = new Variable();
-        variable.setAttributes(new ArrayList<>());
     }
 
     protected CoreVariable(Variable variableNew) {

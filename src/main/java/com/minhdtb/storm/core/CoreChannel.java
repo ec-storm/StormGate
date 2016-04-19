@@ -4,7 +4,6 @@ import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.ChannelAttribute;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 @Data
@@ -24,16 +23,13 @@ public class CoreChannel {
 
     protected void setAttribute(String name, String value) {
         boolean found = false;
-        if (channel.getAttributes() != null) {
-            for (ChannelAttribute attribute : channel.getAttributes()) {
-                if (Objects.equals(attribute.getName(), name)) {
-                    found = true;
-                    attribute.setValue(value);
-                    break;
-                }
+
+        for (ChannelAttribute attribute : channel.getAttributes()) {
+            if (Objects.equals(attribute.getName(), name)) {
+                found = true;
+                attribute.setValue(value);
+                break;
             }
-        } else {
-            channel.setAttributes(new ArrayList<>());
         }
 
         if (!found) {
@@ -52,8 +48,6 @@ public class CoreChannel {
 
     protected CoreChannel() {
         channel = new Channel();
-        channel.setVariables(new ArrayList<>());
-        channel.setAttributes(new ArrayList<>());
     }
 
     protected CoreChannel(Channel channelNew) {

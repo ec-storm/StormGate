@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -45,5 +46,21 @@ public class Channel {
         public static ChannelType fromInt(int i) {
             return ChannelType.values()[i];
         }
+    }
+
+    public List<Variable> getVariables() {
+        if (variables == null) {
+            variables = new ArrayList<>();
+        }
+
+        return variables;
+    }
+
+    public List<ChannelAttribute> getAttributes() {
+        if (attributes == null) {
+            attributes = new ArrayList<>();
+        }
+
+        return attributes;
     }
 }

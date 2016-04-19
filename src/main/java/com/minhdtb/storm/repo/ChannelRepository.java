@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 
 public interface ChannelRepository extends CrudRepository<Channel, Long>, JpaRepository<Channel, Long> {
 

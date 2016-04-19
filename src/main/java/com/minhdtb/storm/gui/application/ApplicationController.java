@@ -123,7 +123,6 @@ public class ApplicationController extends AbstractController {
 
                 treeViewProfile.setRoot(rootItem);
                 rootItem.setExpanded(true);
-
             });
         }
     }
@@ -153,16 +152,9 @@ public class ApplicationController extends AbstractController {
 
                 if (!service.channelExists(profile, channelInternal.getName())) {
                     channelInternal.setProfile(profile);
-
-                    if (profile.getChannels() == null) {
-                        profile.setChannels(new ArrayList<>());
-                    }
-
                     profile.getChannels().add(channelInternal);
-
+                    treeViewProfile.getRoot().setValue(service.save(profile));
                     treeViewProfile.getRoot().getChildren().add(createNode(channelInternal));
-
-                    service.save(channelInternal);
                 } else {
                     Utils.showError(this.getView(), "Channel already exists.");
                 }
@@ -174,10 +166,12 @@ public class ApplicationController extends AbstractController {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
                 Channel channelInternal = (Channel) channel;
+                Profile profile = channelInternal.getProfile();
+                profile.getChannels().remove(channelInternal);
+                treeViewProfile.getRoot().setValue(service.save(profile));
+                
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
-
-                service.delete(channelInternal);
             });
         }
     }
@@ -188,16 +182,10 @@ public class ApplicationController extends AbstractController {
                 Variable variableInternal = (Variable) variable;
                 Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                 variableInternal.setChannel(channel);
-
-                if (channel.getVariables() == null) {
-                    channel.setVariables(new ArrayList<>());
-                }
-
                 channel.getVariables().add(variableInternal);
+                treeViewProfile.getRoot().setValue(service.save(channel.getProfile()));
 
                 treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variableInternal));
-
-                service.save(variableInternal);
             });
         }
     }
@@ -206,10 +194,12 @@ public class ApplicationController extends AbstractController {
         if (variable instanceof Variable) {
             Platform.runLater(() -> {
                 Variable variableInternal = (Variable) variable;
+                Channel channel = variableInternal.getChannel();
+                channel.getVariables().remove(variableInternal);
+                treeViewProfile.getRoot().setValue(service.save(channel.getProfile()));
+
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
-
-                service.delete(variableInternal);
             });
         }
     }
