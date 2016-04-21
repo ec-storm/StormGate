@@ -5,7 +5,7 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.services.ProfileService;
+import com.minhdtb.storm.services.DataService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -29,7 +29,7 @@ public class DialogOpenProfileController extends AbstractController {
     private Publisher<Profile> publisher;
 
     @Autowired
-    ProfileService service;
+    DataService service;
 
     @FXML
     TableView<Profile> tableProfile;

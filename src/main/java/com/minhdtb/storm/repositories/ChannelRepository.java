@@ -1,4 +1,4 @@
-package com.minhdtb.storm.repo;
+package com.minhdtb.storm.repositories;
 
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;

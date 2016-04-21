@@ -3,7 +3,7 @@ package com.minhdtb.storm.services;
 import com.minhdtb.storm.entities.Profile;
 import org.springframework.data.jpa.repository.Modifying;
 
-public interface ProfileService {
+public interface DataService {
 
     Iterable<Profile> findAllProfile();
 

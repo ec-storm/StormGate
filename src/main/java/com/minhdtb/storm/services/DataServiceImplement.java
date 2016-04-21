@@ -1,8 +1,8 @@
 package com.minhdtb.storm.services;
 
 import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.repo.ChannelRepository;
-import com.minhdtb.storm.repo.ProfileRepository;
+import com.minhdtb.storm.repositories.ChannelRepository;
+import com.minhdtb.storm.repositories.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class ProfileServiceImplement implements ProfileService {
+class DataServiceImplement implements DataService {
 
     private final ProfileRepository profileRepository;
     private final ChannelRepository channelRepository;

@@ -4,7 +4,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.services.ProfileService;
+import com.minhdtb.storm.services.DataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
@@ -18,7 +18,7 @@ public class DialogNewProfileController extends AbstractController {
     private TextField editNewProfileName;
 
     @Autowired
-    ProfileService service;
+    DataService service;
 
     @Autowired
     private Publisher<Profile> publisher;
