@@ -2,8 +2,10 @@ package com.minhdtb.storm.services;
 
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
+import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.repositories.ChannelRepository;
 import com.minhdtb.storm.repositories.ProfileRepository;
+import com.minhdtb.storm.repositories.VariableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ class DataServiceImplement implements DataService {
 
     private final ProfileRepository profileRepository;
     private final ChannelRepository channelRepository;
+    private final VariableRepository variableRepository;
 
     @Transactional(readOnly = true)
     public Iterable<Profile> findAllProfile() {
@@ -45,6 +48,12 @@ class DataServiceImplement implements DataService {
 
     @Transactional
     @Override
+    public Variable save(Variable variable) {
+        return variableRepository.saveAndFlush(variable);
+    }
+
+    @Transactional
+    @Override
     public void delete(Profile profile) {
         profileRepository.delete(profile);
     }
@@ -53,5 +62,11 @@ class DataServiceImplement implements DataService {
     @Override
     public void delete(Channel channel) {
         channelRepository.delete(channel);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Variable variable) {
+        variableRepository.delete(variable);
     }
 }

@@ -27,7 +27,7 @@ public class Channel {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Variable> variables;
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

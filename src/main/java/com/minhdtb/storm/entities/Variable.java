@@ -19,7 +19,7 @@ public class Variable {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "channel_id", nullable = false)
+    @JoinColumn(name = "channel_id")
     private Channel channel;
 
     @OneToMany(mappedBy = "variable", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

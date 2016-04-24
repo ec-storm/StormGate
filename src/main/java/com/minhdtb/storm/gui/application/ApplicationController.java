@@ -164,25 +164,18 @@ public class ApplicationController extends AbstractController {
 
     private void addVariable(Object object) {
         if (object instanceof Variable) {
-            Platform.runLater(() -> {
-                Variable variable = (Variable) object;
-                Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-                variable.setChannel(channel);
-                channel.getVariables().add(variable);
-                treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variable));
-            });
+            Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+            dataManager.addVariable(channel, (Variable) object, variable -> Platform.runLater(() ->
+                    treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variable))));
         }
     }
 
     private void deleteVariable(Object object) {
         if (object instanceof Variable) {
-            Platform.runLater(() -> {
-                Variable variable = (Variable) object;
-                Channel channel = variable.getChannel();
-                channel.getVariables().remove(variable);
+            dataManager.deleteVariable((Variable) object, variable -> Platform.runLater(() -> {
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
-            });
+            }));
         }
     }
 
