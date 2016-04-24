@@ -157,6 +157,30 @@ public class ApplicationController extends AbstractController {
         }
     }
 
+    private void addVariable(Object variable) {
+        if (variable instanceof Variable) {
+            Platform.runLater(() -> {
+                Variable variableInternal = (Variable) variable;
+                Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
+                variableInternal.setChannel(channel);
+                channel.getVariables().add(variableInternal);
+                treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variableInternal));
+            });
+        }
+    }
+
+    private void deleteVariable(Object variable) {
+        if (variable instanceof Variable) {
+            Platform.runLater(() -> {
+                Variable variableInternal = (Variable) variable;
+                Channel channel = variableInternal.getChannel();
+                channel.getVariables().remove(variableInternal);
+                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
+                item.getParent().getChildren().remove(item);
+            });
+        }
+    }
+
     private void showProfileProperties(Profile profile) {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
@@ -176,8 +200,8 @@ public class ApplicationController extends AbstractController {
         subscriber.on("application:addChannel", this::addChannel);
         subscriber.on("application:deleteChannel", this::deleteChannel);
 
-        //subscriber.on("application:addVariable", this::addVariable);
-        //subscriber.on("application:deleteVariable", this::deleteVariable);
+        subscriber.on("application:addVariable", this::addVariable);
+        subscriber.on("application:deleteVariable", this::deleteVariable);
 
         initGUI();
 
