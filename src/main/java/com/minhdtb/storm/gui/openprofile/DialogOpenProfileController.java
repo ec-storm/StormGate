@@ -2,7 +2,6 @@ package com.minhdtb.storm.gui.openprofile;
 
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.MenuItemBuilder;
-import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.DataService;
@@ -24,9 +23,6 @@ import java.util.ResourceBundle;
 
 @Component
 public class DialogOpenProfileController extends AbstractController {
-
-    @Autowired
-    private Publisher<Profile> publisher;
 
     @Autowired
     DataService service;
@@ -68,7 +64,7 @@ public class DialogOpenProfileController extends AbstractController {
                             String.format("Do you really want to delete \"%s\"?", profile.getName()),
                             e -> {
                                 tableProfile.getItems().remove(profile);
-                                publisher.publish("application:deleteProfile", profile);
+                                getPublisher().publish("application:deleteProfile", profile);
                             });
                 }).build());
 
@@ -78,8 +74,8 @@ public class DialogOpenProfileController extends AbstractController {
     public void actionOK() {
         Profile profile = tableProfile.getSelectionModel().getSelectedItem();
         if (profile != null) {
+            getPublisher().publish("application:openProfile", profile);
             close();
-            publisher.publish("application:openProfile", profile);
         }
     }
 

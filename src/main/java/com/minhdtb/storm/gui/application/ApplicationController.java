@@ -124,6 +124,10 @@ public class ApplicationController extends AbstractController {
         }
     }
 
+    private void newProfile(Object profile) {
+        
+    }
+
     private void deleteProfile(Object profile) {
         if (profile instanceof Profile) {
             Platform.runLater(() -> {

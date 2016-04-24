@@ -2,7 +2,6 @@ package com.minhdtb.storm.gui.newchannel;
 
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
-import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.CoreChannelIEC;
 import com.minhdtb.storm.core.CoreChannelOPC;
@@ -15,7 +14,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -33,9 +31,6 @@ public class DialogNewChannelController extends AbstractController {
     private ComboBox<NamedValueType> comboBoxChannelType;
     @FXML
     private AnchorPane paneAttribute;
-
-    @Autowired
-    private Publisher<Channel> publisher;
 
     @Override
     protected void onShow(WindowEvent event) {
@@ -130,7 +125,7 @@ public class DialogNewChannelController extends AbstractController {
                 channelIEC.setHost(editHost.getText());
                 channelIEC.setPort(Integer.parseInt(editPort.getText()));
 
-                publisher.publish("application:addChannel", channelIEC.getChannel());
+                getPublisher().publish("application:addChannel", channelIEC.getChannel());
 
                 break;
             }
@@ -146,7 +141,7 @@ public class DialogNewChannelController extends AbstractController {
                 channelOPC.setProgId(editProgId.getText());
                 channelOPC.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
 
-                publisher.publish("application:addChannel", channelOPC.getChannel());
+                getPublisher().publish("application:addChannel", channelOPC.getChannel());
 
                 break;
             }

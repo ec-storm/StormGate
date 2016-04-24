@@ -1,18 +1,14 @@
 package com.minhdtb.storm.gui.newvariable;
 
-
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
-import com.minhdtb.storm.common.Publisher;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.CoreVariableIEC;
-import com.minhdtb.storm.entities.Variable;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.WindowEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -29,9 +25,6 @@ public class DialogNewVariableIECController extends AbstractController {
     public TextField editInformationObjectAddress;
     @FXML
     public ComboBox<NamedValueType> comboBoxVariableType;
-
-    @Autowired
-    private Publisher<Variable> publisher;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,7 +54,7 @@ public class DialogNewVariableIECController extends AbstractController {
         variableIEC.setInformationObjectAddress(Integer.parseInt(editInformationObjectAddress.getText()));
         variableIEC.setDataType(variableType.getValue());
 
-        publisher.publish("application:addVariable", variableIEC.getVariable());
+        getPublisher().publish("application:addVariable", variableIEC.getVariable());
 
         close();
     }
