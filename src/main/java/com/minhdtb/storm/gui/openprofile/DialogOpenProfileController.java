@@ -4,7 +4,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.services.DataService;
+import com.minhdtb.storm.services.DataManager;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -18,14 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 @Component
 public class DialogOpenProfileController extends AbstractController {
 
     @Autowired
-    DataService service;
+    DataManager dataManager;
 
     @FXML
     TableView<Profile> tableProfile;
@@ -81,7 +80,7 @@ public class DialogOpenProfileController extends AbstractController {
 
     @Override
     protected void onShow(WindowEvent event) {
-        tableProfile.setItems(FXCollections.observableArrayList((List<Profile>) service.findAllProfile()));
+        tableProfile.setItems(FXCollections.observableArrayList(dataManager.getProfiles()));
     }
 
     public void actionCancel() {

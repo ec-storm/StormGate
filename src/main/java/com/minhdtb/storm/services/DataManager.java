@@ -3,9 +3,13 @@ package com.minhdtb.storm.services;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
+import com.minhdtb.storm.repositories.ChannelRepository;
+import com.minhdtb.storm.repositories.ProfileRepository;
+import com.minhdtb.storm.repositories.VariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,9 +31,19 @@ public class DataManager {
     }
 
     @Autowired
-    private DataService service;
+    private ProfileRepository profileRepository;
+
+    @Autowired
+    private ChannelRepository channelRepository;
+
+    @Autowired
+    private VariableRepository variableRepository;
 
     private Profile currentProfile;
+
+    public List<Profile> getProfiles() {
+        return profileRepository.findAll();
+    }
 
     public void openProfile(Profile profile, ConsumerProfile callback) {
         currentProfile = profile;
@@ -37,19 +51,19 @@ public class DataManager {
     }
 
     public void saveProfile(Profile profile, ConsumerProfile callback) {
-        Profile profileLocal = service.save(profile);
+        Profile profileLocal = profileRepository.save(profile);
         callback.accept(profileLocal);
     }
 
     public void deleteProfile(Profile profile, ConsumerProfile callback) {
-        service.delete(profile);
+        profileRepository.delete(profile);
         callback.accept(profile);
     }
 
     public void addChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
-        service.save(channel);
+        channelRepository.save(channel);
 
         callback.accept(currentProfile, channel);
     }
@@ -57,8 +71,8 @@ public class DataManager {
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().remove(channel);
         channel.setProfile(null);
-        currentProfile = service.save(currentProfile);
-        service.delete(channel);
+        currentProfile = profileRepository.save(currentProfile);
+        channelRepository.delete(channel);
 
         callback.accept(currentProfile, channel);
     }
@@ -69,7 +83,7 @@ public class DataManager {
         if (channelFound != null) {
             channelFound.getVariables().add(variable);
             variable.setChannel(channelFound);
-            service.save(variable);
+            variableRepository.save(variable);
 
             callback.accept(variable);
         }
@@ -82,7 +96,7 @@ public class DataManager {
         if (channelFound != null) {
             channelFound.getVariables().remove(variable);
             variable.setChannel(null);
-            service.delete(variable);
+            variableRepository.delete(variable);
 
             callback.accept(variable);
         }
