@@ -10,6 +10,7 @@ import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.newvariable.DialogNewVariableIECView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
+import com.minhdtb.storm.services.DataService;
 import de.jensd.fx.glyphs.GlyphIcon;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsDude;
@@ -53,6 +54,9 @@ public class ApplicationController extends AbstractController {
     private TreeView<Object> treeViewProfile;
     @FXML
     private PropertySheet propDetail;
+
+    @Autowired
+    DataService service;
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
@@ -122,13 +126,19 @@ public class ApplicationController extends AbstractController {
     }
 
     private void newProfile(Object profile) {
-        openProfile(profile);
+        if (profile instanceof Profile) {
+            Profile profileInternal = (Profile) profile;
+            service.save(profileInternal);
+
+            openProfile(profileInternal);
+        }
     }
 
     private void deleteProfile(Object profile) {
         if (profile instanceof Profile) {
             Platform.runLater(() -> {
                 Profile profileInternal = (Profile) profile;
+                service.delete(profileInternal);
 
                 if (treeViewProfile.getRoot() != null) {
                     Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
@@ -144,6 +154,12 @@ public class ApplicationController extends AbstractController {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
                 Channel channelInternal = (Channel) channel;
+                Profile profile = (Profile) treeViewProfile.getRoot().getValue();
+                profile.getChannels().add(channelInternal);
+                channelInternal.setProfile(profile);
+                service.save(channelInternal);
+
+                treeViewProfile.getRoot().setValue(profile);
                 treeViewProfile.getRoot().getChildren().add(createNode(channelInternal));
             });
         }
@@ -152,6 +168,14 @@ public class ApplicationController extends AbstractController {
     private void deleteChannel(Object channel) {
         if (channel instanceof Channel) {
             Platform.runLater(() -> {
+                Channel channelInternal = (Channel) channel;
+                Profile profile = (Profile) treeViewProfile.getRoot().getValue();
+                profile.getChannels().remove(channelInternal);
+                channelInternal.setProfile(null);
+                profile = service.save(profile);
+                service.delete(channelInternal);
+
+                treeViewProfile.getRoot().setValue(profile);
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
             });

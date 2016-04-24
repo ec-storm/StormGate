@@ -1,5 +1,6 @@
 package com.minhdtb.storm.services;
 
+import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.repositories.ChannelRepository;
 import com.minhdtb.storm.repositories.ProfileRepository;
@@ -31,12 +32,26 @@ class DataServiceImplement implements DataService {
     }
 
     @Transactional
+    @Override
     public Profile save(Profile profile) {
         return profileRepository.saveAndFlush(profile);
     }
 
+    @Transactional
+    @Override
+    public Channel save(Channel channel) {
+        return channelRepository.saveAndFlush(channel);
+    }
+
+    @Transactional
     @Override
     public void delete(Profile profile) {
         profileRepository.delete(profile);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Channel channel) {
+        channelRepository.delete(channel);
     }
 }

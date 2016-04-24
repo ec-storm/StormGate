@@ -1,5 +1,6 @@
 package com.minhdtb.storm.services;
 
+import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 
 public interface DataService {
@@ -12,5 +13,9 @@ public interface DataService {
 
     Profile save(Profile profile);
 
+    Channel save(Channel channel);
+
     void delete(Profile profile);
+
+    void delete(Channel channel);
 }
