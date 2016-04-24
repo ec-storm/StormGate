@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 @Component
 public class ApplicationController extends AbstractController {
 
@@ -191,7 +190,8 @@ public class ApplicationController extends AbstractController {
 
     @Override
     protected void onShow(WindowEvent event) {
-
+        Timer timer = new Timer();
+        timer.schedule(new TimeDisplayTask(), 1000, 1000);
     }
 
     @Override
@@ -207,9 +207,6 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
         initGUI();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimeDisplayTask(), 1000, 1000);
 
         treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
     }
@@ -389,8 +386,7 @@ public class ApplicationController extends AbstractController {
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView.showDialog(getController().getView());
                         }
-                    })
-                    .build());
+                    }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
                     .setText("Delete Channel")
