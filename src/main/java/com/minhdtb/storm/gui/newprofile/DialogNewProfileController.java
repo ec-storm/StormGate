@@ -5,9 +5,9 @@ import com.minhdtb.storm.entities.Profile;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
-@Component
+@Controller
 public class DialogNewProfileController extends AbstractController {
 
     @FXML

@@ -30,7 +30,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Controller
 public class ApplicationController extends AbstractController {
 
     @FXML
