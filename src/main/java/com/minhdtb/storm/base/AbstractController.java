@@ -1,6 +1,7 @@
 package com.minhdtb.storm.base;
 
 import com.minhdtb.storm.common.Publisher;
+import com.minhdtb.storm.common.Subscriber;
 import javafx.fxml.Initializable;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,17 @@ public abstract class AbstractController implements Initializable {
     @Autowired
     private Publisher<Object> publisher;
 
+    @Autowired
+    private Subscriber<Object> subscriber;
+
     private AbstractView view;
 
     public Publisher<Object> getPublisher() {
         return publisher;
+    }
+
+    public Subscriber<Object> getSubscriber() {
+        return subscriber;
     }
 
     public void setView(AbstractView view) {

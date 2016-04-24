@@ -56,16 +56,14 @@ public class ApplicationController extends AbstractController {
     private PropertySheet propDetail;
 
     @Autowired
-    private Subscriber<Object> subscriber;
-    @Autowired
-    private Publisher<Object> publisher;
+    DialogNewProfileView dialogNewProfileView;
 
     @Autowired
-    DialogNewProfileView dialogNewProfileView;
-    @Autowired
     DialogNewChannelView dialogNewChannelView;
+
     @Autowired
     DialogOpenProfileView dialogOpenProfileView;
+
     @Autowired
     DialogNewVariableIECView dialogNewVariableIECView;
 
@@ -125,7 +123,7 @@ public class ApplicationController extends AbstractController {
     }
 
     private void newProfile(Object profile) {
-        
+        openProfile(profile);
     }
 
     private void deleteProfile(Object profile) {
@@ -198,14 +196,15 @@ public class ApplicationController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        subscriber.on("application:openProfile", this::openProfile);
-        subscriber.on("application:deleteProfile", this::deleteProfile);
+        getSubscriber().on("application:openProfile", this::openProfile);
+        getSubscriber().on("application:newProfile", this::newProfile);
+        getSubscriber().on("application:deleteProfile", this::deleteProfile);
 
-        subscriber.on("application:addChannel", this::addChannel);
-        subscriber.on("application:deleteChannel", this::deleteChannel);
+        getSubscriber().on("application:addChannel", this::addChannel);
+        getSubscriber().on("application:deleteChannel", this::deleteChannel);
 
-        subscriber.on("application:addVariable", this::addVariable);
-        subscriber.on("application:deleteVariable", this::deleteVariable);
+        getSubscriber().on("application:addVariable", this::addVariable);
+        getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
         initGUI();
 
@@ -379,7 +378,7 @@ public class ApplicationController extends AbstractController {
                         Variable variable = (Variable) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
                                 String.format("Do you really want to delete variable \"%s\"?", variable.getName()),
-                                e -> publisher.publish("application:deleteVariable", variable));
+                                e -> getPublisher().publish("application:deleteVariable", variable));
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
@@ -401,7 +400,7 @@ public class ApplicationController extends AbstractController {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
                                 String.format("Do you really want to delete channel \"%s\"?", channel.getName()),
-                                e -> publisher.publish("application:deleteChannel", channel));
+                                e -> getPublisher().publish("application:deleteChannel", channel));
                     }).build());
 
             menuProfile.getItems().add(MenuItemBuilder.create()
@@ -416,7 +415,7 @@ public class ApplicationController extends AbstractController {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
                                 String.format("Do you really want to delete profile \"%s\"?", profile.getName()),
-                                e -> publisher.publish("application:deleteProfile", profile));
+                                e -> getPublisher().publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
