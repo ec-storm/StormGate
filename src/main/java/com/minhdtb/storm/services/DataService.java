@@ -1,7 +1,6 @@
 package com.minhdtb.storm.services;
 
 import com.minhdtb.storm.entities.Profile;
-import org.springframework.data.jpa.repository.Modifying;
 
 public interface DataService {
 
@@ -13,6 +12,5 @@ public interface DataService {
 
     Profile save(Profile profile);
 
-    @Modifying(clearAutomatically = true)
     void delete(Profile profile);
 }
