@@ -1,8 +1,9 @@
 package com.minhdtb.storm.gui.application;
 
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.common.*;
+import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -10,7 +11,7 @@ import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.newvariable.DialogNewVariableIECView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
-import com.minhdtb.storm.services.DataService;
+import com.minhdtb.storm.services.DataManager;
 import de.jensd.fx.glyphs.GlyphIcon;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsDude;
@@ -56,7 +57,7 @@ public class ApplicationController extends AbstractController {
     private PropertySheet propDetail;
 
     @Autowired
-    DataService service;
+    private DataManager dataManager;
 
     @Autowired
     DialogNewProfileView dialogNewProfileView;
@@ -107,99 +108,78 @@ public class ApplicationController extends AbstractController {
         });
     }
 
-    private void openProfile(Object profile) {
-        if (profile instanceof Profile) {
-            Platform.runLater(() -> {
-                Profile profileInternal = (Profile) profile;
-
+    private void openProfile(Object object) {
+        if (object instanceof Profile) {
+            dataManager.openProfile((Profile) object, profile -> Platform.runLater(() -> {
                 TreeItem<Object> rootItem = new TreeItem<>(profile);
-                if (profileInternal.getChannels() != null) {
-                    for (Channel channel : profileInternal.getChannels()) {
+                if (profile.getChannels() != null) {
+                    for (Channel channel : profile.getChannels()) {
                         rootItem.getChildren().add(createNode(channel));
                     }
                 }
 
                 treeViewProfile.setRoot(rootItem);
                 rootItem.setExpanded(true);
-            });
+            }));
         }
     }
 
-    private void newProfile(Object profile) {
-        if (profile instanceof Profile) {
-            Profile profileInternal = (Profile) profile;
-            service.save(profileInternal);
-
-            openProfile(profileInternal);
+    private void newProfile(Object object) {
+        if (object instanceof Profile) {
+            dataManager.saveProfile((Profile) object, this::openProfile);
         }
     }
 
-    private void deleteProfile(Object profile) {
-        if (profile instanceof Profile) {
-            Platform.runLater(() -> {
-                Profile profileInternal = (Profile) profile;
-                service.delete(profileInternal);
-
+    private void deleteProfile(Object object) {
+        if (object instanceof Profile) {
+            dataManager.deleteProfile((Profile) object, profile -> Platform.runLater(() -> {
                 if (treeViewProfile.getRoot() != null) {
                     Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
-                    if (Objects.equals(profileCurrent.getId(), profileInternal.getId())) {
+                    if (Objects.equals(profileCurrent.getId(), profile.getId())) {
                         treeViewProfile.setRoot(null);
                     }
                 }
-            });
+            }));
         }
     }
 
-    private void addChannel(Object channel) {
-        if (channel instanceof Channel) {
-            Platform.runLater(() -> {
-                Channel channelInternal = (Channel) channel;
-                Profile profile = (Profile) treeViewProfile.getRoot().getValue();
-                profile.getChannels().add(channelInternal);
-                channelInternal.setProfile(profile);
-                service.save(channelInternal);
-
+    private void addChannel(Object object) {
+        if (object instanceof Channel) {
+            dataManager.addChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
                 treeViewProfile.getRoot().setValue(profile);
-                treeViewProfile.getRoot().getChildren().add(createNode(channelInternal));
-            });
+                treeViewProfile.getRoot().getChildren().add(createNode(channel));
+            }));
         }
     }
 
-    private void deleteChannel(Object channel) {
-        if (channel instanceof Channel) {
-            Platform.runLater(() -> {
-                Channel channelInternal = (Channel) channel;
-                Profile profile = (Profile) treeViewProfile.getRoot().getValue();
-                profile.getChannels().remove(channelInternal);
-                channelInternal.setProfile(null);
-                profile = service.save(profile);
-                service.delete(channelInternal);
-
+    private void deleteChannel(Object object) {
+        if (object instanceof Channel) {
+            dataManager.deleteChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
                 treeViewProfile.getRoot().setValue(profile);
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
-            });
+            }));
         }
     }
 
-    private void addVariable(Object variable) {
-        if (variable instanceof Variable) {
+    private void addVariable(Object object) {
+        if (object instanceof Variable) {
             Platform.runLater(() -> {
-                Variable variableInternal = (Variable) variable;
+                Variable variable = (Variable) object;
                 Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-                variableInternal.setChannel(channel);
-                channel.getVariables().add(variableInternal);
-                treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variableInternal));
+                variable.setChannel(channel);
+                channel.getVariables().add(variable);
+                treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variable));
             });
         }
     }
 
-    private void deleteVariable(Object variable) {
-        if (variable instanceof Variable) {
+    private void deleteVariable(Object object) {
+        if (object instanceof Variable) {
             Platform.runLater(() -> {
-                Variable variableInternal = (Variable) variable;
-                Channel channel = variableInternal.getChannel();
-                channel.getVariables().remove(variableInternal);
+                Variable variable = (Variable) object;
+                Channel channel = variable.getChannel();
+                channel.getVariables().remove(variable);
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
             });
