@@ -21,15 +21,15 @@ public abstract class AbstractController implements Initializable {
 
     private AbstractView view;
 
-    public Publisher<Object> getPublisher() {
+    protected Publisher<Object> getPublisher() {
         return publisher;
     }
 
-    public Subscriber<Object> getSubscriber() {
+    protected Subscriber<Object> getSubscriber() {
         return subscriber;
     }
 
-    public void setView(AbstractView view) {
+    void setView(AbstractView view) {
         this.view = view;
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractController implements Initializable {
         return this.view;
     }
 
-    public void close() {
+    protected void close() {
         this.getView().getStage().close();
     }
 

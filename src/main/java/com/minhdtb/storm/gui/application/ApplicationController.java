@@ -303,7 +303,7 @@ public class ApplicationController extends AbstractController {
         private String name;
         private Object value;
 
-        public PropertyItem(String category, String name, Object value) {
+        PropertyItem(String category, String name, Object value) {
             this.category = category;
             this.name = name;
             this.value = value;
@@ -361,7 +361,7 @@ public class ApplicationController extends AbstractController {
             return this.controller;
         }
 
-        public TreeCellFactory(AbstractController controller) {
+        TreeCellFactory(AbstractController controller) {
             this.controller = controller;
 
             menuVariable.getItems().add(MenuItemBuilder.create()

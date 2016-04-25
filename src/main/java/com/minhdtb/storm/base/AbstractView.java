@@ -88,7 +88,7 @@ public class AbstractView implements ApplicationContextAware {
         return this.getStage().getScene().getWindow();
     }
 
-    public AbstractView setTitle(String title) {
+    protected AbstractView setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -101,10 +101,6 @@ public class AbstractView implements ApplicationContextAware {
     public AbstractView setOwner(AbstractView owner) {
         this.owner = owner;
         return this;
-    }
-
-    public AbstractView getOwner() {
-        return this.owner;
     }
 
     public void show() {

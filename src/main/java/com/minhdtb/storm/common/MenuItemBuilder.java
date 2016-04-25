@@ -15,7 +15,7 @@ public class MenuItemBuilder {
     private String iconSize;
     private KeyCombination keyCombination;
 
-    public MenuItemBuilder() {
+    private MenuItemBuilder() {
     }
 
     public static MenuItemBuilder create() {

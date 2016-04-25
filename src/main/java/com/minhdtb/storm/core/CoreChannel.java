@@ -7,11 +7,11 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-public class CoreChannel {
+class CoreChannel {
 
     protected Channel channel;
 
-    protected String getAttribute(String name) {
+    String getAttribute(String name) {
         for (ChannelAttribute attribute : channel.getAttributes()) {
             if (Objects.equals(attribute.getName(), name)) {
                 return attribute.getValue();
@@ -21,7 +21,7 @@ public class CoreChannel {
         return null;
     }
 
-    protected void setAttribute(String name, String value) {
+    void setAttribute(String name, String value) {
         boolean found = false;
 
         for (ChannelAttribute attribute : channel.getAttributes()) {
@@ -46,7 +46,7 @@ public class CoreChannel {
         return channel.getId();
     }
 
-    protected CoreChannel() {
+    CoreChannel() {
         channel = new Channel();
     }
 

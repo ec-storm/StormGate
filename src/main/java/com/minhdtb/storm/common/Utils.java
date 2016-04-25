@@ -38,7 +38,7 @@ public class Utils {
         alert.setHeaderText(message);
         alert.setContentText(null);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Ok.handle(null);
         } else {
             alert.close();

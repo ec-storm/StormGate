@@ -7,11 +7,11 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-public class CoreVariable {
+class CoreVariable {
 
     protected Variable variable;
 
-    protected String getAttribute(String name) {
+    String getAttribute(String name) {
         for (VariableAttribute attribute : variable.getAttributes()) {
             if (Objects.equals(attribute.getName(), name)) {
                 return attribute.getValue();
@@ -21,7 +21,7 @@ public class CoreVariable {
         return null;
     }
 
-    protected void setAttribute(String name, String value) {
+    void setAttribute(String name, String value) {
         boolean found = false;
 
         for (VariableAttribute attribute : variable.getAttributes()) {
@@ -46,7 +46,7 @@ public class CoreVariable {
         return variable.getId();
     }
 
-    protected CoreVariable() {
+    CoreVariable() {
         variable = new Variable();
     }
 

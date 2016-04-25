@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class DataManager {
@@ -78,27 +79,33 @@ public class DataManager {
     }
 
     public void addVariable(Channel channel, Variable variable, ConsumerVariable callback) {
-        Channel channelFound = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst().get();
-        if (channelFound != null) {
-            channelFound.getVariables().add(variable);
-            variable.setChannel(channelFound);
-            variableRepository.save(variable);
+        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
+                Objects.equals(item.getName(), channel.getName())).findFirst();
+        if (found.isPresent()) {
+            Channel channelFound = found.get();
+            if (channelFound != null) {
+                channelFound.getVariables().add(variable);
+                variable.setChannel(channelFound);
+                variableRepository.save(variable);
 
-            callback.accept(variable);
+                callback.accept(variable);
+            }
         }
     }
 
     public void deleteVariable(Variable variable, ConsumerVariable callback) {
         Channel channel = variable.getChannel();
-        Channel channelFound = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst().get();
-        if (channelFound != null) {
-            channelFound.getVariables().remove(variable);
-            variable.setChannel(null);
-            variableRepository.delete(variable);
+        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
+                Objects.equals(item.getName(), channel.getName())).findFirst();
+        if (found.isPresent()) {
+            Channel channelFound = found.get();
+            if (channelFound != null) {
+                channelFound.getVariables().remove(variable);
+                variable.setChannel(null);
+                variableRepository.delete(variable);
 
-            callback.accept(variable);
+                callback.accept(variable);
+            }
         }
     }
 }
