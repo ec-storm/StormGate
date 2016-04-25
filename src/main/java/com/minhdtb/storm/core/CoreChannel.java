@@ -5,6 +5,7 @@ import com.minhdtb.storm.entities.ChannelAttribute;
 import lombok.Data;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Data
 class CoreChannel {
@@ -12,27 +13,23 @@ class CoreChannel {
     protected Channel channel;
 
     String getAttribute(String name) {
-        for (ChannelAttribute attribute : channel.getAttributes()) {
-            if (Objects.equals(attribute.getName(), name)) {
-                return attribute.getValue();
-            }
+        Optional<ChannelAttribute> found = channel.getAttributes().stream()
+                .filter(item -> Objects.equals(item.getName(), name)).findFirst();
+
+        if (found.isPresent()) {
+            return found.get().getValue();
         }
 
         return null;
     }
 
     void setAttribute(String name, String value) {
-        boolean found = false;
+        Optional<ChannelAttribute> found = channel.getAttributes().stream()
+                .filter(item -> Objects.equals(item.getName(), name)).findFirst();
 
-        for (ChannelAttribute attribute : channel.getAttributes()) {
-            if (Objects.equals(attribute.getName(), name)) {
-                found = true;
-                attribute.setValue(value);
-                break;
-            }
-        }
-
-        if (!found) {
+        if (found.isPresent()) {
+            found.get().setValue(value);
+        } else {
             ChannelAttribute attribute = new ChannelAttribute();
             attribute.setChannel(channel);
             attribute.setName(name);
