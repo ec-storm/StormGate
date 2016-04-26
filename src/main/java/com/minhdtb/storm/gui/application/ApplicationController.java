@@ -381,7 +381,9 @@ public class ApplicationController extends AbstractController {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT ||
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                            dialogNewVariableIECView.showDialog(getController().getView());
+                            dialogNewVariableIECView
+                                    .setChannel(channel)
+                                    .showDialog(getController().getView());
                         }
                     }).build());
 

@@ -120,4 +120,8 @@ public class DataManager {
             }
         }
     }
+
+    public boolean existVariable(Channel channel, Variable variable) {
+        return variableRepository.findByChannelAndName(channel, variable.getName()) != null;
+    }
 }

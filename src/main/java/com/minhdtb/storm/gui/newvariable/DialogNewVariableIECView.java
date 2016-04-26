@@ -1,14 +1,16 @@
 package com.minhdtb.storm.gui.newvariable;
 
 import com.minhdtb.storm.base.AbstractView;
+import com.minhdtb.storm.entities.Channel;
 import javafx.stage.Modality;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-
 @Component
 public class DialogNewVariableIECView extends AbstractView {
+
+    private Channel channel;
 
     @PostConstruct
     public void init() {
@@ -21,5 +23,14 @@ public class DialogNewVariableIECView extends AbstractView {
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
                 .show();
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public DialogNewVariableIECView setChannel(Channel channel) {
+        this.channel = channel;
+        return this;
     }
 }
