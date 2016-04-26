@@ -32,6 +32,8 @@ public class AbstractView implements ApplicationContextAware {
 
     private AbstractController controller;
 
+    private Image image;
+
     private Object createControllerForType(Class<?> type) {
         return this.applicationContext.getBean(type);
     }
@@ -88,7 +90,7 @@ public class AbstractView implements ApplicationContextAware {
         return this.getStage().getScene().getWindow();
     }
 
-    protected AbstractView setTitle(String title) {
+    public AbstractView setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -103,14 +105,38 @@ public class AbstractView implements ApplicationContextAware {
         return this;
     }
 
+    public AbstractView getOwner() {
+        return this.owner;
+    }
+
+    public AbstractView setIcon(Image image) {
+        this.image = image;
+        return this;
+    }
+
+    public Image getIcon() {
+        return this.image;
+    }
+
     public void show() {
         if (this.stage == null) {
             this.stage = new Stage();
-            this.stage.setTitle(this.title);
-            this.stage.setResizable(false);
             this.stage.initModality(this.modality);
+            this.stage.setResizable(false);
             this.stage.initOwner(this.owner.getWindow());
-            this.stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
+        }
+
+        this.stage.setTitle(this.title);
+
+        if (this.image != null) {
+            this.stage.getIcons().clear();
+            this.stage.getIcons().add(this.image);
+        } else {
+            Image image = getOwner().getIcon();
+            if (image != null) {
+                this.stage.getIcons();
+                this.stage.getIcons().add(image);
+            }
         }
 
         AbstractController controller = this.fxmlLoader.getController();

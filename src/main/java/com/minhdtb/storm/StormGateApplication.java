@@ -30,8 +30,6 @@ public class StormGateApplication extends AbstractApplication {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Storm Gateway Service - Copyright © 2016");
-        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
         primaryStage.setOnCloseRequest(t -> {
             Platform.exit();
             System.exit(0);
@@ -39,6 +37,8 @@ public class StormGateApplication extends AbstractApplication {
 
         applicationView
                 .setApplication(this)
+                .setTitle("Storm Gateway Service - Copyright © 2016")
+                .setIcon(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")))
                 .setStage(primaryStage)
                 .show();
     }
