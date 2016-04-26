@@ -1,10 +1,13 @@
 package com.minhdtb.storm.gui.newprofile;
 
 import com.minhdtb.storm.base.AbstractController;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
+import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -13,14 +16,22 @@ public class DialogNewProfileController extends AbstractController {
     @FXML
     private TextField editNewProfileName;
 
+    @Autowired
+    private DataManager dataManager;
+
     public void actionCancel() {
         this.close();
     }
 
     public void actionOK() {
         Profile profile = new Profile(editNewProfileName.getText());
-        getPublisher().publish("application:newProfile", profile);
-        close();
+
+        if (!dataManager.existProfile(profile)) {
+            getPublisher().publish("application:newProfile", profile);
+            close();
+        } else {
+            Utils.showError(getView(), String.format("Profile \"%s\" is already exists.", profile.getName()));
+        }
     }
 
     @Override

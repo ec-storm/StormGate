@@ -6,6 +6,7 @@ import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.CoreChannelIEC;
 import com.minhdtb.storm.core.CoreChannelOPC;
 import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
@@ -14,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -31,6 +33,9 @@ public class DialogNewChannelController extends AbstractController {
     private ComboBox<NamedValueType> comboBoxChannelType;
     @FXML
     private AnchorPane paneAttribute;
+
+    @Autowired
+    private DataManager dataManager;
 
     @Override
     protected void onShow(WindowEvent event) {
@@ -125,7 +130,12 @@ public class DialogNewChannelController extends AbstractController {
                 channelIEC.setHost(editHost.getText());
                 channelIEC.setPort(Integer.parseInt(editPort.getText()));
 
-                getPublisher().publish("application:addChannel", channelIEC.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), channelIEC.getChannel())) {
+                    getPublisher().publish("application:addChannel", channelIEC.getChannel());
+                    close();
+                } else {
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", channelIEC.getChannel().getName()));
+                }
 
                 break;
             }
@@ -141,13 +151,16 @@ public class DialogNewChannelController extends AbstractController {
                 channelOPC.setProgId(editProgId.getText());
                 channelOPC.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
 
-                getPublisher().publish("application:addChannel", channelOPC.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), channelOPC.getChannel())) {
+                    getPublisher().publish("application:addChannel", channelOPC.getChannel());
+                    close();
+                } else {
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", channelOPC.getChannel().getName()));
+                }
 
                 break;
             }
         }
-
-        this.close();
     }
 
     public void actionCancel() {

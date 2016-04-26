@@ -51,6 +51,10 @@ public class DataManager {
         callback.accept(currentProfile);
     }
 
+    public Profile getCurrentProfile() {
+        return currentProfile;
+    }
+
     public void saveProfile(Profile profile, ConsumerProfile callback) {
         Profile profileLocal = profileRepository.save(profile);
         callback.accept(profileLocal);
@@ -59,6 +63,10 @@ public class DataManager {
     public void deleteProfile(Profile profile, ConsumerProfile callback) {
         profileRepository.delete(profile);
         callback.accept(profile);
+    }
+
+    public boolean existProfile(Profile profile) {
+        return profileRepository.findByName(profile.getName()) != null;
     }
 
     public void addChannel(Channel channel, ConsumerChannel callback) {
@@ -76,6 +84,10 @@ public class DataManager {
         channelRepository.delete(channel);
 
         callback.accept(currentProfile, channel);
+    }
+
+    public boolean existChannel(Profile profile, Channel channel) {
+        return channelRepository.findByProfileAndName(profile, channel.getName()) != null;
     }
 
     public void addVariable(Channel channel, Variable variable, ConsumerVariable callback) {
