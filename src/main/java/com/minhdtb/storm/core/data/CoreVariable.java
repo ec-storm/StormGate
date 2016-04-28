@@ -1,4 +1,4 @@
-package com.minhdtb.storm.core;
+package com.minhdtb.storm.core.data;
 
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.entities.VariableAttribute;

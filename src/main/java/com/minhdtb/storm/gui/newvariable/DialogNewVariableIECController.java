@@ -3,7 +3,7 @@ package com.minhdtb.storm.gui.newvariable;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.CoreVariableIEC;
+import com.minhdtb.storm.core.data.CoreVariableIEC;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;

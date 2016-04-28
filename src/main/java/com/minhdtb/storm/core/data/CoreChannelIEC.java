@@ -1,6 +1,4 @@
-package com.minhdtb.storm.core;
-
-import com.minhdtb.storm.entities.Channel;
+package com.minhdtb.storm.core.data;
 
 public class CoreChannelIEC extends CoreChannel {
 

@@ -1,4 +1,4 @@
-package com.minhdtb.storm.core;
+package com.minhdtb.storm.core.data;
 
 
 public class CoreVariableIEC extends CoreVariable {
