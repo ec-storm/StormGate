@@ -10,7 +10,7 @@ import java.util.Optional;
 @Data
 class CoreChannel {
 
-    protected Channel channel;
+    private Channel channel;
 
     String getAttribute(String name) {
         Optional<ChannelAttribute> found = channel.getAttributes().stream()

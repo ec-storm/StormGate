@@ -9,7 +9,7 @@ import java.util.Objects;
 @Data
 class CoreVariable {
 
-    protected Variable variable;
+    private Variable variable;
 
     String getAttribute(String name) {
         for (VariableAttribute attribute : variable.getAttributes()) {

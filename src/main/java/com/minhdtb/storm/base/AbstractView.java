@@ -119,29 +119,29 @@ public class AbstractView implements ApplicationContextAware {
     }
 
     public void show() {
-        if (this.stage == null) {
-            this.stage = new Stage();
-            this.stage.initModality(this.modality);
-            this.stage.setResizable(false);
-            this.stage.initOwner(this.owner.getWindow());
+        if (this.getStage() == null) {
+            this.setStage(new Stage());
+            this.getStage().initModality(modality);
+            this.getStage().setResizable(false);
+            this.getStage().initOwner(this.getOwner().getWindow());
         }
 
-        this.stage.setTitle(this.title);
+        this.getStage().setTitle(this.title);
 
-        if (this.image != null) {
-            this.stage.getIcons().clear();
-            this.stage.getIcons().add(this.image);
+        if (this.getIcon() != null) {
+            this.getStage().getIcons().clear();
+            this.getStage().getIcons().add(this.getIcon());
         } else {
             Image image = getOwner().getIcon();
             if (image != null) {
-                this.stage.getIcons();
-                this.stage.getIcons().add(image);
+                this.getStage().getIcons().clear();
+                this.getStage().getIcons().add(image);
             }
         }
 
-        AbstractController controller = this.fxmlLoader.getController();
-        this.stage.setOnShowing(controller::onShow);
-        this.stage.setScene(this.scene);
-        this.stage.show();
+        AbstractController controller = fxmlLoader.getController();
+        this.getStage().setOnShowing(controller::onShow);
+        this.getStage().setScene(this.getScene());
+        this.getStage().show();
     }
 }
