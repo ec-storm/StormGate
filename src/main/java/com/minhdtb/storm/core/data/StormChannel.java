@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Data
-class CoreChannel {
+class StormChannel {
 
     private Channel channel;
 
@@ -43,11 +43,11 @@ class CoreChannel {
         return channel.getId();
     }
 
-    CoreChannel() {
+    StormChannel() {
         channel = new Channel();
     }
 
-    protected CoreChannel(Channel channelNew) {
+    protected StormChannel(Channel channelNew) {
         channel = channelNew;
     }
 }

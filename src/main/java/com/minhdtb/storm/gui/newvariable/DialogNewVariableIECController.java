@@ -3,7 +3,7 @@ package com.minhdtb.storm.gui.newvariable;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.data.CoreVariableIEC;
+import com.minhdtb.storm.core.data.StormVariableIEC;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
@@ -54,7 +54,7 @@ public class DialogNewVariableIECController extends AbstractController {
 
     public void actionOK() {
         NamedValueType variableType = comboBoxVariableType.getValue();
-        CoreVariableIEC variableIEC = new CoreVariableIEC();
+        StormVariableIEC variableIEC = new StormVariableIEC();
         variableIEC.getVariable().setName(editVariableName.getText());
         variableIEC.setSectorAddress(Integer.parseInt(editSectorAddress.getText()));
         variableIEC.setInformationObjectAddress(Integer.parseInt(editInformationObjectAddress.getText()));

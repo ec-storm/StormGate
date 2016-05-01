@@ -1,6 +1,6 @@
 package com.minhdtb.storm.core.data;
 
-public class CoreChannelIEC extends CoreChannel {
+public class StormChannelIEC extends StormChannel {
 
     public String getHost() {
         return getAttribute("host");

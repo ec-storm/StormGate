@@ -3,8 +3,8 @@ package com.minhdtb.storm.gui.newchannel;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.data.CoreChannelIEC;
-import com.minhdtb.storm.core.data.CoreChannelOPC;
+import com.minhdtb.storm.core.data.StormChannelIEC;
+import com.minhdtb.storm.core.data.StormChannelOPC;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
@@ -122,7 +122,7 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
-                CoreChannelIEC channelIEC = new CoreChannelIEC();
+                StormChannelIEC channelIEC = new StormChannelIEC();
                 channelIEC.getChannel().setName(editChannelName.getText());
                 channelIEC.getChannel().setDescription(editChannelDescription.getText());
                 channelIEC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
@@ -143,7 +143,7 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
 
-                CoreChannelOPC channelOPC = new CoreChannelOPC();
+                StormChannelOPC channelOPC = new StormChannelOPC();
                 channelOPC.getChannel().setName(editChannelName.getText());
                 channelOPC.getChannel().setDescription(editChannelDescription.getText());
                 channelOPC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));

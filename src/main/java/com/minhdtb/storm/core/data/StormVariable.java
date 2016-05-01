@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-class CoreVariable {
+class StormVariable {
 
     private Variable variable;
 
@@ -46,11 +46,11 @@ class CoreVariable {
         return variable.getId();
     }
 
-    CoreVariable() {
+    StormVariable() {
         variable = new Variable();
     }
 
-    protected CoreVariable(Variable variableNew) {
+    protected StormVariable(Variable variableNew) {
         variable = variableNew;
     }
 }

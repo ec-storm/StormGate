@@ -1,7 +1,7 @@
 package com.minhdtb.storm.core.data;
 
 
-public class CoreChannelOPC extends CoreChannel {
+public class StormChannelOPC extends StormChannel {
 
     public String getProgId() {
         return getAttribute("progId");

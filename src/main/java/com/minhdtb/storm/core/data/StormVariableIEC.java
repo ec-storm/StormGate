@@ -1,7 +1,7 @@
 package com.minhdtb.storm.core.data;
 
 
-public class CoreVariableIEC extends CoreVariable {
+public class StormVariableIEC extends StormVariable {
 
     public int getSectorAddress() {
         return Integer.parseInt(getAttribute("sectorAddress"));
