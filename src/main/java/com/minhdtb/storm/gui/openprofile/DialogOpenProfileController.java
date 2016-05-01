@@ -79,7 +79,7 @@ public class DialogOpenProfileController extends AbstractController {
     }
 
     @Override
-    protected void onShow(WindowEvent event) {
+    public void onShow(WindowEvent event) {
         tableProfile.setItems(FXCollections.observableArrayList(dataManager.getProfiles()));
     }
 

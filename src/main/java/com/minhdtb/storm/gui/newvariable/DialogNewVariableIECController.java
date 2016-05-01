@@ -45,7 +45,7 @@ public class DialogNewVariableIECController extends AbstractController {
     }
 
     @Override
-    protected void onShow(WindowEvent event) {
+    public void onShow(WindowEvent event) {
         editVariableName.setText("NewVariable");
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");

@@ -29,6 +29,10 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.StyleSpansBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -36,11 +40,15 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends AbstractController {
 
+    @FXML
+    private CodeArea textAreaScript;
     @FXML
     private Label labelStatus;
     @FXML
@@ -60,18 +68,67 @@ public class ApplicationController extends AbstractController {
     private DataManager dataManager;
 
     @Autowired
-    DialogNewProfileView dialogNewProfileView;
+    private DialogNewProfileView dialogNewProfileView;
 
     @Autowired
-    DialogNewChannelView dialogNewChannelView;
+    private DialogNewChannelView dialogNewChannelView;
 
     @Autowired
-    DialogOpenProfileView dialogOpenProfileView;
+    private DialogOpenProfileView dialogOpenProfileView;
 
     @Autowired
-    DialogNewVariableIECView dialogNewVariableIECView;
+    private DialogNewVariableIECView dialogNewVariableIECView;
 
     private ContextMenu menuTreeView = new ContextMenu();
+
+    private static final String[] KEYWORDS = new String[]{
+            "and", "as", "assert", "break", "class", "continue",
+            "def", "del", "elif", "else", "except", "exec",
+            "finally", "for", "from", "global", "if", "import",
+            "in", "is", "labmda", "not", "or", "pass",
+            "print", "raise", "return", "try", "while", "with", "yield"
+    };
+
+    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+    private static final String PAREN_PATTERN = "\\(|\\)";
+    private static final String BRACKET_PATTERN = "\\[|\\]";
+    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"" + "|" + "\'([^\'\\\\]|\\\\.)*\'";
+    private static final String COMMENT_PATTERN = "#[^\n]*" + "|" + "\'\'\'\'(.|\\R)*?\'\'\'";
+    private static final Pattern PATTERN = Pattern.compile(
+            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+                    + "|(?<PAREN>" + PAREN_PATTERN + ")"
+                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
+                    + "|(?<STRING>" + STRING_PATTERN + ")"
+                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+    );
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        getSubscriber().on("application:openProfile", this::openProfile);
+        getSubscriber().on("application:newProfile", this::newProfile);
+        getSubscriber().on("application:deleteProfile", this::deleteProfile);
+
+        getSubscriber().on("application:addChannel", this::addChannel);
+        getSubscriber().on("application:deleteChannel", this::deleteChannel);
+
+        getSubscriber().on("application:addVariable", this::addVariable);
+        getSubscriber().on("application:deleteVariable", this::deleteVariable);
+
+        initGUI();
+
+        treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
+        textAreaScript.setParagraphGraphicFactory(LineNumberFactory.get(textAreaScript));
+        textAreaScript.richChanges()
+                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                .subscribe(change -> textAreaScript.setStyleSpans(0,
+                        computeHighlighting(textAreaScript.getText())));
+    }
+
+    @Override
+    public void onShow(WindowEvent event) {
+        Timer timer = new Timer();
+        timer.schedule(new TimeDisplayTask(), 1000, 1000);
+    }
 
     private void initGUI() {
         labelStatus.setText("Stopped.");
@@ -185,40 +242,27 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().add(new PropertyItem("General", "Description", profile.getDescription()));
     }
 
-    @Override
-    protected void onShow(WindowEvent event) {
-        Timer timer = new Timer();
-        timer.schedule(new TimeDisplayTask(), 1000, 1000);
-    }
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        Matcher matcher = PATTERN.matcher(text);
+        int lastKwEnd = 0;
+        StyleSpansBuilder<Collection<String>> spansBuilder
+                = new StyleSpansBuilder<>();
+        while (matcher.find()) {
+            String styleClass =
+                    matcher.group("KEYWORD") != null ? "keyword" :
+                            matcher.group("PAREN") != null ? "paren" :
+                                    matcher.group("BRACKET") != null ? "bracket" :
+                                            matcher.group("STRING") != null ? "string" :
+                                                    matcher.group("COMMENT") != null ? "comment" :
+                                                            null; /* never happens */
+            assert styleClass != null;
+            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+            lastKwEnd = matcher.end();
+        }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        getSubscriber().on("application:openProfile", this::openProfile);
-        getSubscriber().on("application:newProfile", this::newProfile);
-        getSubscriber().on("application:deleteProfile", this::deleteProfile);
-
-        getSubscriber().on("application:addChannel", this::addChannel);
-        getSubscriber().on("application:deleteChannel", this::deleteChannel);
-
-        getSubscriber().on("application:addVariable", this::addVariable);
-        getSubscriber().on("application:deleteVariable", this::deleteVariable);
-
-        initGUI();
-
-        treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
-    }
-
-    public void actionCloseApplication() {
-        Platform.exit();
-        System.exit(0);
-    }
-
-    public void actionNewProfile() {
-        dialogNewProfileView.showDialog(getView());
-    }
-
-    public void actionOpenProfile() {
-        dialogOpenProfileView.showDialog(getView());
+        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+        return spansBuilder.create();
     }
 
     private TreeItem<Object> createNode(Object o) {
@@ -272,6 +316,22 @@ public class ApplicationController extends AbstractController {
         treeItem.setExpanded(true);
 
         return treeItem;
+    }
+
+    @FXML
+    public void actionCloseApplication() {
+        Platform.exit();
+        System.exit(0);
+    }
+
+    @FXML
+    public void actionNewProfile() {
+        dialogNewProfileView.showDialog(getView());
+    }
+
+    @FXML
+    public void actionOpenProfile() {
+        dialogOpenProfileView.showDialog(getView());
     }
 
     @FXML

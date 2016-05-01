@@ -44,6 +44,7 @@ public class AbstractView implements ApplicationContextAware {
         try {
             this.scene = new Scene(this.fxmlLoader.load());
             this.scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+            this.scene.getStylesheets().add(getClass().getResource("/styles/python-keywords.css").toExternalForm());
             this.controller = this.fxmlLoader.getController();
             this.controller.setView(this);
         } catch (IOException exception) {

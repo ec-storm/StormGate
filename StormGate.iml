@@ -12,6 +12,9 @@
         </fileset>
       </configuration>
     </facet>
+    <facet type="Python" name="Python">
+      <configuration sdkName="" />
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -73,6 +76,11 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.2" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx:8.9" level="project" />
     <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.40.10" level="project" />
+    <orderEntry type="library" name="Maven: org.fxmisc.richtext:richtextfx:0.6.10" level="project" />
+    <orderEntry type="library" name="Maven: org.reactfx:reactfx:2.0-M4u1" level="project" />
+    <orderEntry type="library" name="Maven: org.fxmisc.undo:undofx:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.fxmisc.flowless:flowless:0.4.5" level="project" />
+    <orderEntry type="library" name="Maven: org.fxmisc.wellbehaved:wellbehavedfx:0.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.openmuc:openiec61850:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.5" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.5" level="project" />
@@ -81,8 +89,9 @@
     <orderEntry type="library" name="Maven: org.openmuc:jositransport:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.openmuc:jasn1:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.openmuc:j60870:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.python:jython-standalone:2.7.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.h2database:h2:1.4.191" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.6" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:6.0.2" level="project" />
     <orderEntry type="library" name="Maven: io.projectreactor:reactor-bus:2.0.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections:5.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections-api:5.1.0" level="project" />

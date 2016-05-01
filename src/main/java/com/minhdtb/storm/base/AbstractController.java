@@ -41,7 +41,7 @@ public abstract class AbstractController implements Initializable {
         this.getView().getStage().close();
     }
 
-    protected abstract void onShow(WindowEvent event);
+    public abstract void onShow(WindowEvent event);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

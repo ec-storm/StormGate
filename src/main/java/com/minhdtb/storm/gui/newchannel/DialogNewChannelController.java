@@ -37,7 +37,7 @@ public class DialogNewChannelController extends AbstractController {
     private DataManager dataManager;
 
     @Override
-    protected void onShow(WindowEvent event) {
+    public void onShow(WindowEvent event) {
         editChannelName.setText("New Channel");
         comboBoxChannelType.getSelectionModel().selectFirst();
     }

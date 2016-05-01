@@ -23,6 +23,9 @@ public class Profile implements Serializable {
 
     private String description;
 
+    @Lob
+    private byte[] script;
+
     @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Channel> channels;
 

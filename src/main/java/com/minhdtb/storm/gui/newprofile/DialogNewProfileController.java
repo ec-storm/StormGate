@@ -35,7 +35,7 @@ public class DialogNewProfileController extends AbstractController {
     }
 
     @Override
-    protected void onShow(WindowEvent event) {
+    public void onShow(WindowEvent event) {
         editNewProfileName.setText("New Profile");
     }
 }
