@@ -1,5 +1,7 @@
 package com.minhdtb.storm.core.data;
 
+import com.minhdtb.storm.entities.Channel;
+
 public class StormChannelIEC extends StormChannel {
 
     public String getHost() {
@@ -16,5 +18,13 @@ public class StormChannelIEC extends StormChannel {
 
     public void setPort(int port) {
         setAttribute("port", String.valueOf(port));
+    }
+
+    StormChannelIEC() {
+        super();
+    }
+
+    StormChannelIEC(Channel channel) {
+        super(channel);
     }
 }

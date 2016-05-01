@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @ToString(exclude = {"channels"})
 @Entity
 @NoArgsConstructor
-public class Profile {
+public class Profile implements Serializable {
 
     @Id
     @GeneratedValue

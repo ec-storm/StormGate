@@ -4,13 +4,14 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
 @ToString(exclude = {"attributes"})
-public class Variable {
+public class Variable implements Serializable {
 
     @Id
     @GeneratedValue

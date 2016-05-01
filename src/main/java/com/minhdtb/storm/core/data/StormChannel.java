@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Data
-class StormChannel {
+class StormChannel implements IStormChannel {
 
     private Channel channel;
 
@@ -43,11 +43,16 @@ class StormChannel {
         return channel.getId();
     }
 
-    StormChannel() {
-        channel = new Channel();
+    StormChannel(Channel channelNew) {
+        channel = channelNew;
     }
 
-    protected StormChannel(Channel channelNew) {
-        channel = channelNew;
+    StormChannel() {
+        this(new Channel());
+    }
+
+    @Override
+    public void start() {
+
     }
 }

@@ -3,8 +3,7 @@ package com.minhdtb.storm.gui.newchannel;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.data.StormChannelIEC;
-import com.minhdtb.storm.core.data.StormChannelOPC;
+import com.minhdtb.storm.core.data.*;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
@@ -117,24 +116,44 @@ public class DialogNewChannelController extends AbstractController {
         NamedValueType channelType = comboBoxChannelType.getValue();
 
         switch (channelType.getValue()) {
-            case 0:
+            case 0: {
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
+                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+
+                StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
+                stormChannelIECServer.getChannel().setName(editChannelName.getText());
+                stormChannelIECServer.getChannel().setDescription(editChannelDescription.getText());
+                stormChannelIECServer.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+
+                stormChannelIECServer.setHost(editHost.getText());
+                stormChannelIECServer.setPort(Integer.parseInt(editPort.getText()));
+
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECServer.getChannel())) {
+                    getPublisher().publish("application:addChannel", stormChannelIECServer.getChannel());
+                    close();
+                } else {
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECServer.getChannel().getName()));
+                }
+
+                break;
+            }
             case 1: {
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
-                StormChannelIEC channelIEC = new StormChannelIEC();
-                channelIEC.getChannel().setName(editChannelName.getText());
-                channelIEC.getChannel().setDescription(editChannelDescription.getText());
-                channelIEC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
+                stormChannelIECClient.getChannel().setName(editChannelName.getText());
+                stormChannelIECClient.getChannel().setDescription(editChannelDescription.getText());
+                stormChannelIECClient.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
 
-                channelIEC.setHost(editHost.getText());
-                channelIEC.setPort(Integer.parseInt(editPort.getText()));
+                stormChannelIECClient.setHost(editHost.getText());
+                stormChannelIECClient.setPort(Integer.parseInt(editPort.getText()));
 
-                if (!dataManager.existChannel(dataManager.getCurrentProfile(), channelIEC.getChannel())) {
-                    getPublisher().publish("application:addChannel", channelIEC.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECClient.getChannel())) {
+                    getPublisher().publish("application:addChannel", stormChannelIECClient.getChannel());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", channelIEC.getChannel().getName()));
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECClient.getChannel().getName()));
                 }
 
                 break;
@@ -143,19 +162,19 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
 
-                StormChannelOPC channelOPC = new StormChannelOPC();
-                channelOPC.getChannel().setName(editChannelName.getText());
-                channelOPC.getChannel().setDescription(editChannelDescription.getText());
-                channelOPC.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
+                stormChannelOPCClient.getChannel().setName(editChannelName.getText());
+                stormChannelOPCClient.getChannel().setDescription(editChannelDescription.getText());
+                stormChannelOPCClient.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
 
-                channelOPC.setProgId(editProgId.getText());
-                channelOPC.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
+                stormChannelOPCClient.setProgId(editProgId.getText());
+                stormChannelOPCClient.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
 
-                if (!dataManager.existChannel(dataManager.getCurrentProfile(), channelOPC.getChannel())) {
-                    getPublisher().publish("application:addChannel", channelOPC.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelOPCClient.getChannel())) {
+                    getPublisher().publish("application:addChannel", stormChannelOPCClient.getChannel());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", channelOPC.getChannel().getName()));
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelOPCClient.getChannel().getName()));
                 }
 
                 break;

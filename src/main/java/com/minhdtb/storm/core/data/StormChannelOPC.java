@@ -1,6 +1,8 @@
 package com.minhdtb.storm.core.data;
 
 
+import com.minhdtb.storm.entities.Channel;
+
 public class StormChannelOPC extends StormChannel {
 
     public String getProgId() {
@@ -17,5 +19,13 @@ public class StormChannelOPC extends StormChannel {
 
     public void setRefreshRate(int refreshRate) {
         setAttribute("refreshRate", String.valueOf(refreshRate));
+    }
+
+    StormChannelOPC() {
+        super();
+    }
+
+    StormChannelOPC(Channel channel) {
+        super(channel);
     }
 }

@@ -3,10 +3,11 @@ package com.minhdtb.storm.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
-public class ChannelAttribute {
+public class ChannelAttribute implements Serializable {
 
     @Id
     @GeneratedValue
