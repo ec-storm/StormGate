@@ -35,7 +35,7 @@
         </Menu>
     </MenuBar>
     <ToolBar prefHeight="40.0" prefWidth="200.0">
-        <Button mnemonicParsing="false" text="Run">
+        <Button mnemonicParsing="false" text="Run" onAction="#actionRun">
         </Button>
     </ToolBar>
     <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="379.0" prefWidth="814.0"

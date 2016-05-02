@@ -1,12 +1,22 @@
 package com.minhdtb.storm.core.engine;
 
-import com.minhdtb.storm.core.data.*;
+import com.minhdtb.storm.core.data.IStormChannel;
+import com.minhdtb.storm.core.data.StormChannelIECClient;
+import com.minhdtb.storm.core.data.StormChannelIECServer;
+import com.minhdtb.storm.core.data.StormChannelOPCClient;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.DataManager;
+import org.python.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +26,64 @@ public class StormEngine {
     @Autowired
     private DataManager dataManager;
 
+    private ScriptEngine jython;
+
+    @PostConstruct
+    private void initialize() {
+        PySystemState systemState = new PySystemState();
+        systemState.path.add("./scripts");
+        Py.setSystemState(systemState);
+
+        ScriptEngineManager engineManager = new ScriptEngineManager();
+        jython = engineManager.getEngineByName("jython");
+    }
+
     private List<IStormChannel> channelList = new ArrayList<>();
 
     public void run() {
-
-        channelList.clear();
-
         Profile profile = dataManager.getCurrentProfile();
+        if (profile == null) {
+            return;
+        }
+
+        try {
+            jython.eval(new FileReader("./scripts/engine.py"));
+            PyObject main = (PyObject) jython.get("main");
+            main.__call__();
+        } catch (ScriptException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        startChannels(profile);
+    }
+
+    private PyObject objectToPyObject(Object value) {
+        PyObject result = null;
+
+        if (value instanceof Integer) {
+            result = new PyInteger((int) value);
+        }
+
+        if (value instanceof Double) {
+            result = new PyFloat((double) value);
+        }
+
+        if (value instanceof String) {
+            result = new PyString((String) value);
+        }
+
+        return result;
+    }
+
+    public void invokeOnChange(String channelName, String variableName, Object oldValue, Object newValue) {
+        PyObject tmpFunction = (PyObject) jython.get("java_on_change_callback");
+        String variable = channelName + "." + variableName;
+
+        tmpFunction.__call__(new PyString(variable), objectToPyObject(oldValue), objectToPyObject(newValue));
+    }
+
+    private void startChannels(Profile profile) {
+        channelList.clear();
 
         for (Channel channel : profile.getChannels()) {
             switch (channel.getType()) {

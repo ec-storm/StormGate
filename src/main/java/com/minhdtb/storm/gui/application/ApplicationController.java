@@ -4,6 +4,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
@@ -21,6 +22,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
@@ -67,6 +69,9 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     private DataManager dataManager;
+
+    @Autowired
+    private StormEngine stormEngine;
 
     @Autowired
     private DialogNewProfileView dialogNewProfileView;
@@ -350,6 +355,11 @@ public class ApplicationController extends AbstractController {
             profile.setScript(textAreaScript.getText().getBytes(Charset.forName("UTF-8")));
             dataManager.saveProfile(profile, null);
         }
+    }
+
+    @FXML
+    public void actionRun(ActionEvent actionEvent) {
+        stormEngine.run();
     }
 
     @FXML
