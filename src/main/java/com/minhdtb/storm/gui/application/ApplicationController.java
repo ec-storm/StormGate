@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -81,26 +82,7 @@ public class ApplicationController extends AbstractController {
 
     private ContextMenu menuTreeView = new ContextMenu();
 
-    private static final String[] KEYWORDS = new String[]{
-            "and", "as", "assert", "break", "class", "continue",
-            "def", "del", "elif", "else", "except", "exec",
-            "finally", "for", "from", "global", "if", "import",
-            "in", "is", "labmda", "not", "or", "pass",
-            "print", "raise", "return", "try", "while", "with", "yield"
-    };
-
-    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
-    private static final String PAREN_PATTERN = "\\(|\\)";
-    private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"" + "|" + "\'([^\'\\\\]|\\\\.)*\'";
-    private static final String COMMENT_PATTERN = "#[^\n]*" + "|" + "\'\'\'\'(.|\\R)*?\'\'\'";
-    private static final Pattern PATTERN = Pattern.compile(
-            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
-                    + "|(?<PAREN>" + PAREN_PATTERN + ")"
-                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
-                    + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
-    );
+    private Pattern pattern;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -115,13 +97,6 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
         initGUI();
-
-        treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
-        textAreaScript.setParagraphGraphicFactory(LineNumberFactory.get(textAreaScript));
-        textAreaScript.richChanges()
-                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .subscribe(change -> textAreaScript.setStyleSpans(0,
-                        computeHighlighting(textAreaScript.getText())));
     }
 
     @Override
@@ -151,6 +126,8 @@ public class ApplicationController extends AbstractController {
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(getView())).build());
 
+        treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
+        textAreaScript.setParagraphGraphicFactory(LineNumberFactory.get(textAreaScript));
         treeViewProfile.setOnMouseClicked(event -> {
             if (treeViewProfile.getSelectionModel().getSelectedItem() != null) {
                 Object selected = treeViewProfile.getSelectionModel().getSelectedItem().getValue();
@@ -163,6 +140,33 @@ public class ApplicationController extends AbstractController {
                 }
             }
         });
+
+        List<String> keywords = Arrays.asList(
+                "and", "as", "assert", "break", "class", "continue",
+                "def", "del", "elif", "else", "except", "exec",
+                "finally", "for", "from", "global", "if", "import",
+                "in", "is", "labmda", "not", "or", "pass",
+                "print", "raise", "return", "try", "while", "with", "yield"
+        );
+
+        String keywordPattern = "\\b(" + String.join("|", keywords) + ")\\b";
+        String parenPattern = "\\(|\\)";
+        String bracketPattern = "\\[|\\]";
+        String stringPattern = "\"([^\"\\\\]|\\\\.)*\"" + "|" + "\'([^\'\\\\]|\\\\.)*\'";
+        String commentPattern = "#[^\n]*" + "|" + "\'\'\'\'(.|\\R)*?\'\'\'";
+
+        pattern = Pattern.compile(
+                "(?<KEYWORD>" + keywordPattern + ")"
+                        + "|(?<PAREN>" + parenPattern + ")"
+                        + "|(?<BRACKET>" + bracketPattern + ")"
+                        + "|(?<STRING>" + stringPattern + ")"
+                        + "|(?<COMMENT>" + commentPattern + ")"
+        );
+
+        textAreaScript.richChanges()
+                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
+                .subscribe(change -> textAreaScript.setStyleSpans(0,
+                        computeHighlighting(textAreaScript.getText())));
     }
 
     private void openProfile(Object object) {
@@ -177,6 +181,8 @@ public class ApplicationController extends AbstractController {
 
                 treeViewProfile.setRoot(rootItem);
                 rootItem.setExpanded(true);
+
+                textAreaScript.replaceText(0, 0, new String(profile.getScript()));
             }));
         }
     }
@@ -243,7 +249,7 @@ public class ApplicationController extends AbstractController {
     }
 
     private StyleSpans<Collection<String>> computeHighlighting(String text) {
-        Matcher matcher = PATTERN.matcher(text);
+        Matcher matcher = pattern.matcher(text);
         int lastKwEnd = 0;
         StyleSpansBuilder<Collection<String>> spansBuilder
                 = new StyleSpansBuilder<>();
@@ -254,14 +260,17 @@ public class ApplicationController extends AbstractController {
                                     matcher.group("BRACKET") != null ? "bracket" :
                                             matcher.group("STRING") != null ? "string" :
                                                     matcher.group("COMMENT") != null ? "comment" :
-                                                            null; /* never happens */
-            assert styleClass != null;
-            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+                                                            null;
+            if (styleClass != null) {
+                spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+                spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+            }
+
             lastKwEnd = matcher.end();
         }
 
         spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+
         return spansBuilder.create();
     }
 
@@ -332,6 +341,15 @@ public class ApplicationController extends AbstractController {
     @FXML
     public void actionOpenProfile() {
         dialogOpenProfileView.showDialog(getView());
+    }
+
+    @FXML
+    public void actionSaveProfile() {
+        Profile profile = dataManager.getCurrentProfile();
+        if (profile != null) {
+            profile.setScript(textAreaScript.getText().getBytes(Charset.forName("UTF-8")));
+            dataManager.saveProfile(profile, null);
+        }
     }
 
     @FXML
@@ -478,6 +496,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
+                        textAreaScript.clear();
                     }).build());
         }
 

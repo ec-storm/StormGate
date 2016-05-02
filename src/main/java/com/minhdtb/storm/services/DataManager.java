@@ -48,7 +48,9 @@ public class DataManager {
 
     public void openProfile(Profile profile, ConsumerProfile callback) {
         currentProfile = profile;
-        callback.accept(currentProfile);
+        if (callback != null) {
+            callback.accept(currentProfile);
+        }
     }
 
     public Profile getCurrentProfile() {
@@ -57,12 +59,16 @@ public class DataManager {
 
     public void saveProfile(Profile profile, ConsumerProfile callback) {
         Profile profileLocal = profileRepository.save(profile);
-        callback.accept(profileLocal);
+        if (callback != null) {
+            callback.accept(profileLocal);
+        }
     }
 
     public void deleteProfile(Profile profile, ConsumerProfile callback) {
         profileRepository.delete(profile);
-        callback.accept(profile);
+        if (callback != null) {
+            callback.accept(profile);
+        }
     }
 
     public boolean existProfile(Profile profile) {
@@ -73,8 +79,9 @@ public class DataManager {
         currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
         channelRepository.save(channel);
-
-        callback.accept(currentProfile, channel);
+        if (callback != null) {
+            callback.accept(currentProfile, channel);
+        }
     }
 
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
@@ -82,8 +89,9 @@ public class DataManager {
         channel.setProfile(null);
         currentProfile = profileRepository.save(currentProfile);
         channelRepository.delete(channel);
-
-        callback.accept(currentProfile, channel);
+        if (callback != null) {
+            callback.accept(currentProfile, channel);
+        }
     }
 
     public boolean existChannel(Profile profile, Channel channel) {
@@ -99,8 +107,9 @@ public class DataManager {
                 channelFound.getVariables().add(variable);
                 variable.setChannel(channelFound);
                 variableRepository.save(variable);
-
-                callback.accept(variable);
+                if (callback != null) {
+                    callback.accept(variable);
+                }
             }
         }
     }
@@ -115,8 +124,9 @@ public class DataManager {
                 channelFound.getVariables().remove(variable);
                 variable.setChannel(null);
                 variableRepository.delete(variable);
-
-                callback.accept(variable);
+                if (callback != null) {
+                    callback.accept(variable);
+                }
             }
         }
     }
