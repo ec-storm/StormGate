@@ -1,10 +1,16 @@
 package com.minhdtb.storm.core.data;
 
 import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.entities.Variable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StormChannelIEC extends StormChannel {
 
-    public String getHost() {
+    private List<IStormVariable> variables = new ArrayList<>();
+
+    String getHost() {
         return getAttribute("host");
     }
 
@@ -12,7 +18,7 @@ public class StormChannelIEC extends StormChannel {
         setAttribute("host", host);
     }
 
-    public int getPort() {
+    int getPort() {
         return Integer.parseInt(getAttribute("port"));
     }
 
@@ -26,5 +32,16 @@ public class StormChannelIEC extends StormChannel {
 
     StormChannelIEC(Channel channel) {
         super(channel);
+
+        for (Variable variable : getRaw().getVariables()) {
+            StormVariableIEC variableIEC = new StormVariableIEC(variable);
+            variableIEC.setChannel(this);
+            variables.add(variableIEC);
+        }
+    }
+
+    @Override
+    public List<IStormVariable> getVariables() {
+        return variables;
     }
 }

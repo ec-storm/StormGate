@@ -1,10 +1,7 @@
 package com.minhdtb.storm.core.engine;
 
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.data.IStormChannel;
-import com.minhdtb.storm.core.data.StormChannelIECClient;
-import com.minhdtb.storm.core.data.StormChannelIECServer;
-import com.minhdtb.storm.core.data.StormChannelOPCClient;
+import com.minhdtb.storm.core.data.*;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.services.DataManager;
@@ -19,6 +16,7 @@ import javax.script.ScriptException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -30,6 +28,10 @@ public class StormEngine {
 
     private ScriptEngine jython;
 
+    private List<IStormChannel> channelList = new ArrayList<>();
+
+    private static HashMap<String, IStormVariable> variableList = new HashMap<>();
+
     @PostConstruct
     private void initialize() {
         PySystemState systemState = new PySystemState();
@@ -39,8 +41,6 @@ public class StormEngine {
         ScriptEngineManager engineManager = new ScriptEngineManager();
         jython = engineManager.getEngineByName("jython");
     }
-
-    private List<IStormChannel> channelList = new ArrayList<>();
 
     public void start(Consumer<Profile> callback) {
         Profile profile = dataManager.getCurrentProfile();
@@ -125,10 +125,22 @@ public class StormEngine {
             }
         }
 
-        channelList.stream().forEach(IStormChannel::start);
+        channelList.stream().forEach(stormChannel -> {
+            stormChannel.getVariables().forEach(stormVariable ->
+                    variableList.put(stormVariable.getFullName(), stormVariable));
+
+            stormChannel.start();
+        });
     }
 
     private void stopChannels() {
         channelList.stream().forEach(IStormChannel::stop);
+    }
+
+    public static void writeVariable(String name, Object value) {
+        IStormVariable variable = variableList.get(name);
+        if (variable != null) {
+            variable.write(value);
+        }
     }
 }

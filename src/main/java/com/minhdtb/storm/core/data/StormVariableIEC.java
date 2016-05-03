@@ -1,7 +1,19 @@
 package com.minhdtb.storm.core.data;
 
 
+import com.minhdtb.storm.entities.Variable;
+
 public class StormVariableIEC extends StormVariable {
+
+    private StormChannelIEC channelIEC;
+
+    public StormVariableIEC() {
+        super();
+    }
+
+    StormVariableIEC(Variable variable) {
+        super(variable);
+    }
 
     public int getSectorAddress() {
         return Integer.parseInt(getAttribute("sectorAddress"));
@@ -25,5 +37,16 @@ public class StormVariableIEC extends StormVariable {
 
     public void setDataType(int dataType) {
         setAttribute("dataType", String.valueOf(dataType));
+    }
+
+    @Override
+    public void write(Object value) {
+        IStormChannel channel = getChannel();
+        if (channel instanceof StormChannelIEC) {
+            channelIEC = (StormChannelIEC) channel;
+
+            System.out.println("xxx = " + value);
+            super.write(value);
+        }
     }
 }

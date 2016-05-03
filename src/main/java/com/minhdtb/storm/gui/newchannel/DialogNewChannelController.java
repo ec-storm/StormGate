@@ -3,8 +3,9 @@ package com.minhdtb.storm.gui.newchannel;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
-import com.minhdtb.storm.core.data.*;
-import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.core.data.StormChannelIECClient;
+import com.minhdtb.storm.core.data.StormChannelIECServer;
+import com.minhdtb.storm.core.data.StormChannelOPCClient;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -121,18 +122,17 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
                 StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
-                stormChannelIECServer.getChannel().setName(editChannelName.getText());
-                stormChannelIECServer.getChannel().setDescription(editChannelDescription.getText());
-                stormChannelIECServer.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                stormChannelIECServer.setName(editChannelName.getText());
+                stormChannelIECServer.setDescription(editChannelDescription.getText());
 
                 stormChannelIECServer.setHost(editHost.getText());
                 stormChannelIECServer.setPort(Integer.parseInt(editPort.getText()));
 
-                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECServer.getChannel())) {
-                    getPublisher().publish("application:addChannel", stormChannelIECServer.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECServer.getRaw())) {
+                    getPublisher().publish("application:addChannel", stormChannelIECServer.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECServer.getChannel().getName()));
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECServer.getName()));
                 }
 
                 break;
@@ -142,18 +142,17 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
                 StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
-                stormChannelIECClient.getChannel().setName(editChannelName.getText());
-                stormChannelIECClient.getChannel().setDescription(editChannelDescription.getText());
-                stormChannelIECClient.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                stormChannelIECClient.setName(editChannelName.getText());
+                stormChannelIECClient.setDescription(editChannelDescription.getText());
 
                 stormChannelIECClient.setHost(editHost.getText());
                 stormChannelIECClient.setPort(Integer.parseInt(editPort.getText()));
 
-                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECClient.getChannel())) {
-                    getPublisher().publish("application:addChannel", stormChannelIECClient.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelIECClient.getRaw())) {
+                    getPublisher().publish("application:addChannel", stormChannelIECClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECClient.getChannel().getName()));
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelIECClient.getName()));
                 }
 
                 break;
@@ -163,18 +162,17 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
 
                 StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
-                stormChannelOPCClient.getChannel().setName(editChannelName.getText());
-                stormChannelOPCClient.getChannel().setDescription(editChannelDescription.getText());
-                stormChannelOPCClient.getChannel().setType(Channel.ChannelType.fromInt(channelType.getValue()));
+                stormChannelOPCClient.setName(editChannelName.getText());
+                stormChannelOPCClient.setDescription(editChannelDescription.getText());
 
                 stormChannelOPCClient.setProgId(editProgId.getText());
                 stormChannelOPCClient.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
 
-                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelOPCClient.getChannel())) {
-                    getPublisher().publish("application:addChannel", stormChannelOPCClient.getChannel());
+                if (!dataManager.existChannel(dataManager.getCurrentProfile(), stormChannelOPCClient.getRaw())) {
+                    getPublisher().publish("application:addChannel", stormChannelOPCClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelOPCClient.getChannel().getName()));
+                    Utils.showError(getView(), String.format("Channel \"%s\" is already exists.", stormChannelOPCClient.getName()));
                 }
 
                 break;

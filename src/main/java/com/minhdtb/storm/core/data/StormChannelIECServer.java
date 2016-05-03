@@ -16,6 +16,7 @@ public class StormChannelIECServer extends StormChannelIEC {
 
     public StormChannelIECServer() {
         super();
+        getRaw().setType(Channel.ChannelType.CT_IEC_SERVER);
     }
 
     public StormChannelIECServer(Channel channel) {

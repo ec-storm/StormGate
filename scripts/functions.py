@@ -3,7 +3,8 @@ def read(name):
 
 
 def write(name, value):
-    print 'write ', name, ' = ', value
+    from com.minhdtb.storm.core.engine import StormEngine
+    StormEngine.writeVariable(name, value)
 
 
 def log(value):

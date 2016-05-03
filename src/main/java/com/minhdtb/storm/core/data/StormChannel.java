@@ -2,15 +2,23 @@ package com.minhdtb.storm.core.data;
 
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.ChannelAttribute;
-import lombok.Data;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Data
+
 class StormChannel implements IStormChannel {
 
     private Channel channel;
+
+    StormChannel(Channel channelNew) {
+        channel = channelNew;
+    }
+
+    StormChannel() {
+        this(new Channel());
+    }
 
     String getAttribute(String name) {
         Optional<ChannelAttribute> found = channel.getAttributes().stream()
@@ -39,18 +47,6 @@ class StormChannel implements IStormChannel {
         }
     }
 
-    public Long getId() {
-        return channel.getId();
-    }
-
-    StormChannel(Channel channelNew) {
-        channel = channelNew;
-    }
-
-    StormChannel() {
-        this(new Channel());
-    }
-
     @Override
     public void start() {
 
@@ -58,6 +54,36 @@ class StormChannel implements IStormChannel {
 
     @Override
     public void stop() {
-        
+
+    }
+
+    @Override
+    public List<IStormVariable> getVariables() {
+        return null;
+    }
+
+    @Override
+    public Channel getRaw() {
+        return channel;
+    }
+
+    @Override
+    public String getName() {
+        return channel.getName();
+    }
+
+    @Override
+    public void setName(String name) {
+        channel.setName(name);
+    }
+
+    @Override
+    public String getDescription() {
+        return channel.getDescription();
+    }
+
+    @Override
+    public void setDescription(String description) {
+        channel.setDescription(description);
     }
 }

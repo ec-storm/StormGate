@@ -7,9 +7,13 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-class StormVariable {
+class StormVariable implements IStormVariable {
 
     private Variable variable;
+
+    private Object value;
+
+    private IStormChannel channel;
 
     String getAttribute(String name) {
         for (VariableAttribute attribute : variable.getAttributes()) {
@@ -50,7 +54,37 @@ class StormVariable {
         variable = new Variable();
     }
 
-    protected StormVariable(Variable variableNew) {
+    StormVariable(Variable variableNew) {
         variable = variableNew;
+    }
+
+    @Override
+    public Object read() {
+        return value;
+    }
+
+    @Override
+    public void write(Object value) {
+        this.value = value;
+    }
+
+    @Override
+    public IStormChannel getChannel() {
+        return channel;
+    }
+
+    @Override
+    public void setChannel(IStormChannel channel) {
+        this.channel = channel;
+    }
+
+    @Override
+    public String getName() {
+        return variable.getName();
+    }
+
+    @Override
+    public String getFullName() {
+        return getChannel().getName() + "." + getName();
     }
 }
