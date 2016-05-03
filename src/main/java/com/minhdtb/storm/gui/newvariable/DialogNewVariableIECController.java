@@ -55,18 +55,18 @@ public class DialogNewVariableIECController extends AbstractController {
     public void actionOK() {
         NamedValueType variableType = comboBoxVariableType.getValue();
         StormVariableIEC variableIEC = new StormVariableIEC();
-        variableIEC.getVariable().setName(editVariableName.getText());
+        variableIEC.setName(editVariableName.getText());
         variableIEC.setSectorAddress(Integer.parseInt(editSectorAddress.getText()));
         variableIEC.setInformationObjectAddress(Integer.parseInt(editInformationObjectAddress.getText()));
         variableIEC.setDataType(variableType.getValue());
 
         Channel channel = ((DialogNewVariableIECView) getView()).getChannel();
 
-        if (!dataManager.existVariable(channel, variableIEC.getVariable())) {
-            getPublisher().publish("application:addVariable", variableIEC.getVariable());
+        if (!dataManager.existVariable(channel, variableIEC.getRaw())) {
+            getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format("Variable \"%s\" is already exists.", variableIEC.getVariable().getName()));
+            Utils.showError(getView(), String.format("Variable \"%s\" is already exists.", variableIEC.getName()));
         }
     }
 

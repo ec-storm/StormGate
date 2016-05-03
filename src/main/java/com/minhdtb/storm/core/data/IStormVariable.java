@@ -1,6 +1,8 @@
 package com.minhdtb.storm.core.data;
 
 
+import com.minhdtb.storm.entities.Variable;
+
 public interface IStormVariable {
 
     Object read();
@@ -13,5 +15,9 @@ public interface IStormVariable {
 
     String getName();
 
+    void setName(String name);
+
     String getFullName();
+
+    Variable getRaw();
 }

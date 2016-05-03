@@ -2,11 +2,9 @@ package com.minhdtb.storm.core.data;
 
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.entities.VariableAttribute;
-import lombok.Data;
 
 import java.util.Objects;
 
-@Data
 class StormVariable implements IStormVariable {
 
     private Variable variable;
@@ -84,7 +82,17 @@ class StormVariable implements IStormVariable {
     }
 
     @Override
+    public void setName(String name) {
+        variable.setName(name);
+    }
+
+    @Override
     public String getFullName() {
         return getChannel().getName() + "." + getName();
+    }
+
+    @Override
+    public Variable getRaw() {
+        return variable;
     }
 }
