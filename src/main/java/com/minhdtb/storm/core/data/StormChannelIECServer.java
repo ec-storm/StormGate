@@ -1,5 +1,6 @@
 package com.minhdtb.storm.core.data;
 
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.lib.j60870.*;
 import com.minhdtb.storm.entities.Channel;
 
@@ -29,10 +30,10 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 serverSap.startListening();
             } catch (IOException e) {
-                e.printStackTrace();
+                Utils.writeLog(e.getMessage());
             }
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            Utils.writeLog(e.getMessage());
         }
     }
 
@@ -48,7 +49,7 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 connection.waitForStartDT(new ConnectionListener(), 5000);
             } catch (IOException | TimeoutException e) {
-                e.printStackTrace();
+                Utils.writeLog(e.getMessage());
             }
         }
 

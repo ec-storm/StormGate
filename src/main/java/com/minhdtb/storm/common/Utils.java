@@ -8,10 +8,24 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
+@Component
 public class Utils {
+
+    @Autowired
+    private Publisher<String> publisher;
+
+    private static Publisher<String> publisherLogger;
+
+    @PostConstruct
+    public void initialize() {
+        publisherLogger = publisher;
+    }
 
     public static void showError(AbstractView owner, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, "");
@@ -62,5 +76,9 @@ public class Utils {
                 e.consume();
             }
         };
+    }
+
+    public static void writeLog(String message) {
+        publisherLogger.publish("application:log", message + "\n");
     }
 }

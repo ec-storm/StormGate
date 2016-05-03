@@ -1,4 +1,4 @@
-from functions import read, write
+from functions import read, write, log
 
 
 def function1(old_value, new_value):

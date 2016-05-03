@@ -1,5 +1,6 @@
 package com.minhdtb.storm.core.engine;
 
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.data.IStormChannel;
 import com.minhdtb.storm.core.data.StormChannelIECClient;
 import com.minhdtb.storm.core.data.StormChannelIECServer;
@@ -53,7 +54,7 @@ public class StormEngine {
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
         } catch (ScriptException | FileNotFoundException e) {
-            e.printStackTrace();
+            Utils.writeLog(e.getMessage());
         }
 
         startChannels(profile);

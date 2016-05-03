@@ -61,7 +61,7 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="812.0"
                     SplitPane.resizableWithParent="false">
-            <TextArea editable="false" focusTraversable="false" AnchorPane.bottomAnchor="3.0"
+            <TextArea fx:id="textAreaLog" editable="false" focusTraversable="false" AnchorPane.bottomAnchor="3.0"
                       AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0"/>
         </AnchorPane>
     </SplitPane>

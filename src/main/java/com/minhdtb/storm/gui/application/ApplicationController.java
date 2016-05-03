@@ -56,6 +56,8 @@ public class ApplicationController extends AbstractController {
     @FXML
     public Button buttonRun;
     @FXML
+    public TextArea textAreaLog;
+    @FXML
     private CodeArea textAreaScript;
     @FXML
     private Label labelStatus;
@@ -107,6 +109,10 @@ public class ApplicationController extends AbstractController {
 
         getSubscriber().on("application:addVariable", this::addVariable);
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
+
+        getSubscriber().on("application:log", message -> {
+            textAreaLog.appendText((String) message);
+        });
 
         initGUI();
     }
