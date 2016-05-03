@@ -8,11 +8,15 @@ import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class StormChannelIECServer extends StormChannelIEC {
 
     private ServerSap serverSap;
+
+    private List<Connection> connections = new ArrayList<>();
 
     public StormChannelIECServer() {
         super();
@@ -48,8 +52,10 @@ public class StormChannelIECServer extends StormChannelIEC {
         @Override
         public void connectionIndication(Connection connection) {
             try {
+                connections.add(connection);
                 connection.waitForStartDT(new ConnectionListener(), 5000);
             } catch (IOException | TimeoutException e) {
+                connections.remove(connection);
                 Utils.writeLog(e.getMessage());
             }
         }
@@ -76,5 +82,16 @@ public class StormChannelIECServer extends StormChannelIEC {
         public void connectionClosed(IOException e) {
 
         }
+    }
+
+    @Override
+    public void send(ASdu aSdu) {
+        connections.stream().forEach(connection -> {
+            try {
+                connection.send(aSdu);
+            } catch (IOException e) {
+                Utils.writeLog(e.getMessage());
+            }
+        });
     }
 }

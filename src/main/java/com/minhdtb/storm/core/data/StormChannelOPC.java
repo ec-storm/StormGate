@@ -3,7 +3,7 @@ package com.minhdtb.storm.core.data;
 
 import com.minhdtb.storm.entities.Channel;
 
-public class StormChannelOPC extends StormChannel {
+public abstract class StormChannelOPC extends StormChannel {
 
     public String getProgId() {
         return getAttribute("progId");

@@ -1,11 +1,10 @@
 package com.minhdtb.storm.core.data;
 
 
+import com.minhdtb.storm.core.lib.j60870.*;
 import com.minhdtb.storm.entities.Variable;
 
 public class StormVariableIEC extends StormVariable {
-
-    private StormChannelIEC channelIEC;
 
     public StormVariableIEC() {
         super();
@@ -15,7 +14,7 @@ public class StormVariableIEC extends StormVariable {
         super(variable);
     }
 
-    public int getSectorAddress() {
+    private int getSectorAddress() {
         return Integer.parseInt(getAttribute("sectorAddress"));
     }
 
@@ -23,7 +22,7 @@ public class StormVariableIEC extends StormVariable {
         setAttribute("sectorAddress", String.valueOf(sectorAddress));
     }
 
-    public int getInformationObjectAddress() {
+    private int getInformationObjectAddress() {
         return Integer.parseInt(getAttribute("informationObjectAddress"));
     }
 
@@ -31,7 +30,7 @@ public class StormVariableIEC extends StormVariable {
         setAttribute("informationObjectAddress", String.valueOf(informationObjectAddress));
     }
 
-    public int getDataType() {
+    private int getDataType() {
         return Integer.parseInt(getAttribute("dataType"));
     }
 
@@ -43,10 +42,54 @@ public class StormVariableIEC extends StormVariable {
     public void write(Object value) {
         IStormChannel channel = getChannel();
         if (channel instanceof StormChannelIEC) {
-            channelIEC = (StormChannelIEC) channel;
+            ASdu aSdu = null;
+            switch (getDataType()) {
+                case 0: {
+                    aSdu = new ASdu(TypeId.M_ME_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
+                            new InformationObject[]{
+                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
+                                            {new IeNormalizedValue((int) value)}
+                                    })
+                            });
 
-            System.out.println("xxx = " + value);
-            super.write(value);
+                    break;
+                }
+                case 1: {
+                    aSdu = new ASdu(TypeId.M_ME_NC_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
+                            new InformationObject[]{
+                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
+                                            {new IeShortFloat((float) value)}
+                                    })
+                            });
+
+                    break;
+                }
+                case 2: {
+                    aSdu = new ASdu(TypeId.C_SC_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
+                            new InformationObject[]{
+                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
+                                            {new IeSingleCommand(true, 0, true)}
+                                    })
+                            });
+
+                    break;
+                }
+                case 3: {
+                    aSdu = new ASdu(TypeId.C_DC_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
+                            new InformationObject[]{
+                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
+                                            {new IeDoubleCommand(IeDoubleCommand.DoubleCommandState.ON, 0, true)}
+                                    })
+                            });
+
+                    break;
+                }
+            }
+
+            if (aSdu != null) {
+                ((StormChannelIEC) channel).send(aSdu);
+                super.write(value);
+            }
         }
     }
 }

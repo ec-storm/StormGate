@@ -1,12 +1,13 @@
 package com.minhdtb.storm.core.data;
 
+import com.minhdtb.storm.core.lib.j60870.ASdu;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StormChannelIEC extends StormChannel {
+public abstract class StormChannelIEC extends StormChannel {
 
     private List<IStormVariable> variables = new ArrayList<>();
 
@@ -44,4 +45,6 @@ public class StormChannelIEC extends StormChannel {
     public List<IStormVariable> getVariables() {
         return variables;
     }
+
+    public abstract void send(ASdu aSdu);
 }
