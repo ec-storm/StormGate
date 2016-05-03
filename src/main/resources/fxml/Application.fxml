@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.TextFlow?>
 <?import org.controlsfx.control.PropertySheet?>
 <?import org.fxmisc.richtext.CodeArea?>
 <VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
@@ -61,8 +62,10 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="812.0"
                     SplitPane.resizableWithParent="false">
-            <TextArea fx:id="textAreaLog" editable="false" focusTraversable="false" AnchorPane.bottomAnchor="3.0"
-                      AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0"/>
+            <ScrollPane focusTraversable="false" AnchorPane.bottomAnchor="3.0"
+                        AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                <TextFlow fx:id="textFlowLog" focusTraversable="false"/>
+            </ScrollPane>
         </AnchorPane>
     </SplitPane>
     <HBox prefHeight="21.0" prefWidth="991.0">

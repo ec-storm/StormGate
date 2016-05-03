@@ -32,6 +32,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.fxmisc.richtext.CodeArea;
@@ -50,13 +52,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.util.Calendar.getInstance;
+
 @Controller
 public class ApplicationController extends AbstractController {
 
     @FXML
     public Button buttonRun;
     @FXML
-    public TextArea textAreaLog;
+    public TextFlow textFlowLog;
     @FXML
     private CodeArea textAreaScript;
     @FXML
@@ -110,9 +114,16 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:addVariable", this::addVariable);
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
-        getSubscriber().on("application:log", message -> {
-            textAreaLog.appendText((String) message);
-        });
+        getSubscriber().on("application:log", message -> Platform.runLater(() -> {
+            String now = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(getInstance().getTime());
+            Text txtTime = new Text(now + "> ");
+            txtTime.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
+
+            Text txtMessage = new Text((String) message);
+            txtMessage.setStyle("-fx-fill: black;-fx-font-size: 16px;");
+
+            textFlowLog.getChildren().addAll(txtTime, txtMessage);
+        }));
 
         initGUI();
     }
@@ -398,6 +409,7 @@ public class ApplicationController extends AbstractController {
                 setButtonRun(MaterialDesignIcon.STOP, "red", "STOP");
                 treeViewProfile.setDisable(true);
                 textAreaScript.setDisable(true);
+                textAreaScript.setStyle("-fx-background-color: #cccccc");
                 labelStatus.setText("Running.");
                 isRunning = true;
             });
@@ -408,6 +420,7 @@ public class ApplicationController extends AbstractController {
             labelStatus.setText("Stopped.");
             treeViewProfile.setDisable(false);
             textAreaScript.setDisable(false);
+            textAreaScript.setStyle("-fx-background-color: white");
         }
     }
 
