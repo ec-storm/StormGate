@@ -1,7 +1,7 @@
 package com.minhdtb.storm.core.data;
 
+import com.minhdtb.storm.core.lib.j60870.*;
 import com.minhdtb.storm.entities.Channel;
-import org.openmuc.j60870.*;
 
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 
 public class StormChannelIECServer extends StormChannelIEC {
+
+    private ServerSap serverSap;
 
     public StormChannelIECServer() {
         super();
@@ -22,7 +24,7 @@ public class StormChannelIECServer extends StormChannelIEC {
     @Override
     public void start() {
         try {
-            ServerSap serverSap = new ServerSap(getPort(), 0, InetAddress.getByName(getHost()),
+            serverSap = new ServerSap(getPort(), 0, InetAddress.getByName(getHost()),
                     ServerSocketFactory.getDefault(), new ServerListener());
             try {
                 serverSap.startListening();
@@ -32,6 +34,11 @@ public class StormChannelIECServer extends StormChannelIEC {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void stop() {
+        serverSap.stop();
     }
 
     private final class ServerListener implements ServerSapListener {

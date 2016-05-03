@@ -3,6 +3,7 @@ from threading import Thread
 
 callback_list = {}
 stopped = False
+worker = None
 
 
 class Worker(Thread):
@@ -10,7 +11,6 @@ class Worker(Thread):
         Thread.__init__(self)
 
     def run(self):
-        from configure import Configuration
         config = Configuration()
         global callback_list
         callback_list = config.load()
@@ -22,14 +22,17 @@ class Worker(Thread):
 
 def java_on_change_callback(variable, old_value, new_value):
     global callback_list
+    print callback_list
     callback_list[variable](old_value, new_value)
 
 
 def java_stop_thread():
     global stopped
     stopped = True
+    worker.join()
 
 
 def main():
+    global worker
     worker = Worker()
     worker.start()

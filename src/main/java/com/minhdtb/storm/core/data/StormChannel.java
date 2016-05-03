@@ -55,4 +55,9 @@ class StormChannel implements IStormChannel {
     public void start() {
 
     }
+
+    @Override
+    public void stop() {
+        
+    }
 }

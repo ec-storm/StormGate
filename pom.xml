@@ -84,16 +84,6 @@
             <version>0.6.10</version>
         </dependency>
         <dependency>
-            <groupId>org.openmuc</groupId>
-            <artifactId>openiec61850</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openmuc</groupId>
-            <artifactId>j60870</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython-standalone</artifactId>
             <version>2.7.0</version>

@@ -14,6 +14,7 @@ import com.minhdtb.storm.gui.newvariable.DialogNewVariableIECView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.DataManager;
 import de.jensd.fx.glyphs.GlyphIcon;
+import de.jensd.fx.glyphs.GlyphIcons;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -22,13 +23,15 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.fxmisc.richtext.CodeArea;
@@ -50,6 +53,8 @@ import java.util.stream.Collectors;
 @Controller
 public class ApplicationController extends AbstractController {
 
+    @FXML
+    public Button buttonRun;
     @FXML
     private CodeArea textAreaScript;
     @FXML
@@ -89,6 +94,8 @@ public class ApplicationController extends AbstractController {
 
     private Pattern pattern;
 
+    private boolean isRunning;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         getSubscriber().on("application:openProfile", this::openProfile);
@@ -112,6 +119,9 @@ public class ApplicationController extends AbstractController {
 
     private void initGUI() {
         labelStatus.setText("Stopped.");
+
+        setButtonRun(MaterialDesignIcon.PLAY, "black", "START");
+        buttonRun.setDisable(true);
 
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
@@ -188,6 +198,8 @@ public class ApplicationController extends AbstractController {
                 rootItem.setExpanded(true);
 
                 textAreaScript.replaceText(0, 0, new String(profile.getScript()));
+
+                buttonRun.setDisable(false);
             }));
         }
     }
@@ -205,6 +217,7 @@ public class ApplicationController extends AbstractController {
                     Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
                     if (Objects.equals(profileCurrent.getId(), profile.getId())) {
                         treeViewProfile.setRoot(null);
+                        buttonRun.setDisable(true);
                     }
                 }
             }));
@@ -332,6 +345,21 @@ public class ApplicationController extends AbstractController {
         return treeItem;
     }
 
+    private void setButtonRun(GlyphIcons glyphIcons, String color, String text) {
+        GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                .glyph(glyphIcons)
+                .size("1.5em")
+                .style("-fx-fill: " + color)
+                .build();
+
+        buttonRun.setGraphic(GraphicItemBuilder.create()
+                .setIcon(icon)
+                .setLabelPadding(new Insets(0, 3, 0, 3))
+                .setFont(Font.font(null, FontWeight.BOLD, 12))
+                .setText(text)
+                .build());
+    }
+
     @FXML
     public void actionCloseApplication() {
         Platform.exit();
@@ -358,8 +386,23 @@ public class ApplicationController extends AbstractController {
     }
 
     @FXML
-    public void actionRun(ActionEvent actionEvent) {
-        stormEngine.run();
+    public void actionRun() {
+        if (!isRunning) {
+            stormEngine.start(profile -> {
+                setButtonRun(MaterialDesignIcon.STOP, "red", "STOP");
+                treeViewProfile.setDisable(true);
+                textAreaScript.setDisable(true);
+                labelStatus.setText("Running.");
+                isRunning = true;
+            });
+        } else {
+            stormEngine.stop();
+            setButtonRun(MaterialDesignIcon.PLAY, "black", "START");
+            isRunning = false;
+            labelStatus.setText("Stopped.");
+            treeViewProfile.setDisable(false);
+            textAreaScript.setDisable(false);
+        }
     }
 
     @FXML
@@ -507,6 +550,7 @@ public class ApplicationController extends AbstractController {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
                         textAreaScript.clear();
+                        buttonRun.setDisable(true);
                     }).build());
         }
 

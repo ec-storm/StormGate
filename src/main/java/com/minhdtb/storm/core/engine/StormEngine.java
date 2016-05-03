@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class StormEngine {
@@ -40,13 +41,14 @@ public class StormEngine {
 
     private List<IStormChannel> channelList = new ArrayList<>();
 
-    public void run() {
+    public void start(Consumer<Profile> callback) {
         Profile profile = dataManager.getCurrentProfile();
         if (profile == null) {
             return;
         }
 
         try {
+            jython.eval(new String(profile.getScript()));
             jython.eval(new FileReader("./scripts/engine.py"));
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
@@ -55,6 +57,19 @@ public class StormEngine {
         }
 
         startChannels(profile);
+
+        if (callback != null) {
+            callback.accept(profile);
+        }
+    }
+
+    public void stop() {
+        PyObject function = (PyObject) jython.get("java_stop_thread");
+        if (function != null) {
+            function.__call__();
+        }
+
+        stopChannels();
     }
 
     private PyObject objectToPyObject(Object value) {
@@ -76,10 +91,11 @@ public class StormEngine {
     }
 
     public void invokeOnChange(String channelName, String variableName, Object oldValue, Object newValue) {
-        PyObject tmpFunction = (PyObject) jython.get("java_on_change_callback");
         String variable = channelName + "." + variableName;
-
-        tmpFunction.__call__(new PyString(variable), objectToPyObject(oldValue), objectToPyObject(newValue));
+        PyObject function = (PyObject) jython.get("java_on_change_callback");
+        if (function != null) {
+            function.__call__(new PyString(variable), objectToPyObject(oldValue), objectToPyObject(newValue));
+        }
     }
 
     private void startChannels(Profile profile) {
@@ -109,5 +125,9 @@ public class StormEngine {
         }
 
         channelList.stream().forEach(IStormChannel::start);
+    }
+
+    private void stopChannels() {
+        channelList.stream().forEach(IStormChannel::stop);
     }
 }
