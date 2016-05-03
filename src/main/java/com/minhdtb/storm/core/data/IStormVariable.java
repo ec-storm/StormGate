@@ -1,13 +1,16 @@
 package com.minhdtb.storm.core.data;
 
 
+import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Variable;
 
 public interface IStormVariable {
 
-    Object read();
+    Object getValue();
 
-    void write(Object value);
+    void setValue(Object value);
+
+    void writeValue(Object value);
 
     IStormChannel getChannel();
 
@@ -20,4 +23,8 @@ public interface IStormVariable {
     String getFullName();
 
     Variable getRaw();
+
+    StormEngine getEngine();
+
+    void setEngine(StormEngine engine);
 }

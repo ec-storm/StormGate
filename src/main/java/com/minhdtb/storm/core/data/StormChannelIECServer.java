@@ -75,7 +75,42 @@ public class StormChannelIECServer extends StormChannelIEC {
 
         @Override
         public void newASdu(ASdu aSdu) {
+            for (IStormVariable variable : getVariables()) {
+                if (variable instanceof StormVariableIEC) {
+                    if (((StormVariableIEC) variable).getSectorAddress() == aSdu.getOriginatorAddress() &&
+                            ((StormVariableIEC) variable).getInformationObjectAddress() ==
+                                    aSdu.getInformationObjects()[0].getInformationObjectAddress()) {
+                        TypeId typeId = aSdu.getTypeIdentification();
+                        Object value = null;
+                        switch (typeId) {
+                            case M_ME_NA_1: {
+                                IeNormalizedValue normalizedValue = (IeNormalizedValue) aSdu.getInformationObjects()[0]
+                                        .getInformationElements()[0][0];
+                                value = normalizedValue.getValue();
+                                break;
+                            }
+                            case M_ME_NC_1: {
+                                IeShortFloat shortFloat = (IeShortFloat) aSdu.getInformationObjects()[0]
+                                        .getInformationElements()[0][0];
+                                value = shortFloat.getValue();
+                                break;
+                            }
+                            case C_SC_NA_1: {
+                                break;
+                            }
+                            case C_DC_NA_1: {
+                                break;
+                            }
+                        }
 
+                        if (value != null) {
+                            variable.setValue(value);
+                        }
+
+                        break;
+                    }
+                }
+            }
         }
 
         @Override

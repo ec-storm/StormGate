@@ -1,11 +1,14 @@
 package com.minhdtb.storm.core.data;
 
+import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.entities.VariableAttribute;
 
 import java.util.Objects;
 
 class StormVariable implements IStormVariable {
+
+    private StormEngine engine;
 
     private Variable variable;
 
@@ -57,12 +60,20 @@ class StormVariable implements IStormVariable {
     }
 
     @Override
-    public Object read() {
+    public Object getValue() {
         return value;
     }
 
     @Override
-    public void write(Object value) {
+    public void setValue(Object value) {
+        if (!this.value.equals(value)) {
+            getEngine().invokeOnChange(getFullName(), this.value, value);
+            this.value = value;
+        }
+    }
+
+    @Override
+    public void writeValue(Object value) {
         this.value = value;
     }
 
@@ -94,5 +105,15 @@ class StormVariable implements IStormVariable {
     @Override
     public Variable getRaw() {
         return variable;
+    }
+
+    @Override
+    public StormEngine getEngine() {
+        return engine;
+    }
+
+    @Override
+    public void setEngine(StormEngine engine) {
+        this.engine = engine;
     }
 }

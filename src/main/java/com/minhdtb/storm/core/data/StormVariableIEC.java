@@ -14,7 +14,7 @@ public class StormVariableIEC extends StormVariable {
         super(variable);
     }
 
-    private int getSectorAddress() {
+    int getSectorAddress() {
         return Integer.parseInt(getAttribute("sectorAddress"));
     }
 
@@ -22,7 +22,7 @@ public class StormVariableIEC extends StormVariable {
         setAttribute("sectorAddress", String.valueOf(sectorAddress));
     }
 
-    private int getInformationObjectAddress() {
+    int getInformationObjectAddress() {
         return Integer.parseInt(getAttribute("informationObjectAddress"));
     }
 
@@ -39,7 +39,7 @@ public class StormVariableIEC extends StormVariable {
     }
 
     @Override
-    public void write(Object value) {
+    public void writeValue(Object value) {
         IStormChannel channel = getChannel();
         if (channel instanceof StormChannelIEC) {
             ASdu aSdu = null;
@@ -88,7 +88,7 @@ public class StormVariableIEC extends StormVariable {
 
             if (aSdu != null) {
                 ((StormChannelIEC) channel).send(aSdu);
-                super.write(value);
+                super.writeValue(value);
             }
         }
     }
