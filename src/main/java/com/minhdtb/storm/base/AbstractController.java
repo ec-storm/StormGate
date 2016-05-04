@@ -1,7 +1,7 @@
 package com.minhdtb.storm.base;
 
-import com.minhdtb.storm.common.Publisher;
-import com.minhdtb.storm.common.Subscriber;
+import com.minhdtb.storm.services.Publisher;
+import com.minhdtb.storm.services.Subscriber;
 import javafx.fxml.Initializable;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;

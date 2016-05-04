@@ -1,6 +1,7 @@
 package com.minhdtb.storm.common;
 
 import com.minhdtb.storm.base.AbstractView;
+import com.minhdtb.storm.services.Publisher;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -11,20 +12,16 @@ import javafx.stage.Modality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Component
 public class Utils {
 
+    private static Publisher<String> publisher;
+
     @Autowired
-    private Publisher<String> publisher;
-
-    private static Publisher<String> publisherLogger;
-
-    @PostConstruct
-    public void initialize() {
-        publisherLogger = publisher;
+    public Utils(Publisher<String> publisher) {
+        Utils.publisher = publisher;
     }
 
     public static void showError(AbstractView owner, String message) {
@@ -79,6 +76,6 @@ public class Utils {
     }
 
     public static void writeLog(String message) {
-        publisherLogger.publish("application:log", message + "\n");
+        publisher.publish("application:log", message + "\n");
     }
 }

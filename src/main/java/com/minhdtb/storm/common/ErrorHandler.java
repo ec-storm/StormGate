@@ -1,0 +1,24 @@
+package com.minhdtb.storm.common;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+
+import java.util.Arrays;
+
+@Aspect
+public class ErrorHandler {
+
+    @AfterThrowing(pointcut = "execution(* *(String, ..))", throwing = "e")
+    public void throwing(JoinPoint joinPoint, Throwable e) {
+        Signature signature = joinPoint.getSignature();
+        String methodName = signature.getName();
+        String stuff = signature.toString();
+        String arguments = Arrays.toString(joinPoint.getArgs());
+        System.out.println("Write something in the log... We have caught exception in method: "
+                + methodName + " with arguments "
+                + arguments + "\nand the full toString: " + stuff + "\nthe exception is: "
+                + e.getMessage());
+    }
+}
