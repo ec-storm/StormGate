@@ -14,11 +14,10 @@ public class ErrorHandler {
     public void throwing(JoinPoint joinPoint, Throwable e) {
         Signature signature = joinPoint.getSignature();
         String methodName = signature.getName();
-        String stuff = signature.toString();
         String arguments = Arrays.toString(joinPoint.getArgs());
-        System.out.println("Write something in the log... We have caught exception in method: "
+        System.out.println("We have caught exception in method: "
                 + methodName + " with arguments "
-                + arguments + "\nand the full toString: " + stuff + "\nthe exception is: "
+                + arguments + "\nException: "
                 + e.getMessage());
     }
 }
