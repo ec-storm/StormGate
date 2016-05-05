@@ -2,4 +2,5 @@
 /target/
 /db/
 *.class
+*.pyc
 configure.py
