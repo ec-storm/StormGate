@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-class StormChannel implements IStormChannel {
+abstract class StormChannel implements IStormChannel {
 
     private Channel channel;
 

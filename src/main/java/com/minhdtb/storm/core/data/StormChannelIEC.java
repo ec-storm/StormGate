@@ -7,7 +7,7 @@ import com.minhdtb.storm.entities.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class StormChannelIEC extends StormChannel {
+abstract class StormChannelIEC extends StormChannel {
 
     private List<IStormVariable> variables = new ArrayList<>();
 

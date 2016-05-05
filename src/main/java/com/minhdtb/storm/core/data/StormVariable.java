@@ -6,7 +6,7 @@ import com.minhdtb.storm.entities.VariableAttribute;
 
 import java.util.Objects;
 
-class StormVariable implements IStormVariable {
+abstract class StormVariable implements IStormVariable {
 
     private StormEngine engine;
 
