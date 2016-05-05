@@ -214,7 +214,10 @@ public class ApplicationController extends AbstractController {
                 treeViewProfile.setRoot(rootItem);
                 rootItem.setExpanded(true);
 
-                textAreaScript.replaceText(0, 0, new String(profile.getScript()));
+                textAreaScript.clear();
+                if (profile.getScript() != null) {
+                    textAreaScript.replaceText(0, 0, new String(profile.getScript()));
+                }
 
                 buttonRun.setDisable(false);
             }));
