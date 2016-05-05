@@ -10,7 +10,7 @@ import java.util.Arrays;
 @Aspect
 public class ErrorHandler {
 
-    @AfterThrowing(pointcut = "execution(* *(String, ..))", throwing = "e")
+    @AfterThrowing(pointcut = "execution(* *(..))", throwing = "e")
     public void throwing(JoinPoint joinPoint, Throwable e) {
         Signature signature = joinPoint.getSignature();
         String methodName = signature.getName();
