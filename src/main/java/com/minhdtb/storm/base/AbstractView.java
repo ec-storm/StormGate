@@ -12,9 +12,9 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.io.IOException;
 
-public class AbstractView implements ApplicationContextAware {
+public abstract class AbstractView implements ApplicationContextAware {
 
-    protected AbstractApplication application;
+    private AbstractApplication application;
 
     private ApplicationContext applicationContext;
 
