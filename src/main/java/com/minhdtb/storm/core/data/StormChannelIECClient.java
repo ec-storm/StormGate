@@ -32,7 +32,7 @@ public class StormChannelIECClient extends StormChannelIEC {
         try {
             connection.send(aSdu);
         } catch (IOException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
     }
 
@@ -45,7 +45,9 @@ public class StormChannelIECClient extends StormChannelIEC {
     @Override
     public void stop() {
         stopped = true;
-        connection.close();
+        if (connection != null) {
+            connection.close();
+        }
     }
 
     private final class ClientThread extends Thread {
@@ -53,34 +55,43 @@ public class StormChannelIECClient extends StormChannelIEC {
         @Override
         public void run() {
             while (!stopped) {
-                try {
-                    connection = clientSap.connect(InetAddress.getByName(getHost()), getPort());
-                    connection.startDataTransfer(new ConnectionEventListener() {
+                if (connection == null) {
+                    try {
+                        connection = clientSap.connect(InetAddress.getByName(getHost()), getPort());
+                        connection.startDataTransfer(new ConnectionEventListener() {
 
-                        @Override
-                        public void newASdu(ASdu aSdu) {
-                            Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
-                                    (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
-                                            ((StormVariableIEC) variable).getInformationObjectAddress() ==
-                                                    aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
+                            @Override
+                            public void newASdu(ASdu aSdu) {
+                                Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
+                                        (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
+                                                ((StormVariableIEC) variable).getInformationObjectAddress() ==
+                                                        aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
 
-                            if (found.isPresent()) {
-                                Object value = Utils.ASduToObject(aSdu);
-                                if (value != null) {
-                                    found.get().setValue(value);
+                                if (found.isPresent()) {
+                                    Object value = Utils.ASduToObject(aSdu);
+                                    if (value != null) {
+                                        found.get().setValue(value);
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void connectionClosed(IOException e) {
-                            Utils.writeLog(e.getMessage());
-                            connection = null;
-                        }
-                    }, 5000);
+                            @Override
+                            public void connectionClosed(IOException e) {
+                                Utils.error(e);
+                                connection = null;
+                            }
+                        }, 5000);
 
-                } catch (IOException | TimeoutException e) {
-                    Utils.writeLog(e.getMessage());
+                    } catch (IOException | TimeoutException e) {
+                        Utils.error(e);
+                        connection = null;
+                    }
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
         }

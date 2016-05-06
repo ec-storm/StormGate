@@ -10,4 +10,4 @@ def write(name, value):
 
 def log(value):
     from com.minhdtb.storm.common import Utils
-    Utils.writeLog(str(value))
+    Utils.log(str(value))

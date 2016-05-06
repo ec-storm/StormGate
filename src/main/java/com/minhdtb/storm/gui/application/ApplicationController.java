@@ -58,6 +58,8 @@ import static java.util.Calendar.getInstance;
 public class ApplicationController extends AbstractController {
 
     @FXML
+    private ScrollPane scrollLog;
+    @FXML
     public Button buttonRun;
     @FXML
     public TextFlow textFlowLog;
@@ -114,16 +116,13 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:addVariable", this::addVariable);
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
-        getSubscriber().on("application:log", message -> Platform.runLater(() -> {
-            String now = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(getInstance().getTime());
-            Text txtTime = new Text(now + "> ");
-            txtTime.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
+        getSubscriber().on("application:log", message -> Platform.runLater(() ->
+                writeLog("-fx-fill: black;-fx-font-weight:bold;",
+                        "-fx-fill: black;-fx-font-size: 14px;", (String) message)));
 
-            Text txtMessage = new Text((String) message);
-            txtMessage.setStyle("-fx-fill: black;-fx-font-size: 14px;");
-
-            textFlowLog.getChildren().addAll(txtTime, txtMessage);
-        }));
+        getSubscriber().on("application:error", message -> Platform.runLater(() ->
+                writeLog("-fx-fill: #ff4405;-fx-font-weight:bold;",
+                        "-fx-fill: #ff4405;-fx-font-size: 14px;", (String) message)));
 
         initGUI();
     }
@@ -284,6 +283,18 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
         propDetail.getItems().add(new PropertyItem("General", "Description", profile.getDescription()));
+    }
+
+    private void writeLog(String timeStyle, String textStyle, String message) {
+        String now = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(getInstance().getTime());
+        Text txtTime = new Text(now + "> ");
+        txtTime.setStyle(timeStyle);
+
+        Text txtMessage = new Text(message);
+        txtMessage.setStyle(textStyle);
+
+        textFlowLog.getChildren().addAll(txtTime, txtMessage);
+        scrollLog.setVvalue(1.0);
     }
 
     private StyleSpans<Collection<String>> computeHighlighting(String text) {

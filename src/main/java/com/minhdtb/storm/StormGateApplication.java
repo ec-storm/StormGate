@@ -51,7 +51,7 @@ public class StormGateApplication extends AbstractApplication {
             
             @Override
             public void write(byte buf[], int off, int len) {
-                Utils.writeLog(new String(buf));
+                Utils.log(new String(buf));
             }
         });
 

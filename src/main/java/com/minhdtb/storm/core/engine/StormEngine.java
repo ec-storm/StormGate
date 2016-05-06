@@ -54,7 +54,7 @@ public class StormEngine {
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
         } catch (ScriptException | FileNotFoundException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
 
         startChannels(profile);
@@ -82,6 +82,10 @@ public class StormEngine {
 
         if (value instanceof Double) {
             result = new PyFloat((double) value);
+        }
+
+        if (value instanceof Float) {
+            result = new PyFloat((float) value);
         }
 
         if (value instanceof String) {
