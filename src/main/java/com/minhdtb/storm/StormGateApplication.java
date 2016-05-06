@@ -1,6 +1,7 @@
 package com.minhdtb.storm;
 
 import com.minhdtb.storm.base.AbstractApplication;
+import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.gui.application.ApplicationView;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -10,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import reactor.Environment;
 import reactor.bus.EventBus;
+
+import java.io.PrintStream;
 
 @SpringBootApplication
 public class StormGateApplication extends AbstractApplication {
@@ -44,6 +47,14 @@ public class StormGateApplication extends AbstractApplication {
     }
 
     public static void main(String[] args) {
+        System.setErr(new PrintStream(System.err) {
+            
+            @Override
+            public void write(byte buf[], int off, int len) {
+                Utils.writeLog(new String(buf));
+            }
+        });
+
         launchApp(StormGateApplication.class, args);
     }
 }

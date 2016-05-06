@@ -120,7 +120,7 @@ public class ApplicationController extends AbstractController {
             txtTime.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
 
             Text txtMessage = new Text((String) message);
-            txtMessage.setStyle("-fx-fill: black;-fx-font-size: 16px;");
+            txtMessage.setStyle("-fx-fill: black;-fx-font-size: 14px;");
 
             textFlowLog.getChildren().addAll(txtTime, txtMessage);
         }));
@@ -414,7 +414,7 @@ public class ApplicationController extends AbstractController {
                 textAreaScript.setDisable(true);
                 textAreaScript.setStyle("-fx-background-color: #cccccc");
                 labelStatus.setText("Running.");
-                textFlowLog.getChildren().removeAll();
+                textFlowLog.getChildren().clear();
                 isRunning = true;
             });
         } else {
