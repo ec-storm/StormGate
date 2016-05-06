@@ -151,7 +151,7 @@ public class ApplicationController extends AbstractController {
             webViewScript.setContextMenuEnabled(false);
         });
 
-
+        textFlowLog.setMaxHeight(4000.0);
         textFlowLog.setStyle("-fx-background-color: white");
 
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
@@ -400,6 +400,7 @@ public class ApplicationController extends AbstractController {
                 labelStatus.setText("Running.");
                 textFlowLog.getChildren().clear();
                 isRunning = true;
+                Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(true)"));
             });
         } else {
             stormEngine.stop();
@@ -407,6 +408,7 @@ public class ApplicationController extends AbstractController {
             isRunning = false;
             labelStatus.setText("Stopped.");
             treeViewProfile.setDisable(false);
+            Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
     }
 
