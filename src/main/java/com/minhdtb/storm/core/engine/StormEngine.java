@@ -13,8 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +31,11 @@ public class StormEngine {
     private List<IStormChannel> channelList = new ArrayList<>();
 
     private static HashMap<String, IStormVariable> variableList = new HashMap<>();
+    private ScriptEngineManager engineManager;
 
     @PostConstruct
     private void initialize() {
-        PySystemState systemState = new PySystemState();
-        systemState.path.add("./scripts");
-        Py.setSystemState(systemState);
-
-        ScriptEngineManager engineManager = new ScriptEngineManager();
+        engineManager = new ScriptEngineManager();
         jython = engineManager.getEngineByName("jython");
     }
 
@@ -49,12 +46,15 @@ public class StormEngine {
         }
 
         try {
+            jython = null;
+            jython = engineManager.getEngineByName("jython");
+            jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/functions.py"))));
             jython.eval(new String(profile.getScript()));
-            jython.eval(new FileReader("./scripts/engine.py"));
+            jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/engine.py"))));
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
-        } catch (ScriptException | FileNotFoundException e) {
-            Utils.writeLog(e.getMessage());
+        } catch (ScriptException e) {
+            Utils.error(e);
         }
 
         startChannels(profile);
@@ -74,7 +74,7 @@ public class StormEngine {
     }
 
     private PyObject objectToPyObject(Object value) {
-        PyObject result = null;
+        PyObject result = new PyObject(PyObject.TYPE);
 
         if (value instanceof Integer) {
             result = new PyInteger((int) value);
@@ -84,14 +84,22 @@ public class StormEngine {
             result = new PyFloat((double) value);
         }
 
+        if (value instanceof Float) {
+            result = new PyFloat((float) value);
+        }
+
         if (value instanceof String) {
             result = new PyString((String) value);
+        }
+
+        if (value instanceof Boolean) {
+            result = new PyBoolean((Boolean) value);
         }
 
         return result;
     }
 
-    public void invokeOnChange(String variable, Object oldValue, Object newValue) {
+    public void invoke(String variable, Object oldValue, Object newValue) {
         PyObject function = (PyObject) jython.get("java_on_change_callback");
         if (function != null) {
             function.__call__(new PyString(variable), objectToPyObject(oldValue), objectToPyObject(newValue));
@@ -125,8 +133,10 @@ public class StormEngine {
         }
 
         channelList.stream().forEach(stormChannel -> {
-            stormChannel.getVariables().forEach(stormVariable ->
-                    variableList.put(stormVariable.getFullName(), stormVariable));
+            stormChannel.getVariables().forEach(stormVariable -> {
+                stormVariable.setEngine(this);
+                variableList.put(stormVariable.getFullName(), stormVariable);
+            });
 
             stormChannel.start();
         });
@@ -139,7 +149,16 @@ public class StormEngine {
     public static void writeVariable(String name, Object value) {
         IStormVariable variable = variableList.get(name);
         if (variable != null) {
-            variable.writeValue(value);
+            variable.write(value);
         }
+    }
+
+    public static Object readVariable(String name) {
+        IStormVariable variable = variableList.get(name);
+        if (variable != null) {
+            return variable.getValue();
+        }
+
+        return null;
     }
 }

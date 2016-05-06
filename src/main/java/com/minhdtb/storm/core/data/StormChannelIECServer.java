@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 public class StormChannelIECServer extends StormChannelIEC {
@@ -35,15 +36,18 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 serverSap.startListening();
             } catch (IOException e) {
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         } catch (UnknownHostException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
     }
 
     @Override
     public void stop() {
+        connections.stream().forEach(Connection::close);
+        connections.clear();
+
         serverSap.stop();
     }
 
@@ -56,18 +60,18 @@ public class StormChannelIECServer extends StormChannelIEC {
                 connection.waitForStartDT(new ConnectionListener(), 5000);
             } catch (IOException | TimeoutException e) {
                 connections.remove(connection);
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         }
 
         @Override
         public void serverStoppedListeningIndication(IOException e) {
-
+            Utils.error(e);
         }
 
         @Override
         public void connectionAttemptFailed(IOException e) {
-
+            Utils.error(e);
         }
     }
 
@@ -75,47 +79,22 @@ public class StormChannelIECServer extends StormChannelIEC {
 
         @Override
         public void newASdu(ASdu aSdu) {
-            for (IStormVariable variable : getVariables()) {
-                if (variable instanceof StormVariableIEC) {
-                    if (((StormVariableIEC) variable).getSectorAddress() == aSdu.getOriginatorAddress() &&
+            Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
+                    (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
                             ((StormVariableIEC) variable).getInformationObjectAddress() ==
-                                    aSdu.getInformationObjects()[0].getInformationObjectAddress()) {
-                        TypeId typeId = aSdu.getTypeIdentification();
-                        Object value = null;
-                        switch (typeId) {
-                            case M_ME_NA_1: {
-                                IeNormalizedValue normalizedValue = (IeNormalizedValue) aSdu.getInformationObjects()[0]
-                                        .getInformationElements()[0][0];
-                                value = normalizedValue.getValue();
-                                break;
-                            }
-                            case M_ME_NC_1: {
-                                IeShortFloat shortFloat = (IeShortFloat) aSdu.getInformationObjects()[0]
-                                        .getInformationElements()[0][0];
-                                value = shortFloat.getValue();
-                                break;
-                            }
-                            case C_SC_NA_1: {
-                                break;
-                            }
-                            case C_DC_NA_1: {
-                                break;
-                            }
-                        }
+                                    aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
 
-                        if (value != null) {
-                            variable.setValue(value);
-                        }
-
-                        break;
-                    }
+            if (found.isPresent()) {
+                Object value = Utils.ASduToObject(aSdu);
+                if (value != null) {
+                    found.get().setValue(value);
                 }
             }
         }
 
         @Override
         public void connectionClosed(IOException e) {
-
+            Utils.error(e);
         }
     }
 
@@ -125,7 +104,7 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 connection.send(aSdu);
             } catch (IOException e) {
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         });
     }
