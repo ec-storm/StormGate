@@ -26,13 +26,29 @@
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="src-noconflict/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    ace.require("ace/ext/language_tools");
+    var langTools = ace.require("ace/ext/language_tools");
+    var completer = {
+        getCompletions: function (editor, session, pos, prefix, callback) {
+            if (prefix.length === 0) {
+                callback(null, []);
+                return
+            }
+
+            callback(null, [
+                {name: "read", value: "read", score: 1000, meta: "StormGate"},
+                {name: "write", value: "write", score: 1000, meta: "StormGate"},
+                {name: "log", value: "log", score: 1000, meta: "StormGate"}
+            ]);
+        }
+    };
+
+    langTools.addCompleter(completer);
 
     var editor = ace.edit("editor");
 
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/python");
-    
+
     editor.setOptions({
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true
