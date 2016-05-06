@@ -1,6 +1,7 @@
 package com.minhdtb.storm.common;
 
 import com.minhdtb.storm.base.AbstractView;
+import com.minhdtb.storm.core.lib.j60870.*;
 import com.minhdtb.storm.services.Publisher;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -79,5 +80,90 @@ public class Utils {
         if (message != null) {
             publisher.publish("application:log", message + "\n");
         }
+    }
+
+    public static Object ASduToObject(ASdu aSdu) {
+        Object value = null;
+
+        TypeId typeId = aSdu.getTypeIdentification();
+        InformationElement element = aSdu.getInformationObjects()[0]
+                .getInformationElements()[0][0];
+
+        switch (typeId) {
+            case M_ME_NA_1: {
+                if (element instanceof IeNormalizedValue) {
+                    IeNormalizedValue normalizedValue = (IeNormalizedValue) element;
+                    value = normalizedValue.getValue();
+                }
+
+                break;
+            }
+            case M_ME_NC_1: {
+                if (element instanceof IeShortFloat) {
+                    IeShortFloat shortFloat = (IeShortFloat) element;
+                    value = shortFloat.getValue();
+                }
+
+                break;
+            }
+            case C_SC_NA_1: {
+                if (element instanceof IeSingleCommand) {
+                    IeSingleCommand singleCommand = (IeSingleCommand) element;
+                    value = singleCommand.isCommandStateOn();
+                }
+
+                break;
+            }
+            case C_DC_NA_1: {
+                if (element instanceof IeDoubleCommand) {
+                    IeDoubleCommand doubleCommand = (IeDoubleCommand) element;
+                    value = doubleCommand.getCommandState().getId();
+                }
+
+                break;
+            }
+        }
+
+        return value;
+    }
+
+    public static ASdu ObjectToASdu(TypeId typeId, CauseOfTransmission causeOfTransmission, int originatorAddress,
+                                    int sectorAddress, int informationObjectAddress, Object object) {
+        switch (typeId) {
+            case M_ME_NA_1: {
+                return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
+                        new InformationObject[]{
+                                new InformationObject(informationObjectAddress, new InformationElement[][]{
+                                        {new IeNormalizedValue((int) object)}
+                                })
+                        });
+            }
+            case M_ME_NC_1: {
+                return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
+                        new InformationObject[]{
+                                new InformationObject(informationObjectAddress, new InformationElement[][]{
+                                        {new IeShortFloat((float) object)}
+                                })
+                        });
+            }
+            case C_SC_NA_1: {
+                return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
+                        new InformationObject[]{
+                                new InformationObject(informationObjectAddress, new InformationElement[][]{
+                                        {new IeSingleCommand((boolean) object, 0, false)}
+                                })
+                        });
+            }
+            case C_DC_NA_1: {
+                return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
+                        new InformationObject[]{
+                                new InformationObject(informationObjectAddress, new InformationElement[][]{
+                                        {new IeDoubleCommand(IeDoubleCommand.DoubleCommandState.getInstance((int) object), 0, false)}
+                                })
+                        });
+            }
+        }
+
+        return null;
     }
 }

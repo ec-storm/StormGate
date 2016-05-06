@@ -1,5 +1,6 @@
 def read(name):
-    print 'read ', name
+    from com.minhdtb.storm.core.engine import StormEngine
+    return StormEngine.readVariable(name)
 
 
 def write(name, value):

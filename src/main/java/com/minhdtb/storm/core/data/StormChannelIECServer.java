@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 public class StormChannelIECServer extends StormChannelIEC {
@@ -44,9 +45,8 @@ public class StormChannelIECServer extends StormChannelIEC {
 
     @Override
     public void stop() {
-        for (Connection myconnection : connections) {
-            myconnection.close();
-        }
+        connections.stream().forEach(Connection::close);
+        connections.clear();
 
         serverSap.stop();
     }
@@ -66,12 +66,12 @@ public class StormChannelIECServer extends StormChannelIEC {
 
         @Override
         public void serverStoppedListeningIndication(IOException e) {
-
+            Utils.writeLog(e.getMessage());
         }
 
         @Override
         public void connectionAttemptFailed(IOException e) {
-
+            Utils.writeLog(e.getMessage());
         }
     }
 
@@ -79,64 +79,22 @@ public class StormChannelIECServer extends StormChannelIEC {
 
         @Override
         public void newASdu(ASdu aSdu) {
-            for (IStormVariable variable : getVariables()) {
-                if (variable instanceof StormVariableIEC) {
-                    if (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
+            Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
+                    (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
                             ((StormVariableIEC) variable).getInformationObjectAddress() ==
-                                    aSdu.getInformationObjects()[0].getInformationObjectAddress()) {
-                        TypeId typeId = aSdu.getTypeIdentification();
-                        Object value = null;
-                        InformationElement element = aSdu.getInformationObjects()[0]
-                                .getInformationElements()[0][0];
+                                    aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
 
-                        switch (typeId) {
-                            case M_ME_NA_1: {
-                                if (element instanceof IeNormalizedValue) {
-                                    IeNormalizedValue normalizedValue = (IeNormalizedValue) element;
-                                    value = normalizedValue.getValue();
-                                }
-
-                                break;
-                            }
-                            case M_ME_NC_1: {
-                                if (element instanceof IeShortFloat) {
-                                    IeShortFloat shortFloat = (IeShortFloat) element;
-                                    value = shortFloat.getValue();
-                                }
-
-                                break;
-                            }
-                            case C_SC_NA_1: {
-                                if (element instanceof IeSingleCommand) {
-                                    IeSingleCommand singleCommand = (IeSingleCommand) element;
-                                    value = singleCommand.isCommandStateOn();
-                                }
-
-                                break;
-                            }
-                            case C_DC_NA_1: {
-                                if (element instanceof IeDoubleCommand) {
-                                    IeDoubleCommand doubleCommand = (IeDoubleCommand) element;
-                                    value = doubleCommand.getCommandState();
-                                }
-
-                                break;
-                            }
-                        }
-
-                        if (value != null) {
-                            variable.setValue(value);
-                        }
-
-                        break;
-                    }
+            if (found.isPresent()) {
+                Object value = Utils.ASduToObject(aSdu);
+                if (value != null) {
+                    found.get().setValue(value);
                 }
             }
         }
 
         @Override
         public void connectionClosed(IOException e) {
-
+            Utils.writeLog(e.getMessage());
         }
     }
 
