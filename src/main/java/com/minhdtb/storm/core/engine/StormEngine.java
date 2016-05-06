@@ -95,7 +95,7 @@ public class StormEngine {
         return result;
     }
 
-    public void invokeOnChange(String variable, Object oldValue, Object newValue) {
+    public void invoke(String variable, Object oldValue, Object newValue) {
         PyObject function = (PyObject) jython.get("java_on_change_callback");
         if (function != null) {
             function.__call__(new PyString(variable), objectToPyObject(oldValue), objectToPyObject(newValue));
@@ -145,7 +145,16 @@ public class StormEngine {
     public static void writeVariable(String name, Object value) {
         IStormVariable variable = variableList.get(name);
         if (variable != null) {
-            variable.writeValue(value);
+            variable.write(value);
         }
+    }
+
+    public static Object readVariable(String name) {
+        IStormVariable variable = variableList.get(name);
+        if (variable != null) {
+            return variable.getValue();
+        }
+
+        return null;
     }
 }

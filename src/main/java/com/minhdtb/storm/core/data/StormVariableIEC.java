@@ -1,7 +1,10 @@
 package com.minhdtb.storm.core.data;
 
 
-import com.minhdtb.storm.core.lib.j60870.*;
+import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.lib.j60870.ASdu;
+import com.minhdtb.storm.core.lib.j60870.CauseOfTransmission;
+import com.minhdtb.storm.core.lib.j60870.TypeId;
 import com.minhdtb.storm.entities.Variable;
 
 public class StormVariableIEC extends StormVariable {
@@ -39,48 +42,32 @@ public class StormVariableIEC extends StormVariable {
     }
 
     @Override
-    public void writeValue(Object value) {
+    public void write(Object value) {
         IStormChannel channel = getChannel();
         if (channel instanceof StormChannelIEC) {
             ASdu aSdu = null;
+
             switch (getDataType()) {
                 case 0: {
-                    aSdu = new ASdu(TypeId.M_ME_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
-                            new InformationObject[]{
-                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
-                                            {new IeNormalizedValue((int) value)}
-                                    })
-                            });
-
+                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                            getInformationObjectAddress(), value);
                     break;
                 }
                 case 1: {
-                    aSdu = new ASdu(TypeId.M_ME_NC_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
-                            new InformationObject[]{
-                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
-                                            {new IeShortFloat((float) value)}
-                                    })
-                            });
+                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NC_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                            getInformationObjectAddress(), value);
 
                     break;
                 }
                 case 2: {
-                    aSdu = new ASdu(TypeId.C_SC_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
-                            new InformationObject[]{
-                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
-                                            {new IeSingleCommand(true, 0, true)}
-                                    })
-                            });
+                    aSdu = Utils.ObjectToASdu(TypeId.C_SC_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                            getInformationObjectAddress(), value);
 
                     break;
                 }
                 case 3: {
-                    aSdu = new ASdu(TypeId.C_DC_NA_1, false, CauseOfTransmission.SPONTANEOUS, false, false, 1, getSectorAddress(),
-                            new InformationObject[]{
-                                    new InformationObject(getInformationObjectAddress(), new InformationElement[][]{
-                                            {new IeDoubleCommand(IeDoubleCommand.DoubleCommandState.ON, 0, true)}
-                                    })
-                            });
+                    aSdu = Utils.ObjectToASdu(TypeId.C_DC_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                            getInformationObjectAddress(), value);
 
                     break;
                 }
@@ -88,7 +75,7 @@ public class StormVariableIEC extends StormVariable {
 
             if (aSdu != null) {
                 ((StormChannelIEC) channel).send(aSdu);
-                super.writeValue(value);
+                super.write(value);
             }
         }
     }

@@ -10,7 +10,7 @@ public interface IStormVariable {
 
     void setValue(Object value);
 
-    void writeValue(Object value);
+    void write(Object value);
 
     IStormChannel getChannel();
 
