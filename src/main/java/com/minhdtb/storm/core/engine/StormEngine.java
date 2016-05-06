@@ -13,8 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +50,10 @@ public class StormEngine {
 
         try {
             jython.eval(new String(profile.getScript()));
-            jython.eval(new FileReader("./scripts/engine.py"));
+            jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/engine.py"))));
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
-        } catch (ScriptException | FileNotFoundException e) {
+        } catch (ScriptException e) {
             Utils.error(e);
         }
 

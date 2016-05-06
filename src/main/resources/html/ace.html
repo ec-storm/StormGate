@@ -26,13 +26,17 @@
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="src-noconflict/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    ace.require("ace/ext/language_tools");
+
     var editor = ace.edit("editor");
-    editor.setOptions({
-        enableBasicAutocompletion: true
-    });
 
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/python");
+    
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true
+    });
 
     function pasteContent(content) {
         editor.onPaste(content);
