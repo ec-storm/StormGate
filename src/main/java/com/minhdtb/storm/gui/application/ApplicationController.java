@@ -139,6 +139,8 @@ public class ApplicationController extends AbstractController {
         setButtonRun(MaterialDesignIcon.PLAY, "black", "START");
         buttonRun.setDisable(true);
 
+        textFlowLog.setStyle("-fx-background-color: white");
+
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
         GlyphsDude.setIcon(menuItemOpenProfile, MaterialDesignIcon.FOLDER, "1.5em");
