@@ -31,14 +31,11 @@ public class StormEngine {
     private List<IStormChannel> channelList = new ArrayList<>();
 
     private static HashMap<String, IStormVariable> variableList = new HashMap<>();
+    private ScriptEngineManager engineManager;
 
     @PostConstruct
     private void initialize() {
-        PySystemState systemState = new PySystemState();
-        systemState.path.add("./scripts");
-        Py.setSystemState(systemState);
-
-        ScriptEngineManager engineManager = new ScriptEngineManager();
+        engineManager = new ScriptEngineManager();
         jython = engineManager.getEngineByName("jython");
     }
 
@@ -49,6 +46,9 @@ public class StormEngine {
         }
 
         try {
+            jython = null;
+            jython = engineManager.getEngineByName("jython");
+            jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/functions.py"))));
             jython.eval(new String(profile.getScript()));
             jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/engine.py"))));
             PyObject main = (PyObject) jython.get("main");

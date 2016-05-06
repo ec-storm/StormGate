@@ -1,7 +1,6 @@
 import time
 from threading import Thread
 
-callback_list = {}
 stopped = False
 worker = None
 
@@ -21,9 +20,12 @@ class Worker(Thread):
 
 
 def java_on_change_callback(variable, old_value, new_value):
-    global callback_list
-    if variable in callback_list:
-        callback_list[variable](old_value, new_value)
+    try:
+        method = globals()['change_' + variable.replace('.', '_')]
+        if method is not None:
+            method(old_value, new_value)
+    except:
+        pass
 
 
 def java_stop_thread():
