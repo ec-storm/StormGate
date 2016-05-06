@@ -36,10 +36,10 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 serverSap.startListening();
             } catch (IOException e) {
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         } catch (UnknownHostException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
     }
 
@@ -60,18 +60,18 @@ public class StormChannelIECServer extends StormChannelIEC {
                 connection.waitForStartDT(new ConnectionListener(), 5000);
             } catch (IOException | TimeoutException e) {
                 connections.remove(connection);
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         }
 
         @Override
         public void serverStoppedListeningIndication(IOException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
 
         @Override
         public void connectionAttemptFailed(IOException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
     }
 
@@ -94,7 +94,7 @@ public class StormChannelIECServer extends StormChannelIEC {
 
         @Override
         public void connectionClosed(IOException e) {
-            Utils.writeLog(e.getMessage());
+            Utils.error(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class StormChannelIECServer extends StormChannelIEC {
             try {
                 connection.send(aSdu);
             } catch (IOException e) {
-                Utils.writeLog(e.getMessage());
+                Utils.error(e);
             }
         });
     }

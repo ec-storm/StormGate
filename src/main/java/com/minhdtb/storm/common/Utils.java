@@ -76,9 +76,15 @@ public class Utils {
         };
     }
 
-    public static void writeLog(String message) {
+    public static void log(String message) {
         if (message != null) {
             publisher.publish("application:log", message + "\n");
+        }
+    }
+
+    public static void error(Exception e) {
+        if (e != null) {
+            publisher.publish("application:error", e.toString() + "\n");
         }
     }
 
