@@ -26,30 +26,22 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.StyleSpans;
-import org.fxmisc.richtext.StyleSpansBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Calendar.getInstance;
@@ -58,13 +50,15 @@ import static java.util.Calendar.getInstance;
 public class ApplicationController extends AbstractController {
 
     @FXML
+    private WebView webViewScript;
+    @FXML
+    public AnchorPane paneScript;
+    @FXML
     private ScrollPane scrollLog;
     @FXML
     public Button buttonRun;
     @FXML
     public TextFlow textFlowLog;
-    @FXML
-    private CodeArea textAreaScript;
     @FXML
     private Label labelStatus;
     @FXML
@@ -99,8 +93,6 @@ public class ApplicationController extends AbstractController {
     private DialogNewVariableIECView dialogNewVariableIECView;
 
     private ContextMenu menuTreeView = new ContextMenu();
-
-    private Pattern pattern;
 
     private boolean isRunning;
 
@@ -139,6 +131,27 @@ public class ApplicationController extends AbstractController {
         setButtonRun(MaterialDesignIcon.PLAY, "black", "START");
         buttonRun.setDisable(true);
 
+        Platform.runLater(() -> {
+            webViewScript = new WebView();
+            webViewScript.getEngine().load(getClass().getResource("/html/ace.html").toExternalForm());
+            paneScript.getChildren().add(webViewScript);
+            AnchorPane.setTopAnchor(webViewScript, 3.0);
+            AnchorPane.setBottomAnchor(webViewScript, 3.0);
+            AnchorPane.setLeftAnchor(webViewScript, 3.0);
+            AnchorPane.setRightAnchor(webViewScript, 3.0);
+
+            webViewScript.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+                if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V) {
+                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+                    webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
+                }
+            });
+
+            webViewScript.setContextMenuEnabled(false);
+        });
+
+
         textFlowLog.setStyle("-fx-background-color: white");
 
         menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
@@ -160,7 +173,7 @@ public class ApplicationController extends AbstractController {
                 .setAction(event -> dialogOpenProfileView.showDialog(getView())).build());
 
         treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
-        textAreaScript.setParagraphGraphicFactory(LineNumberFactory.get(textAreaScript));
+
         treeViewProfile.setOnMouseClicked(event -> {
             if (treeViewProfile.getSelectionModel().getSelectedItem() != null) {
                 Object selected = treeViewProfile.getSelectionModel().getSelectedItem().getValue();
@@ -173,33 +186,6 @@ public class ApplicationController extends AbstractController {
                 }
             }
         });
-
-        List<String> keywords = Arrays.asList(
-                "and", "as", "assert", "break", "class", "continue",
-                "def", "del", "elif", "else", "except", "exec",
-                "finally", "for", "from", "global", "if", "import",
-                "in", "is", "labmda", "not", "or", "pass",
-                "print", "raise", "return", "try", "while", "with", "yield"
-        );
-
-        String keywordPattern = "\\b(" + String.join("|", keywords) + ")\\b";
-        String parenPattern = "\\(|\\)";
-        String bracketPattern = "\\[|\\]";
-        String stringPattern = "\"([^\"\\\\]|\\\\.)*\"" + "|" + "\'([^\'\\\\]|\\\\.)*\'";
-        String commentPattern = "#[^\n]*" + "|" + "\'\'\'\'(.|\\R)*?\'\'\'";
-
-        pattern = Pattern.compile(
-                "(?<KEYWORD>" + keywordPattern + ")"
-                        + "|(?<PAREN>" + parenPattern + ")"
-                        + "|(?<BRACKET>" + bracketPattern + ")"
-                        + "|(?<STRING>" + stringPattern + ")"
-                        + "|(?<COMMENT>" + commentPattern + ")"
-        );
-
-        textAreaScript.richChanges()
-                .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
-                .subscribe(change -> textAreaScript.setStyleSpans(0,
-                        computeHighlighting(textAreaScript.getText())));
     }
 
     private void openProfile(Object object) {
@@ -215,9 +201,17 @@ public class ApplicationController extends AbstractController {
                 treeViewProfile.setRoot(rootItem);
                 rootItem.setExpanded(true);
 
-                textAreaScript.clear();
                 if (profile.getScript() != null) {
-                    textAreaScript.replaceText(0, 0, new String(profile.getScript()));
+                    Platform.runLater(() -> {
+                        String script = new String(profile.getScript());
+                        script = script.replace("'", "\\'");
+                        script = script.replace(System.getProperty("line.separator"), "\\n");
+                        script = script.replace("\n", "\\n");
+                        script = script.replace("\r", "\\n");
+                        webViewScript.getEngine().executeScript("editor.setValue('" + script + "')");
+                    });
+                } else {
+                    Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setValue('')"));
                 }
 
                 buttonRun.setDisable(false);
@@ -239,6 +233,7 @@ public class ApplicationController extends AbstractController {
                     if (Objects.equals(profileCurrent.getId(), profile.getId())) {
                         treeViewProfile.setRoot(null);
                         buttonRun.setDisable(true);
+                        Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setValue('')"));
                     }
                 }
             }));
@@ -297,32 +292,6 @@ public class ApplicationController extends AbstractController {
 
         textFlowLog.getChildren().addAll(txtTime, txtMessage);
         scrollLog.setVvalue(1.0);
-    }
-
-    private StyleSpans<Collection<String>> computeHighlighting(String text) {
-        Matcher matcher = pattern.matcher(text);
-        int lastKwEnd = 0;
-        StyleSpansBuilder<Collection<String>> spansBuilder
-                = new StyleSpansBuilder<>();
-        while (matcher.find()) {
-            String styleClass =
-                    matcher.group("KEYWORD") != null ? "keyword" :
-                            matcher.group("PAREN") != null ? "paren" :
-                                    matcher.group("BRACKET") != null ? "bracket" :
-                                            matcher.group("STRING") != null ? "string" :
-                                                    matcher.group("COMMENT") != null ? "comment" :
-                                                            null;
-            if (styleClass != null) {
-                spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-                spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
-            }
-
-            lastKwEnd = matcher.end();
-        }
-
-        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
-
-        return spansBuilder.create();
     }
 
     private TreeItem<Object> createNode(Object o) {
@@ -413,7 +382,11 @@ public class ApplicationController extends AbstractController {
     public void actionSaveProfile() {
         Profile profile = dataManager.getCurrentProfile();
         if (profile != null) {
-            profile.setScript(textAreaScript.getText().getBytes(Charset.forName("UTF-8")));
+            Platform.runLater(() -> {
+                String script = (String) webViewScript.getEngine().executeScript("editor.getValue()");
+                profile.setScript(script.getBytes());
+            });
+
             dataManager.saveProfile(profile, null);
         }
     }
@@ -424,8 +397,6 @@ public class ApplicationController extends AbstractController {
             stormEngine.start(profile -> {
                 setButtonRun(MaterialDesignIcon.STOP, "red", "STOP");
                 treeViewProfile.setDisable(true);
-                textAreaScript.setDisable(true);
-                textAreaScript.setStyle("-fx-background-color: #cccccc");
                 labelStatus.setText("Running.");
                 textFlowLog.getChildren().clear();
                 isRunning = true;
@@ -436,8 +407,6 @@ public class ApplicationController extends AbstractController {
             isRunning = false;
             labelStatus.setText("Stopped.");
             treeViewProfile.setDisable(false);
-            textAreaScript.setDisable(false);
-            textAreaScript.setStyle("-fx-background-color: white");
         }
     }
 
@@ -585,8 +554,8 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
-                        textAreaScript.clear();
                         buttonRun.setDisable(true);
+                        Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setValue('')"));
                     }).build());
         }
 
