@@ -66,7 +66,7 @@ abstract class StormVariable implements IStormVariable {
 
     @Override
     public void setValue(Object value) {
-        if (!this.value.equals(value)) {
+        if (this.value != value) {
             getEngine().invokeOnChange(getFullName(), this.value, value);
             this.value = value;
         }

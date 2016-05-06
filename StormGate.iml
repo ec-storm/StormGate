@@ -7,9 +7,6 @@
           <file>file://$MODULE_DIR$/src/main/java/com/minhdtb/storm/Main.java</file>
           <file>file://$MODULE_DIR$/src/main/resources/application.properties</file>
         </fileset>
-        <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/java/com/minhdtb/storm/Main.java</file>
-        </fileset>
       </configuration>
     </facet>
     <facet type="Python" name="Python">

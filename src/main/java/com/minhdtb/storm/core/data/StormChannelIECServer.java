@@ -44,6 +44,10 @@ public class StormChannelIECServer extends StormChannelIEC {
 
     @Override
     public void stop() {
+        for (Connection myconnection : connections) {
+            myconnection.close();
+        }
+
         serverSap.stop();
     }
 
@@ -77,28 +81,45 @@ public class StormChannelIECServer extends StormChannelIEC {
         public void newASdu(ASdu aSdu) {
             for (IStormVariable variable : getVariables()) {
                 if (variable instanceof StormVariableIEC) {
-                    if (((StormVariableIEC) variable).getSectorAddress() == aSdu.getOriginatorAddress() &&
+                    if (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
                             ((StormVariableIEC) variable).getInformationObjectAddress() ==
                                     aSdu.getInformationObjects()[0].getInformationObjectAddress()) {
                         TypeId typeId = aSdu.getTypeIdentification();
                         Object value = null;
+                        InformationElement element = aSdu.getInformationObjects()[0]
+                                .getInformationElements()[0][0];
+
                         switch (typeId) {
                             case M_ME_NA_1: {
-                                IeNormalizedValue normalizedValue = (IeNormalizedValue) aSdu.getInformationObjects()[0]
-                                        .getInformationElements()[0][0];
-                                value = normalizedValue.getValue();
+                                if (element instanceof IeNormalizedValue) {
+                                    IeNormalizedValue normalizedValue = (IeNormalizedValue) element;
+                                    value = normalizedValue.getValue();
+                                }
+
                                 break;
                             }
                             case M_ME_NC_1: {
-                                IeShortFloat shortFloat = (IeShortFloat) aSdu.getInformationObjects()[0]
-                                        .getInformationElements()[0][0];
-                                value = shortFloat.getValue();
+                                if (element instanceof IeShortFloat) {
+                                    IeShortFloat shortFloat = (IeShortFloat) element;
+                                    value = shortFloat.getValue();
+                                }
+
                                 break;
                             }
                             case C_SC_NA_1: {
+                                if (element instanceof IeSingleCommand) {
+                                    IeSingleCommand singleCommand = (IeSingleCommand) element;
+                                    value = singleCommand.isCommandStateOn();
+                                }
+
                                 break;
                             }
                             case C_DC_NA_1: {
+                                if (element instanceof IeDoubleCommand) {
+                                    IeDoubleCommand doubleCommand = (IeDoubleCommand) element;
+                                    value = doubleCommand.getCommandState();
+                                }
+
                                 break;
                             }
                         }

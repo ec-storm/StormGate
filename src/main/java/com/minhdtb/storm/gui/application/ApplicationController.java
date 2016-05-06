@@ -414,6 +414,7 @@ public class ApplicationController extends AbstractController {
                 textAreaScript.setDisable(true);
                 textAreaScript.setStyle("-fx-background-color: #cccccc");
                 labelStatus.setText("Running.");
+                textFlowLog.getChildren().removeAll();
                 isRunning = true;
             });
         } else {

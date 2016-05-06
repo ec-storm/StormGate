@@ -76,6 +76,8 @@ public class Utils {
     }
 
     public static void writeLog(String message) {
-        publisher.publish("application:log", message + "\n");
+        if (message != null) {
+            publisher.publish("application:log", message + "\n");
+        }
     }
 }
