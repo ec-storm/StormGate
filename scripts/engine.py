@@ -22,8 +22,8 @@ class Worker(Thread):
 
 def java_on_change_callback(variable, old_value, new_value):
     global callback_list
-    print callback_list
-    callback_list[variable](old_value, new_value)
+    if variable in callback_list:
+        callback_list[variable](old_value, new_value)
 
 
 def java_stop_thread():

@@ -74,7 +74,7 @@ public class StormEngine {
     }
 
     private PyObject objectToPyObject(Object value) {
-        PyObject result = null;
+        PyObject result = new PyObject(PyObject.TYPE);
 
         if (value instanceof Integer) {
             result = new PyInteger((int) value);
@@ -86,6 +86,10 @@ public class StormEngine {
 
         if (value instanceof String) {
             result = new PyString((String) value);
+        }
+
+        if (value instanceof Boolean) {
+            result = new PyBoolean((Boolean) value);
         }
 
         return result;
@@ -125,8 +129,10 @@ public class StormEngine {
         }
 
         channelList.stream().forEach(stormChannel -> {
-            stormChannel.getVariables().forEach(stormVariable ->
-                    variableList.put(stormVariable.getFullName(), stormVariable));
+            stormChannel.getVariables().forEach(stormVariable -> {
+                stormVariable.setEngine(this);
+                variableList.put(stormVariable.getFullName(), stormVariable);
+            });
 
             stormChannel.start();
         });
