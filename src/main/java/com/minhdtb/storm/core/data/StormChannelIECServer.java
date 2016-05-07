@@ -57,7 +57,7 @@ public class StormChannelIECServer extends StormChannelIEC {
         public void connectionIndication(Connection connection) {
             try {
                 connections.add(connection);
-                connection.waitForStartDT(new ConnectionListener(), 5000);
+                connection.waitForStartDT(new ConnectionListener(), TIMEOUT);
             } catch (IOException | TimeoutException e) {
                 connections.remove(connection);
                 Utils.error(e);
