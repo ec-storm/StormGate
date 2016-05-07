@@ -117,8 +117,8 @@ public class ApplicationController extends AbstractController {
                         "-fx-fill: black;-fx-font-size: 14px;", (String) message)));
 
         getSubscriber().on("application:error", message -> Platform.runLater(() ->
-                writeLog("-fx-fill: #ff4405;-fx-font-weight:bold;",
-                        "-fx-fill: #ff4405;-fx-font-size: 14px;", (String) message)));
+                writeLog("-fx-fill: red;-fx-font-weight:bold;",
+                        "-fx-fill: red;-fx-font-size: 14px;", (String) message)));
 
         initGUI();
     }
