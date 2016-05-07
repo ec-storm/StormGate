@@ -143,7 +143,7 @@ public class ApplicationController extends AbstractController {
             webViewScript.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                 if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V) {
                     Clipboard clipboard = Clipboard.getSystemClipboard();
-                    String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+                    String content = Utils.replaceSpecialCharacters((String) clipboard.getContent(DataFormat.PLAIN_TEXT));
                     if (content != null) {
                         webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
                     }
@@ -205,11 +205,7 @@ public class ApplicationController extends AbstractController {
 
                 if (profile.getScript() != null) {
                     Platform.runLater(() -> {
-                        String script = new String(profile.getScript());
-                        script = script.replace("'", "\\'");
-                        script = script.replace(System.getProperty("line.separator"), "\\n");
-                        script = script.replace("\n", "\\n");
-                        script = script.replace("\r", "\\n");
+                        String script = Utils.replaceSpecialCharacters(new String(profile.getScript()));
                         webViewScript.getEngine().executeScript("editor.setValue('" + script + "')");
                     });
                 } else {
