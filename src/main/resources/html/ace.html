@@ -9,6 +9,11 @@
             overflow: hidden;
         }
 
+        .ace_storm_gate {
+            color: #000;
+            font-weight: bold;
+        }
+
         #editor {
             margin: 0;
             position: absolute;
@@ -46,7 +51,7 @@
 
     var editor = ace.edit("editor");
 
-    editor.setTheme("ace/theme/twilight");
+    editor.setTheme("ace/theme/crimson_editor");
     editor.session.setMode("ace/mode/python");
 
     editor.setOptions({
