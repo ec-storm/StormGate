@@ -15,6 +15,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +151,8 @@ public class StormEngine {
         IStormVariable variable = variableList.get(name);
         if (variable != null) {
             variable.write(value);
+        } else {
+            Utils.error(new InvalidParameterException("Variable was not found: " + name));
         }
     }
 
@@ -157,6 +160,8 @@ public class StormEngine {
         IStormVariable variable = variableList.get(name);
         if (variable != null) {
             return variable.getValue();
+        } else {
+            Utils.error(new InvalidParameterException("Variable was not found: " + name));
         }
 
         return null;

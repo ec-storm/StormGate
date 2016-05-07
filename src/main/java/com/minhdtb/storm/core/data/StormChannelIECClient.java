@@ -80,7 +80,7 @@ public class StormChannelIECClient extends StormChannelIEC {
                                 Utils.error(e);
                                 connection = null;
                             }
-                        }, 5000);
+                        }, TIMEOUT);
 
                     } catch (IOException | TimeoutException e) {
                         Utils.error(e);
@@ -90,6 +90,7 @@ public class StormChannelIECClient extends StormChannelIEC {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
+                        Utils.error(e);
                         Thread.currentThread().interrupt();
                     }
                 }
