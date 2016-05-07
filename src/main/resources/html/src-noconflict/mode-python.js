@@ -26,9 +26,13 @@ var PythonHighlightRules = function() {
         "__import__|complex|hash|min|set|apply|delattr|help|next|setattr|" +
         "buffer|dict|hex|object|slice|coerce|dir|id|oct|sorted|intern"
     );
+
+    var stormGateFunctions = ("write|read|log");
+
     var keywordMapper = this.createKeywordMapper({
         "invalid.deprecated": "debugger",
         "support.function": builtinFunctions,
+        "storm_gate": stormGateFunctions,
         "constant.language": builtinConstants,
         "keyword": keywords
     }, "identifier");
@@ -229,27 +233,27 @@ oop.inherits(Mode, TextMode);
         "break": 1,
         "continue": 1
     };
-    
+
     this.checkOutdent = function(state, line, input) {
         if (input !== "\r\n" && input !== "\r" && input !== "\n")
             return false;
 
         var tokens = this.getTokenizer().getLineTokens(line.trim(), state).tokens;
-        
+
         if (!tokens)
             return false;
         do {
             var last = tokens.pop();
         } while (last && (last.type == "comment" || (last.type == "text" && last.value.match(/^\s+$/))));
-        
+
         if (!last)
             return false;
-        
+
         return (last.type == "keyword" && outdents[last.value]);
     };
 
     this.autoOutdent = function(state, doc, row) {
-        
+
         row += 1;
         var indent = this.$getIndent(doc.getLine(row));
         var tab = doc.getTabString();
