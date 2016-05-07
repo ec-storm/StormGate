@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @ToString(exclude = {"attributes"})
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "channel_id", "name" }))
 public class Variable implements Serializable {
 
     @Id

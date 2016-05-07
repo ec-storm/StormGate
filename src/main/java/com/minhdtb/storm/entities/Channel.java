@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @ToString(exclude = {"variables", "attributes"})
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "profile_id", "name" }))
 public class Channel implements Serializable {
 
     @Id
