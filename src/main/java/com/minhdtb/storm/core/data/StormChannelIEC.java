@@ -9,6 +9,8 @@ import java.util.List;
 
 abstract class StormChannelIEC extends StormChannel {
 
+    protected final int TIMEOUT = 5000;
+
     private List<IStormVariable> variables = new ArrayList<>();
 
     String getHost() {

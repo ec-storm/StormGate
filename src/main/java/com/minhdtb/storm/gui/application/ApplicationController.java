@@ -142,9 +142,11 @@ public class ApplicationController extends AbstractController {
 
             webViewScript.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                 if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V) {
-                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    Clipboard clipboard = Clipboard.getSystemClipboard();
                     String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
-                    webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
+                    if (content != null) {
+                        webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
+                    }
                 }
             });
 
