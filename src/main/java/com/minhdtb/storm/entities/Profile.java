@@ -13,6 +13,7 @@ import java.util.List;
 @ToString(exclude = {"channels"})
 @Entity
 @NoArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "name" }))
 public class Profile implements Serializable {
 
     @Id
