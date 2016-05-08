@@ -80,7 +80,9 @@ public class StormChannelIECClient extends StormChannelIEC {
                         @Override
                         public void connectionClosed(IOException e) {
                             Utils.error(e);
-                            countDownLatch.countDown();
+                            if (countDownLatch != null) {
+                                countDownLatch.countDown();
+                            }
                         }
                     }, TIMEOUT);
 
@@ -94,7 +96,9 @@ public class StormChannelIECClient extends StormChannelIEC {
 
                 } catch (IOException | TimeoutException e) {
                     Utils.error(e);
-                    countDownLatch.countDown();
+                    if (countDownLatch != null) {
+                        countDownLatch.countDown();
+                    }
                 }
 
                 try {
