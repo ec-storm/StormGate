@@ -101,6 +101,7 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:openProfile", this::openProfile);
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);
+        getSubscriber().on("application:saveProfileProperties", this::saveProfileProperties);
 
         getSubscriber().on("application:addChannel", this::addChannel);
         getSubscriber().on("application:deleteChannel", this::deleteChannel);
@@ -213,6 +214,7 @@ public class ApplicationController extends AbstractController {
                 }
 
                 buttonRun.setDisable(false);
+                showProfileProperties(profile);
             }));
         }
     }
@@ -278,6 +280,7 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
         propDetail.getItems().add(new PropertyItem("General", "Description", profile.getDescription()));
+        propDetail.setUserData(profile);
     }
 
     private void writeLog(String timeStyle, String textStyle, String message) {
@@ -407,6 +410,34 @@ public class ApplicationController extends AbstractController {
             labelStatus.setText("Stopped.");
             treeViewProfile.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
+        }
+    }
+
+    @FXML
+    public void actionSave() {
+        Object userData = propDetail.getUserData();
+        String confirmMsg = "";
+        String tmpKey = "application:";
+        if (userData instanceof Profile) {
+            confirmMsg = String.format("Do you really want to save profile \"%s\"?", ((Profile) userData).getName());
+            tmpKey += "saveProfileProperties";
+        }
+        final String key = tmpKey;
+        Utils.showConfirm(getView(), confirmMsg, e -> getPublisher().publish(key, userData));
+    }
+
+    private void saveProfileProperties(Object userData) {
+        if (!(userData instanceof Profile)) {
+            return;
+        }
+        Profile profile = (Profile) userData;
+        List<PropertySheet.Item> items = propDetail.getItems();
+        profile.setName((String) items.get(0).getValue());
+        if (!dataManager.existProfile(profile)) {
+            profile.setDescription((String) items.get(1).getValue());
+            dataManager.saveProfile((Profile) userData, null);
+        } else {
+            Utils.showError(getView(), String.format("Profile \"%s\" is already exists.", profile.getName()));
         }
     }
 
