@@ -101,7 +101,7 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:openProfile", this::openProfile);
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);
-        getSubscriber().on("application:saveProfileProperties", this::saveProfileProperties);
+        getSubscriber().on("application:saveProfile", this::saveProfile);
 
         getSubscriber().on("application:addChannel", this::addChannel);
         getSubscriber().on("application:deleteChannel", this::deleteChannel);
@@ -416,17 +416,17 @@ public class ApplicationController extends AbstractController {
     @FXML
     public void actionSave() {
         Object userData = propDetail.getUserData();
-        String confirmMsg = "";
+        String confirmMessage = "";
         String tmpKey = "application:";
         if (userData instanceof Profile) {
-            confirmMsg = String.format("Do you really want to save profile \"%s\"?", ((Profile) userData).getName());
-            tmpKey += "saveProfileProperties";
+            confirmMessage = String.format("Do you really want to save profile \"%s\"?", ((Profile) userData).getName());
+            tmpKey += "saveProfile";
         }
         final String key = tmpKey;
-        Utils.showConfirm(getView(), confirmMsg, e -> getPublisher().publish(key, userData));
+        Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish(key, userData));
     }
 
-    private void saveProfileProperties(Object userData) {
+    private void saveProfile(Object userData) {
         if (!(userData instanceof Profile)) {
             return;
         }
@@ -442,7 +442,7 @@ public class ApplicationController extends AbstractController {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
             Platform.runLater(() ->
-                    Utils.showError(getView(), String.format("Profile \"%s\" is already exists.", profile.getName())));
+                    Utils.showError(getView(), String.format("Profile \"%s\" already exists.", profile.getName())));
         }
     }
 
