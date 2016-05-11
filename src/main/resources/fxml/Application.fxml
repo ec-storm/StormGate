@@ -20,7 +20,7 @@
         </Menu>
     </MenuBar>
     <ToolBar prefHeight="40.0" prefWidth="200.0">
-        <Button fx:id="buttonRun" mnemonicParsing="false" onAction="#actionRun">
+        <Button fx:id="buttonRun" prefHeight="30.0" prefWidth="110.0" mnemonicParsing="false" onAction="#actionRun">
         </Button>
     </ToolBar>
     <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="379.0" prefWidth="814.0"
@@ -43,19 +43,17 @@
                                           AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0"
                                           AnchorPane.topAnchor="3.0"/>
                             </AnchorPane>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                <BorderPane>
-                                    <center>
-                                        <VBox fx:id="propDetailBox" visible="false">
-                                            <PropertySheet fx:id="propDetail"/>
-                                            <Button fx:id="button" mnemonicParsing="false" onAction="#actionSave" text="Save">
-                                                <VBox.margin>
-                                                    <Insets bottom="3.0" left="3.0" />
-                                                </VBox.margin>
-                                            </Button>
-                                        </VBox>
-                                    </center>
-                                </BorderPane>
+                            <AnchorPane minHeight="0.0" prefHeight="160.0" prefWidth="100.0">
+                                <VBox fx:id="propDetailBox" visible="false" AnchorPane.bottomAnchor="3.0"
+                                      AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0"
+                                      AnchorPane.topAnchor="3.0" style="-fx-border-style: solid; -fx-border-color: #c8c8c8;">
+                                    <PropertySheet fx:id="propDetail"/>
+                                    <Button fx:id="button" prefHeight="30.0" prefWidth="110.0" mnemonicParsing="false" onAction="#actionSave" text="Save">
+                                        <VBox.margin>
+                                            <Insets left="6.0" />
+                                        </VBox.margin>
+                                    </Button>
+                                </VBox>
                             </AnchorPane>
                         </SplitPane>
                     </AnchorPane>
