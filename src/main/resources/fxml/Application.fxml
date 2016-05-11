@@ -44,13 +44,18 @@
                                           AnchorPane.topAnchor="3.0"/>
                             </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                <VBox>
-                                    <PropertySheet fx:id="propDetail" layoutX="38.0" layoutY="38.0"
-                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                                    <Button fx:id="button" text="Save" mnemonicParsing="false" onAction="#actionSave">
-                                    </Button>
-                                </VBox>
+                                <BorderPane>
+                                    <center>
+                                        <VBox fx:id="propDetailBox" visible="false">
+                                            <PropertySheet fx:id="propDetail"/>
+                                            <Button fx:id="button" mnemonicParsing="false" onAction="#actionSave" text="Save">
+                                                <VBox.margin>
+                                                    <Insets bottom="3.0" left="3.0" />
+                                                </VBox.margin>
+                                            </Button>
+                                        </VBox>
+                                    </center>
+                                </BorderPane>
                             </AnchorPane>
                         </SplitPane>
                     </AnchorPane>
