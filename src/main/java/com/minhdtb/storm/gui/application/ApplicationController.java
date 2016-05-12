@@ -231,6 +231,7 @@ public class ApplicationController extends AbstractController {
     private void deleteProfile(Object object) {
         if (object instanceof Profile) {
             dataManager.deleteProfile((Profile) object, profile -> Platform.runLater(() -> {
+                propDetailBox.setVisible(false);
                 if (treeViewProfile.getRoot() != null) {
                     Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
                     if (Objects.equals(profileCurrent.getId(), profile.getId())) {
@@ -592,6 +593,7 @@ public class ApplicationController extends AbstractController {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
                         buttonRun.setDisable(true);
+                        propDetailBox.setVisible(false);
                         Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setValue('')"));
                     }).build());
         }
