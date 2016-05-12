@@ -36,6 +36,7 @@ import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
+import org.python.antlr.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -99,8 +100,20 @@ public class ApplicationController extends AbstractController {
 
     private boolean isRunning;
 
+    private ResourceBundle resources;
+
+    private static final String CONFIRM_SAVE_PROFILE_KEY = "confirmSaveProfile";
+    private static final String START_KEY = "start";
+    private static final String STOP_KEY = "stop";
+    private static final String PROFILE_EXISTS_KEY = "profileExists";
+    private static final String NOW_KEY = "now";
+    private static final String CONFIRM_DELETE_VARIABLE_KEY = "confirmDeleteVariable";
+    private static final String CONFIRM_DELETE_CHANNEL_KEY = "confirmDeleteChannel";
+    private static final String CONFIRM_DELETE_PROFILE_KEY = "confirmDeleteProfile";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         getSubscriber().on("application:openProfile", this::openProfile);
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);
@@ -419,9 +432,9 @@ public class ApplicationController extends AbstractController {
             });
         } else {
             stormEngine.stop();
-            setButtonRun(MaterialDesignIcon.PLAY, "black", "START");
+            setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(START_KEY));
             isRunning = false;
-            labelStatus.setText("Stopped.");
+            labelStatus.setText(STOP_KEY);
             treeViewProfile.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
@@ -433,7 +446,7 @@ public class ApplicationController extends AbstractController {
         String confirmMessage = "";
         String tmpKey = "application:";
         if (userData instanceof Profile) {
-            confirmMessage = String.format("Do you really want to save profile \"%s\"?", ((Profile) userData).getName());
+            confirmMessage = String.format(resources.getString(CONFIRM_SAVE_PROFILE_KEY), ((Profile) userData).getName());
             tmpKey += "saveProfile";
         }
         final String key = tmpKey;
@@ -450,7 +463,7 @@ public class ApplicationController extends AbstractController {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
             Platform.runLater(() ->
-                    Utils.showError(getView(), String.format("Profile \"%s\" already exists.", profile.getName())));
+                    Utils.showError(getView(), String.format(resources.getString(PROFILE_EXISTS_KEY), profile.getName())));
         } else {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
@@ -475,7 +488,7 @@ public class ApplicationController extends AbstractController {
             Platform.runLater(() -> {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss ");
                 Calendar cal = Calendar.getInstance();
-                labelSystemTime.setText(String.format("Now is %s", dateFormat.format(cal.getTime())));
+                labelSystemTime.setText(String.format(resources.getString(NOW_KEY), dateFormat.format(cal.getTime())));
             });
         }
     }
@@ -554,7 +567,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         Variable variable = (Variable) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format("Do you really want to delete variable \"%s\"?", variable.getName()),
+                                String.format(resources.getString(CONFIRM_DELETE_VARIABLE_KEY), variable.getName()),
                                 e -> getPublisher().publish("application:deleteVariable", variable));
                     }).build());
 
@@ -577,7 +590,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format("Do you really want to delete channel \"%s\"?", channel.getName()),
+                                String.format(resources.getString(CONFIRM_DELETE_CHANNEL_KEY), channel.getName()),
                                 e -> getPublisher().publish("application:deleteChannel", channel));
                     }).build());
 
@@ -592,7 +605,7 @@ public class ApplicationController extends AbstractController {
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format("Do you really want to delete profile \"%s\"?", profile.getName()),
+                                String.format(resources.getString(CONFIRM_DELETE_PROFILE_KEY), profile.getName()),
                                 e -> getPublisher().publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
