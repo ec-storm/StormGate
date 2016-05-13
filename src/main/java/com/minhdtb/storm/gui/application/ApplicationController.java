@@ -427,22 +427,19 @@ public class ApplicationController extends AbstractController {
     }
 
     private void saveProfile(Object userData) {
-        if (!(userData instanceof Profile)) {
-            return;
-        }
         Profile profile = (Profile) userData;
         List<PropertySheet.Item> items = propDetail.getItems();
         String currentName = profile.getName();
         String currentDescription = profile.getDescription();
         profile.setName((String) items.get(0).getValue());
-        if (!dataManager.existProfile(profile)) {
-            profile.setDescription((String) items.get(1).getValue());
-            dataManager.saveProfile((Profile) userData, null);
-        } else {
+        if (dataManager.existProfile(profile)) {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
             Platform.runLater(() ->
                     Utils.showError(getView(), String.format("Profile \"%s\" already exists.", profile.getName())));
+        } else {
+            profile.setDescription((String) items.get(1).getValue());
+            dataManager.saveProfile((Profile) userData, null);
         }
     }
 
