@@ -4,6 +4,7 @@ import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.data.StormVariableIEC;
+import com.minhdtb.storm.core.lib.j60870.TypeId;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
@@ -35,10 +36,10 @@ public class DialogNewVariableIECController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType("T9", 0),
-                new NamedValueType("T13", 1),
-                new NamedValueType("T45", 2),
-                new NamedValueType("T46", 3));
+                new NamedValueType("T09 (Measured, normalized value)", TypeId.M_ME_NA_1.getId()),
+                new NamedValueType("T13 (Measured, short floating point number)", TypeId.M_ME_NC_1.getId()),
+                new NamedValueType("T45 (Single command)", TypeId.C_SC_NA_1.getId()),
+                new NamedValueType("T46 (Double command)", TypeId.C_DC_NA_1.getId()));
 
         editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
         editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
