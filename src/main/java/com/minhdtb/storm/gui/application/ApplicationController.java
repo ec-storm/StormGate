@@ -28,6 +28,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -73,6 +74,8 @@ public class ApplicationController extends AbstractController {
     private TreeView<Object> treeViewProfile;
     @FXML
     private PropertySheet propDetail;
+    @FXML
+    private VBox propDetailBox;
 
     @Autowired
     private DataManager dataManager;
@@ -181,7 +184,7 @@ public class ApplicationController extends AbstractController {
             if (treeViewProfile.getSelectionModel().getSelectedItem() != null) {
                 Object selected = treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                 if (selected instanceof Profile) {
-                    showProfileProperties((Profile) selected);
+                    showProfile((Profile) selected);
                 } else if (selected instanceof Channel) {
                     propDetail.getItems().clear();
                 } else {
@@ -214,7 +217,7 @@ public class ApplicationController extends AbstractController {
                 }
 
                 buttonRun.setDisable(false);
-                showProfileProperties(profile);
+                showProfile(profile);
             }));
         }
     }
@@ -228,6 +231,7 @@ public class ApplicationController extends AbstractController {
     private void deleteProfile(Object object) {
         if (object instanceof Profile) {
             dataManager.deleteProfile((Profile) object, profile -> Platform.runLater(() -> {
+                propDetailBox.setVisible(false);
                 if (treeViewProfile.getRoot() != null) {
                     Profile profileCurrent = (Profile) treeViewProfile.getRoot().getValue();
                     if (Objects.equals(profileCurrent.getId(), profile.getId())) {
@@ -276,7 +280,8 @@ public class ApplicationController extends AbstractController {
         }
     }
 
-    private void showProfileProperties(Profile profile) {
+    private void showProfile(Profile profile) {
+        propDetailBox.setVisible(true);
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem("General", "Name", profile.getName()));
         propDetail.getItems().add(new PropertyItem("General", "Description", profile.getDescription()));
@@ -588,6 +593,7 @@ public class ApplicationController extends AbstractController {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
                         buttonRun.setDisable(true);
+                        propDetailBox.setVisible(false);
                         Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setValue('')"));
                     }).build());
         }
