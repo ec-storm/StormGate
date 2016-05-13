@@ -10,6 +10,7 @@ import com.minhdtb.storm.entities.Channel;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 
 public class StormChannelIECClient extends StormChannelIEC {
@@ -17,6 +18,8 @@ public class StormChannelIECClient extends StormChannelIEC {
     private ClientSap clientSap = new ClientSap();
     private boolean stopped = false;
     private Connection connection;
+
+    private CountDownLatch countDownLatch;
 
     public StormChannelIECClient() {
         super();
@@ -55,44 +58,54 @@ public class StormChannelIECClient extends StormChannelIEC {
         @Override
         public void run() {
             while (!stopped) {
-                if (connection == null) {
-                    try {
-                        connection = clientSap.connect(InetAddress.getByName(getHost()), getPort());
-                        connection.startDataTransfer(new ConnectionEventListener() {
+                try {
+                    connection = clientSap.connect(InetAddress.getByName(getHost()), getPort());
+                    connection.startDataTransfer(new ConnectionEventListener() {
 
-                            @Override
-                            public void newASdu(ASdu aSdu) {
-                                Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
-                                        (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
-                                                ((StormVariableIEC) variable).getInformationObjectAddress() ==
-                                                        aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
+                        @Override
+                        public void newASdu(ASdu aSdu) {
+                            Optional<IStormVariable> found = getVariables().stream().filter(variable -> variable instanceof StormVariableIEC &&
+                                    (((StormVariableIEC) variable).getSectorAddress() == aSdu.getCommonAddress() &&
+                                            ((StormVariableIEC) variable).getInformationObjectAddress() ==
+                                                    aSdu.getInformationObjects()[0].getInformationObjectAddress())).findFirst();
 
-                                if (found.isPresent()) {
-                                    Object value = Utils.ASduToObject(aSdu);
-                                    if (value != null) {
-                                        found.get().setValue(value);
-                                    }
+                            if (found.isPresent()) {
+                                Object value = Utils.ASduToObject(aSdu);
+                                if (value != null) {
+                                    found.get().setValue(value);
                                 }
                             }
+                        }
 
-                            @Override
-                            public void connectionClosed(IOException e) {
-                                Utils.error(e);
-                                connection = null;
+                        @Override
+                        public void connectionClosed(IOException e) {
+                            Utils.error(e);
+                            if (countDownLatch != null) {
+                                countDownLatch.countDown();
                             }
-                        }, TIMEOUT);
+                        }
+                    }, TIMEOUT);
 
-                    } catch (IOException | TimeoutException e) {
-                        Utils.error(e);
-                        connection = null;
-                    }
-                } else {
                     try {
-                        Thread.sleep(1000);
+                        countDownLatch = new CountDownLatch(1);
+                        countDownLatch.await();
                     } catch (InterruptedException e) {
                         Utils.error(e);
                         Thread.currentThread().interrupt();
                     }
+
+                } catch (IOException | TimeoutException e) {
+                    Utils.error(e);
+                    if (countDownLatch != null) {
+                        countDownLatch.countDown();
+                    }
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Utils.error(e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }

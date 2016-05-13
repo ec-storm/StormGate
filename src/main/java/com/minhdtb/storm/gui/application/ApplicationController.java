@@ -117,8 +117,8 @@ public class ApplicationController extends AbstractController {
                         "-fx-fill: black;-fx-font-size: 14px;", (String) message)));
 
         getSubscriber().on("application:error", message -> Platform.runLater(() ->
-                writeLog("-fx-fill: #ff4405;-fx-font-weight:bold;",
-                        "-fx-fill: #ff4405;-fx-font-size: 14px;", (String) message)));
+                writeLog("-fx-fill: red;-fx-font-weight:bold;",
+                        "-fx-fill: red;-fx-font-size: 14px;", (String) message)));
 
         initGUI();
     }
@@ -147,7 +147,7 @@ public class ApplicationController extends AbstractController {
             webViewScript.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                 if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V) {
                     Clipboard clipboard = Clipboard.getSystemClipboard();
-                    String content = Utils.replaceSpecialCharacters((String) clipboard.getContent(DataFormat.PLAIN_TEXT));
+                    String content = replaceSpecialCharacters((String) clipboard.getContent(DataFormat.PLAIN_TEXT));
                     if (content != null) {
                         webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
                     }
@@ -209,7 +209,7 @@ public class ApplicationController extends AbstractController {
 
                 if (profile.getScript() != null) {
                     Platform.runLater(() -> {
-                        String script = Utils.replaceSpecialCharacters(new String(profile.getScript()));
+                        String script = replaceSpecialCharacters(new String(profile.getScript()));
                         webViewScript.getEngine().executeScript("editor.setValue('" + script + "')");
                     });
                 } else {
@@ -298,6 +298,15 @@ public class ApplicationController extends AbstractController {
 
         textFlowLog.getChildren().addAll(txtTime, txtMessage);
         scrollLog.setVvalue(1.0);
+    }
+
+    private String replaceSpecialCharacters(String text) {
+        String content = text.replace("'", "\\'");
+        content = content.replace("\"", "\\\"");
+        content = content.replace(System.getProperty("line.separator"), "\\n");
+        content = content.replace("\n", "\\n");
+        content = content.replace("\r", "\\n");
+        return content;
     }
 
     private TreeItem<Object> createNode(Object o) {
