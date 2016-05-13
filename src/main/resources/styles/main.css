@@ -18,3 +18,7 @@
     -fx-background-color: null;
     -fx-background-image: null;
 }
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
