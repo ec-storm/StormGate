@@ -6,6 +6,7 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.entities.ChannelAttribute;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
@@ -45,8 +46,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Calendar.getInstance;
 import static com.minhdtb.storm.common.GlobalConstants.*;
+import static com.minhdtb.storm.core.data.StormChannelIECClient.HOST;
+import static com.minhdtb.storm.core.data.StormChannelIECClient.PORT;
+import static com.minhdtb.storm.core.data.StormChannelOPCClient.PROG_ID;
+import static com.minhdtb.storm.core.data.StormChannelOPCClient.REFRESH_RATE;
+import static java.util.Calendar.getInstance;
 
 @Controller
 public class ApplicationController extends AbstractController {
@@ -190,7 +195,7 @@ public class ApplicationController extends AbstractController {
                 if (selected instanceof Profile) {
                     showProfile((Profile) selected);
                 } else if (selected instanceof Channel) {
-                    propDetail.getItems().clear();
+                    showChannel((Channel) selected);
                 } else {
                     propDetail.getItems().clear();
                 }
@@ -290,6 +295,39 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
         propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
         propDetail.setUserData(profile);
+    }
+
+    private void showChannel(Channel channel) {
+        propDetail.getItems().clear();
+        propDetail.getItems().add(new PropertyItem(resources.getString(GENERAL_KEY), resources.getString(NAME_KEY), channel.getName()));
+        propDetail.getItems().add(new PropertyItem(resources.getString(GENERAL_KEY), resources.getString(DESCRIPTION_KEY), channel.getDescription()));
+        PropertyItem typeItem = new PropertyItem(resources.getString(GENERAL_KEY), resources.getString(TYPE_KEY), channel.getType());
+        typeItem.setDisable();
+        propDetail.getItems().add(typeItem);
+        for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+            String name = "";
+            switch (channelAttribute.getName()) {
+                case HOST:
+                    if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                        name = resources.getString(SERVER_IP_KEY);
+                    } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                        name = resources.getString(BIND_IP_KEY);
+                    }
+                    break;
+                case PORT:
+                    name = resources.getString(PORT_KEY);
+                    break;
+                case PROG_ID:
+                    name = resources.getString(PROG_ID_KEY);
+                    break;
+                case REFRESH_RATE:
+                    name = resources.getString(REFRESH_RATE_KEY);
+                    break;
+            }
+            propDetail.getItems().add(new PropertyItem(resources.getString(ATTRIBUTES_KEY), name, channelAttribute.getValue()));
+        }
+
+        propDetail.setUserData(channel);
     }
 
     private void writeLog(String timeStyle, String textStyle, String message) {
@@ -489,6 +527,7 @@ public class ApplicationController extends AbstractController {
         private String category;
         private String name;
         private Object value;
+        private boolean editable = true;
 
         PropertyItem(String category, String name, Object value) {
             this.category = category;
@@ -531,9 +570,14 @@ public class ApplicationController extends AbstractController {
         }
 
         @Override
+        public boolean isEditable() { return editable; }
+
+        @Override
         public Optional<ObservableValue<?>> getObservableValue() {
             return Optional.empty();
         }
+
+        public void setDisable() { editable = false; }
     }
 
     private final class TreeCellFactory extends TreeCell<Object> {

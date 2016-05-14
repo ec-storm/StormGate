@@ -24,21 +24,23 @@ abstract class StormChannelOPC extends StormChannel {
             variables.add(variableOPC);
         }
     }
+    public static final String PROG_ID = "progId";
+    public static final String REFRESH_RATE = "refreshRate";
 
     public String getProgId() {
-        return getAttribute("progId");
+        return getAttribute(PROG_ID);
     }
 
     public void setProgId(String progId) {
-        setAttribute("progId", progId);
+        setAttribute(PROG_ID, progId);
     }
 
     public int getRefreshRate() {
-        return Integer.parseInt(getAttribute("refreshRate"));
+        return Integer.parseInt(getAttribute(REFRESH_RATE));
     }
 
     public void setRefreshRate(int refreshRate) {
-        setAttribute("refreshRate", String.valueOf(refreshRate));
+        setAttribute(REFRESH_RATE, String.valueOf(refreshRate));
     }
 
     @Override
