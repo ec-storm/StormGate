@@ -18,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.minhdtb.storm.common.GlobalConstants.*;
+
 @Controller
 public class DialogNewVariableIECController extends AbstractController {
 
@@ -33,13 +35,16 @@ public class DialogNewVariableIECController extends AbstractController {
     @Autowired
     private DataManager dataManager;
 
+    private ResourceBundle resources;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType("T09 (Measured, normalized value)", TypeId.M_ME_NA_1.getId()),
-                new NamedValueType("T13 (Measured, short floating point number)", TypeId.M_ME_NC_1.getId()),
-                new NamedValueType("T45 (Single command)", TypeId.C_SC_NA_1.getId()),
-                new NamedValueType("T46 (Double command)", TypeId.C_DC_NA_1.getId()));
+                new NamedValueType(resources.getString(T09_KEY), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(resources.getString(T13_KEY), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(resources.getString(T45_KEY), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(resources.getString(T46_KEY), TypeId.C_DC_NA_1.getId()));
 
         editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
         editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
@@ -47,7 +52,7 @@ public class DialogNewVariableIECController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        editVariableName.setText("NewVariable");
+        editVariableName.setText(resources.getString(NEW_VARIABLE_KEY));
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");
         comboBoxVariableType.getSelectionModel().selectFirst();
@@ -67,7 +72,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format("Variable \"%s\" is already exists.", variableIEC.getName()));
+            Utils.showError(getView(), String.format(resources.getString(ERROR_VARIABLE_EXISTS_KEY), variableIEC.getName()));
         }
     }
 

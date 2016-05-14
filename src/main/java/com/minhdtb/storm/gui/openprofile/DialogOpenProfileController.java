@@ -20,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.minhdtb.storm.common.GlobalConstants.*;
+
 @Controller
 public class DialogOpenProfileController extends AbstractController {
 
@@ -31,11 +33,11 @@ public class DialogOpenProfileController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TableColumn<Profile, String> columnName = new TableColumn<>("Name");
+        TableColumn<Profile, String> columnName = new TableColumn<>(resources.getString(NAME_KEY));
         columnName.setPrefWidth(310);
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Profile, Integer> columnChannels = new TableColumn<>("Channels");
+        TableColumn<Profile, Integer> columnChannels = new TableColumn<>(resources.getString(CHANNELS_KEY));
         columnChannels.setPrefWidth(120);
         columnChannels.setStyle("-fx-alignment: CENTER;");
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getChannels().size()));
@@ -56,11 +58,11 @@ public class DialogOpenProfileController extends AbstractController {
 
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().add(MenuItemBuilder.create()
-                .setText("Delete Profile").setAction(event -> {
+                .setText(resources.getString(MENU_DELETE_PROFILE_KEY)).setAction(event -> {
                     Profile profile = tableProfile.getSelectionModel().getSelectedItem();
 
                     Utils.showConfirm(this.getView(),
-                            String.format("Do you really want to delete \"%s\"?", profile.getName()),
+                            String.format(resources.getString(CONFIRM_DELETE_PROFILE_KEY), profile.getName()),
                             e -> {
                                 tableProfile.getItems().remove(profile);
                                 getPublisher().publish("application:deleteProfile", profile);

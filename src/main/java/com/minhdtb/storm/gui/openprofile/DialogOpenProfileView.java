@@ -14,8 +14,8 @@ public class DialogOpenProfileView extends AbstractView {
         setFxml("OpenProfile.fxml");
     }
 
-    public void showDialog(AbstractView owner) {
-        this.setTitle("Open Profile")
+    public void showDialog(AbstractView owner, String title) {
+        this.setTitle(title)
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())

@@ -28,7 +28,7 @@
                 <Insets left="3.0" right="5.0" />
             </GridPane.margin>
         </TextField>
-        <Label text="Name" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+        <Label text="%name" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
             <GridPane.margin>
                 <Insets right="3.0" />
             </GridPane.margin>
@@ -38,7 +38,7 @@
                 <Insets left="3.0" right="5.0" />
             </GridPane.margin>
         </TextField>
-        <Label prefHeight="24.0" prefWidth="61.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+        <Label prefHeight="24.0" prefWidth="61.0" text="%description" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
             <GridPane.margin>
                 <Insets right="3.0" />
             </GridPane.margin>
@@ -48,7 +48,7 @@
                 <Insets left="3.0" right="5.0" />
             </GridPane.margin>
         </ComboBox>
-        <Label text="Type" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+        <Label text="%type" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
             <GridPane.margin>
                 <Insets right="3.0" />
             </GridPane.margin>
@@ -56,6 +56,6 @@
     </GridPane>
     <AnchorPane fx:id="paneAttribute" layoutX="62.0" layoutY="111.0" prefHeight="52.0" prefWidth="411.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">
     </AnchorPane>
-    <Button layoutX="177.0" layoutY="217.0" mnemonicParsing="false" onAction="#actionOK" prefHeight="31.0" prefWidth="112.0" text="OK" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="120.0" />
-    <Button layoutX="299.0" layoutY="217.0" mnemonicParsing="false" onAction="#actionCancel" prefHeight="31.0" prefWidth="112.0" text="Cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+    <Button layoutX="177.0" layoutY="217.0" mnemonicParsing="false" onAction="#actionOK" prefHeight="31.0" prefWidth="112.0" text="%ok" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="120.0" />
+    <Button layoutX="299.0" layoutY="217.0" mnemonicParsing="false" onAction="#actionCancel" prefHeight="31.0" prefWidth="112.0" text="%cancel" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
 </AnchorPane>

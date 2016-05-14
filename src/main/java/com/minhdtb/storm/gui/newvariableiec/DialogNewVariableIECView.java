@@ -17,8 +17,8 @@ public class DialogNewVariableIECView extends AbstractView {
         setFxml("NewVariableIEC.fxml");
     }
 
-    public void showDialog(AbstractView owner) {
-        this.setTitle("New IEC 60870 Variable")
+    public void showDialog(AbstractView owner, String title) {
+        this.setTitle(title)
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
