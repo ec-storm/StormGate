@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import reactor.Environment;
 import reactor.bus.EventBus;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 @SpringBootApplication
@@ -47,8 +49,12 @@ public class StormGateApplication extends AbstractApplication {
     }
 
     public static void main(String[] args) {
-        System.setErr(new PrintStream(System.err) {
+        System.setErr(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
 
+            }
+        }) {
             @Override
             public void write(byte buf[], int off, int len) {
                 Utils.log(new String(buf));

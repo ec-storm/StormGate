@@ -1,4 +1,4 @@
-package com.minhdtb.storm.gui.newvariable;
+package com.minhdtb.storm.gui.newvariableiec;
 
 import com.minhdtb.storm.base.AbstractView;
 import com.minhdtb.storm.entities.Channel;

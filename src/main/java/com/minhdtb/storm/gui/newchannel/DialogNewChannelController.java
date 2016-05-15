@@ -6,9 +6,12 @@ import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.data.StormChannelIECClient;
 import com.minhdtb.storm.core.data.StormChannelIECServer;
 import com.minhdtb.storm.core.data.StormChannelOPCClient;
+import com.minhdtb.storm.gui.listopcserver.DialogListOpcServerView;
 import com.minhdtb.storm.services.DataManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -37,10 +40,18 @@ public class DialogNewChannelController extends AbstractController {
     @Autowired
     private DataManager dataManager;
 
+    @Autowired
+    private DialogListOpcServerView dialogListOpcServerView;
+
     @Override
     public void onShow(WindowEvent event) {
         editChannelName.setText("New Channel");
         comboBoxChannelType.getSelectionModel().selectFirst();
+
+        getSubscriber().on("opc:progId", item -> Platform.runLater(() -> {
+            TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
+            editProgId.setText((String) item);
+        }));
     }
 
     private void loadFxml(String fxml) {
@@ -87,6 +98,12 @@ public class DialogNewChannelController extends AbstractController {
 
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
+                Button buttonListServer = (Button) getView().getScene().lookup("#buttonListServer");
+
+                if (buttonListServer.getOnAction() == null) {
+                    buttonListServer.setOnAction(event -> dialogListOpcServerView.showDialog(getView()));
+                }
+
                 editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editProgId.setText("");

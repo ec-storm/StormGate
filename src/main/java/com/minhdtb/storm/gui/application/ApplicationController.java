@@ -10,7 +10,7 @@ import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
-import com.minhdtb.storm.gui.newvariable.DialogNewVariableIECView;
+import com.minhdtb.storm.gui.newvariableiec.DialogNewVariableIECView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.DataManager;
 import de.jensd.fx.glyphs.GlyphIcon;
