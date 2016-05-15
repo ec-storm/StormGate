@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0"
+          prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" percentWidth="23.0" prefWidth="110.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="330.0" minWidth="10.0" prefWidth="330.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" percentWidth="23.0" prefWidth="110.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="330.0" minWidth="10.0" prefWidth="330.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <Label text="Prog ID" GridPane.halignment="RIGHT">
         <GridPane.margin>
-            <Insets right="3.0" />
+            <Insets right="3.0"/>
         </GridPane.margin>
     </Label>
     <Label text="Refresh Rate" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
         <GridPane.margin>
-            <Insets right="3.0" />
+            <Insets right="3.0"/>
         </GridPane.margin>
     </Label>
     <TextField fx:id="editProgId" GridPane.columnIndex="1">
         <GridPane.margin>
-            <Insets left="3.0" right="34.0" />
+            <Insets left="3.0" right="34.0"/>
         </GridPane.margin>
     </TextField>
     <TextField fx:id="editRefreshRate" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <GridPane.margin>
-            <Insets left="3.0" right="5.0" />
+            <Insets left="3.0" right="5.0"/>
         </GridPane.margin>
     </TextField>
-    <Button mnemonicParsing="false" text="..." GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+    <Button mnemonicParsing="false" fx:id="buttonListServer" text="..." GridPane.columnIndex="1"
+            GridPane.halignment="RIGHT">
         <GridPane.margin>
-            <Insets right="5.0" />
+            <Insets right="5.0"/>
         </GridPane.margin>
     </Button>
 </GridPane>
