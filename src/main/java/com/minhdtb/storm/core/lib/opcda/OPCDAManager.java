@@ -1,6 +1,5 @@
 package com.minhdtb.storm.core.lib.opcda;
 
-
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,22 +18,24 @@ public class OPCDAManager {
     }
 
     private void loadJarDll(String name) {
-        InputStream in = getClass().getResourceAsStream("/native/" + name);
+        InputStream inputStream = getClass().getResourceAsStream("/native/" + name);
         try {
-            File temp = new File(new File(System.getProperty("java.io.tmpdir")), name);
-            FileOutputStream fos;
+            File tempFile = new File(new File(System.getProperty("java.io.tmpdir")), name);
 
             try {
-                fos = new FileOutputStream(temp);
-                int read;
-                byte[] buffer = new byte[1024];
-                while ((read = in.read(buffer)) != -1) {
-                    fos.write(buffer, 0, read);
-                }
-                fos.close();
-                in.close();
+                FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
 
-                System.load(temp.getAbsolutePath());
+                int byteRead;
+                byte[] buffer = new byte[1024];
+
+                while ((byteRead = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, byteRead);
+                }
+
+                fileOutputStream.close();
+                inputStream.close();
+
+                System.load(tempFile.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -55,7 +56,7 @@ public class OPCDAManager {
         this.host = host;
     }
 
-    public List<String> getAllServers(String host) {
+    public List<String> getAllServers() {
         return Arrays.asList(getOpcServers(host));
     }
 }

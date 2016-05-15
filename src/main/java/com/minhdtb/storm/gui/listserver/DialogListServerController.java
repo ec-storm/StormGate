@@ -27,8 +27,10 @@ public class DialogListServerController extends AbstractController {
     public void onShow(WindowEvent event) {
         editHost.setText("localhost");
         buttonRefresh.setOnAction(actionEvent -> {
+            opcdaManager.setHost(editHost.getText());
+
             listServer.getItems().clear();
-            listServer.getItems().addAll(opcdaManager.getAllServers(editHost.getText()));
+            listServer.getItems().addAll(opcdaManager.getAllServers());
         });
         buttonRefresh.getOnAction().handle(null);
 
