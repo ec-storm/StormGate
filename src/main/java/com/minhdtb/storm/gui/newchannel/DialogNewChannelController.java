@@ -6,7 +6,7 @@ import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.data.StormChannelIECClient;
 import com.minhdtb.storm.core.data.StormChannelIECServer;
 import com.minhdtb.storm.core.data.StormChannelOPCClient;
-import com.minhdtb.storm.gui.listserver.DialogListServerView;
+import com.minhdtb.storm.gui.listopcserver.DialogListOpcServerView;
 import com.minhdtb.storm.services.DataManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -41,7 +41,7 @@ public class DialogNewChannelController extends AbstractController {
     private DataManager dataManager;
 
     @Autowired
-    private DialogListServerView dialogListServerView;
+    private DialogListOpcServerView dialogListOpcServerView;
 
     @Override
     public void onShow(WindowEvent event) {
@@ -101,7 +101,7 @@ public class DialogNewChannelController extends AbstractController {
                 Button buttonListServer = (Button) getView().getScene().lookup("#buttonListServer");
 
                 if (buttonListServer.getOnAction() == null) {
-                    buttonListServer.setOnAction(event -> dialogListServerView.showDialog(getView()));
+                    buttonListServer.setOnAction(event -> dialogListOpcServerView.showDialog(getView()));
                 }
 
                 editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));

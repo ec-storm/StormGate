@@ -1,4 +1,4 @@
-package com.minhdtb.storm.gui.listserver;
+package com.minhdtb.storm.gui.listopcserver;
 
 import com.minhdtb.storm.base.AbstractView;
 import javafx.stage.Modality;
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class DialogListServerView extends AbstractView {
+public class DialogListOpcServerView extends AbstractView {
 
     @PostConstruct
     public void init() {
-        setFxml("ListServer.fxml");
+        setFxml("ListOpcServer.fxml");
     }
 
     public void showDialog(AbstractView owner) {

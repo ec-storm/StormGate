@@ -1,4 +1,4 @@
-package com.minhdtb.storm.gui.listserver;
+package com.minhdtb.storm.gui.listopcserver;
 
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.core.lib.opcda.OPCDAManager;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class DialogListServerController extends AbstractController {
+public class DialogListOpcServerController extends AbstractController {
 
     @FXML
     public TextField editHost;
