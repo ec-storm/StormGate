@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class OPCDAManager {
+public class OPCDaClient {
 
     private static final long FILETIME_EPOCH_DIFF = 11644473600000L;
 
     private static final long FILETIME_ONE_MILLISECOND = 10 * 1000;
 
-    private static IOpcDaEvent event;
+    private static IOPCDaEvent event;
 
     private String host;
 
@@ -56,7 +56,7 @@ public class OPCDAManager {
         return false;
     }
 
-    public OPCDAManager() {
+    public OPCDaClient() {
         loadJarDll("OPCDALib.dll");
         initialize();
     }
@@ -124,12 +124,16 @@ public class OPCDAManager {
         return Arrays.asList(getOpcServerTags());
     }
 
-    public void setEventHandler(IOpcDaEvent event) {
-        OPCDAManager.event = event;
+    public void setEventHandler(IOPCDaEvent event) {
+        OPCDaClient.event = event;
     }
 
     public void connect(String progId) {
         this.connect(this.host, progId);
+    }
+
+    public void disconnect() {
+
     }
 
     public void add(String tagName) {

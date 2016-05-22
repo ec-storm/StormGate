@@ -1,13 +1,12 @@
 package com.minhdtb.storm.gui.listopcserver;
 
 import com.minhdtb.storm.base.AbstractController;
-import com.minhdtb.storm.core.lib.opcda.OPCDAManager;
+import com.minhdtb.storm.core.lib.opcda.OPCDaClient;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -20,16 +19,16 @@ public class DialogListOpcServerController extends AbstractController {
     @FXML
     public ListView<String> listServer;
 
-    private OPCDAManager opcdaManager = new OPCDAManager();
+    private OPCDaClient OPCDaClient = new OPCDaClient();
 
     @Override
     public void onShow(WindowEvent event) {
         editHost.setText("localhost");
         buttonRefresh.setOnAction(actionEvent -> {
-            opcdaManager.setHost(editHost.getText());
+            OPCDaClient.setHost(editHost.getText());
 
             listServer.getItems().clear();
-            listServer.getItems().addAll(opcdaManager.getAllServers());
+            listServer.getItems().addAll(OPCDaClient.getAllServers());
         });
         buttonRefresh.getOnAction().handle(null);
 
