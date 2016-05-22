@@ -20,8 +20,7 @@ public class DialogListOpcServerController extends AbstractController {
     @FXML
     public ListView<String> listServer;
 
-    @Autowired
-    private OPCDAManager opcdaManager;
+    private OPCDAManager opcdaManager = new OPCDAManager();
 
     @Override
     public void onShow(WindowEvent event) {
