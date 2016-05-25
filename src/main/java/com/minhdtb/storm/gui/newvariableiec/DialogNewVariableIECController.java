@@ -41,10 +41,10 @@ public class DialogNewVariableIECController extends AbstractController {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString(T09_KEY), TypeId.M_ME_NA_1.getId()),
-                new NamedValueType(resources.getString(T13_KEY), TypeId.M_ME_NC_1.getId()),
-                new NamedValueType(resources.getString(T45_KEY), TypeId.C_SC_NA_1.getId()),
-                new NamedValueType(resources.getString(T46_KEY), TypeId.C_DC_NA_1.getId()));
+                new NamedValueType(resources.getString(KEY_T09), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(resources.getString(KEY_T13), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(resources.getString(KEY_T45), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(resources.getString(KEY_T46), TypeId.C_DC_NA_1.getId()));
 
         editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
         editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
@@ -52,7 +52,7 @@ public class DialogNewVariableIECController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString(NEW_VARIABLE_KEY));
+        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");
         comboBoxVariableType.getSelectionModel().selectFirst();
@@ -72,7 +72,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString(ERROR_VARIABLE_EXISTS_KEY), variableIEC.getName()));
+            Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_VARIABLE_EXISTS), variableIEC.getName()));
         }
     }
 

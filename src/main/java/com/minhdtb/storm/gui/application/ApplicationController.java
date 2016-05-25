@@ -134,9 +134,9 @@ public class ApplicationController extends AbstractController {
     }
 
     private void initGUI() {
-        labelStatus.setText(resources.getString(STOPPED_KEY));
+        labelStatus.setText(resources.getString(KEY_STOPPED));
 
-        setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(START_KEY));
+        setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(KEY_START));
         buttonRun.setDisable(true);
 
         Platform.runLater(() -> {
@@ -173,14 +173,14 @@ public class ApplicationController extends AbstractController {
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(MENU_NEW_PROFILE_KEY))
+                .setText(resources.getString(KEY_MENU_NEW_PROFILE))
                 .setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
-                .setAction(event -> dialogNewProfileView.showDialog(getView(), resources.getString(NEW_PROFILE_KEY))).build());
+                .setAction(event -> dialogNewProfileView.showDialog(getView(), resources.getString(KEY_NEW_PROFILE))).build());
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(MENU_OPEN_PROFILE_KEY))
+                .setText(resources.getString(KEY_MENU_OPEN_PROFILE))
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-                .setAction(event -> dialogOpenProfileView.showDialog(getView(), resources.getString(OPEN_PROFILE_KEY))).build());
+                .setAction(event -> dialogOpenProfileView.showDialog(getView(), resources.getString(KEY_OPEN_PROFILE))).build());
 
         treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
 
@@ -287,8 +287,8 @@ public class ApplicationController extends AbstractController {
     private void showProfile(Profile profile) {
         propDetailBox.setVisible(true);
         propDetail.getItems().clear();
-        propDetail.getItems().add(new PropertyItem(resources.getString(GENERAL_KEY), resources.getString(NAME_KEY), profile.getName()));
-        propDetail.getItems().add(new PropertyItem(resources.getString(GENERAL_KEY), resources.getString(DESCRIPTION_KEY), profile.getDescription()));
+        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
+        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
         propDetail.setUserData(profile);
     }
 
@@ -389,12 +389,12 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionNewProfile() {
-        dialogNewProfileView.showDialog(getView(), resources.getString(NEW_PROFILE_KEY));
+        dialogNewProfileView.showDialog(getView(), resources.getString(KEY_NEW_PROFILE));
     }
 
     @FXML
     public void actionOpenProfile() {
-        dialogOpenProfileView.showDialog(getView(), resources.getString(OPEN_PROFILE_KEY));
+        dialogOpenProfileView.showDialog(getView(), resources.getString(KEY_OPEN_PROFILE));
     }
 
     @FXML
@@ -414,18 +414,18 @@ public class ApplicationController extends AbstractController {
     public void actionRun() {
         if (!isRunning) {
             stormEngine.start(profile -> {
-                setButtonRun(MaterialDesignIcon.STOP, "red", resources.getString(STOP_KEY));
+                setButtonRun(MaterialDesignIcon.STOP, "red", resources.getString(KEY_STOP));
                 treeViewProfile.setDisable(true);
-                labelStatus.setText(resources.getString(RUNNING_KEY));
+                labelStatus.setText(resources.getString(KEY_RUNNING));
                 textFlowLog.getChildren().clear();
                 isRunning = true;
                 Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(true)"));
             });
         } else {
             stormEngine.stop();
-            setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(START_KEY));
+            setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(KEY_START));
             isRunning = false;
-            labelStatus.setText(STOPPED_KEY);
+            labelStatus.setText(KEY_STOPPED);
             treeViewProfile.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
@@ -437,7 +437,7 @@ public class ApplicationController extends AbstractController {
         String confirmMessage = "";
         String tmpKey = "application:";
         if (userData instanceof Profile) {
-            confirmMessage = String.format(resources.getString(CONFIRM_SAVE_PROFILE_KEY), ((Profile) userData).getName());
+            confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData).getName());
             tmpKey += "saveProfile";
         }
         final String key = tmpKey;
@@ -454,7 +454,7 @@ public class ApplicationController extends AbstractController {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
             Platform.runLater(() ->
-                    Utils.showError(getView(), String.format(resources.getString(ERROR_PROFILE_EXISTS_KEY), profile.getName())));
+                    Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_PROFILE_EXISTS), profile.getName())));
         } else {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
@@ -479,7 +479,7 @@ public class ApplicationController extends AbstractController {
             Platform.runLater(() -> {
                 DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT + " ");
                 Calendar cal = Calendar.getInstance();
-                labelSystemTime.setText(String.format(resources.getString(NOW_KEY), dateFormat.format(cal.getTime())));
+                labelSystemTime.setText(String.format(resources.getString(KEY_NOW), dateFormat.format(cal.getTime())));
             });
         }
     }
@@ -552,56 +552,56 @@ public class ApplicationController extends AbstractController {
             this.controller = controller;
 
             menuVariable.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_DELETE_VARIABLE_KEY))
+                    .setText(resources.getString(KEY_MENU_DELETE_VARIABLE))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Variable variable = (Variable) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(CONFIRM_DELETE_VARIABLE_KEY), variable.getName()),
+                                String.format(resources.getString(KEY_CONFIRM_DELETE_VARIABLE), variable.getName()),
                                 e -> getPublisher().publish("application:deleteVariable", variable));
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_NEW_VARIABLE_KEY))
+                    .setText(resources.getString(KEY_MENU_NEW_VARIABLE))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT ||
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), resources.getString(NEW_IEC_60870_VARIABLE_KEY));
+                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
                         }
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_DELETE_CHANNEL_KEY))
+                    .setText(resources.getString(KEY_MENU_DELETE_CHANNEL))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(CONFIRM_DELETE_CHANNEL_KEY), channel.getName()),
+                                String.format(resources.getString(KEY_CONFIRM_DELETE_CHANNEL), channel.getName()),
                                 e -> getPublisher().publish("application:deleteChannel", channel));
                     }).build());
 
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_NEW_CHANNEL_KEY))
-                    .setAction(event -> dialogNewChannelView.showDialog(getController().getView(), resources.getString(NEW_CHANNEL_KEY)))
+                    .setText(resources.getString(KEY_MENU_NEW_CHANNEL))
+                    .setAction(event -> dialogNewChannelView.showDialog(getController().getView(), resources.getString(KEY_NEW_CHANNEL)))
                     .build());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_DELETE_PROFILE_KEY))
+                    .setText(resources.getString(KEY_MENU_DELETE_PROFILE))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(CONFIRM_DELETE_PROFILE_KEY), profile.getName()),
+                                String.format(resources.getString(KEY_CONFIRM_DELETE_PROFILE), profile.getName()),
                                 e -> getPublisher().publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(MENU_CLOSE_KEY))
+                    .setText(resources.getString(KEY_MENU_CLOSE))
                     .setAction(event -> {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);
