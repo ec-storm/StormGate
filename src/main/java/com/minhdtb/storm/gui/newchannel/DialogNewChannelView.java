@@ -15,8 +15,8 @@ public class DialogNewChannelView extends AbstractView {
         setFxml("NewChannel.fxml");
     }
 
-    public void showDialog(AbstractView owner) {
-        this.setTitle("New Channel")
+    public void showDialog(AbstractView owner, String title) {
+        this.setTitle(title)
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())

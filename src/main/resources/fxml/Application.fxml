@@ -8,15 +8,15 @@
 <VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minhdtb.storm.gui.application.ApplicationController">
     <MenuBar>
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="New Profile        "/>
-            <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="Open Profile"/>
-            <MenuItem fx:id="menuItemSave" onAction="#actionSaveProfile" text="Save"/>
+        <Menu mnemonicParsing="false" text="%menuFile">
+            <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="%menuNewProfile"/>
+            <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="%menuOpenProfile"/>
+            <MenuItem fx:id="menuItemSave" onAction="#actionSaveProfile" text="%menuSave"/>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#actionCloseApplication" text="Close"/>
+            <MenuItem onAction="#actionCloseApplication" text="%menuClose"/>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" text="About"/>
+        <Menu mnemonicParsing="false" text="%menuHelp">
+            <MenuItem mnemonicParsing="false" text="%menuAbout"/>
         </Menu>
     </MenuBar>
     <ToolBar prefHeight="40.0" prefWidth="200.0">
@@ -29,7 +29,7 @@
             <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;"
                      tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Tab text="Configuration">
+                <Tab text="%configuration">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <SplitPane dividerPositions="0.3987654320987654" layoutX="82.0" layoutY="45.0"
                                    prefHeight="160.0" prefWidth="200.0" style="-fx-background-color: transparent;"
@@ -47,7 +47,7 @@
                                 <VBox fx:id="propDetailBox" visible="false" AnchorPane.topAnchor="3.0"
                                       AnchorPane.leftAnchor="3.0"  style="-fx-border-style: solid; -fx-border-color: #c8c8c8;">
                                     <PropertySheet fx:id="propDetail"/>
-                                    <Button fx:id="button" prefHeight="28.0" prefWidth="82.0" mnemonicParsing="false" onAction="#actionSave" text="Save">
+                                    <Button prefHeight="28.0" prefWidth="82.0" mnemonicParsing="false" onAction="#actionSave" text="%save">
                                         <VBox.margin>
                                             <Insets left="6.0" bottom="6.0" />
                                         </VBox.margin>
@@ -57,7 +57,7 @@
                         </SplitPane>
                     </AnchorPane>
                 </Tab>
-                <Tab text="Action Script">
+                <Tab text="%actionScript">
                     <AnchorPane fx:id="paneScript" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
                 </Tab>
             </TabPane>
@@ -72,14 +72,14 @@
         </AnchorPane>
     </SplitPane>
     <HBox prefHeight="21.0" prefWidth="991.0">
-        <Label fx:id="labelStatus" prefHeight="17.0" prefWidth="300.0" text="Label">
+        <Label fx:id="labelStatus" prefHeight="17.0" prefWidth="300.0">
             <HBox.margin>
                 <Insets left="5.0"/>
             </HBox.margin>
         </Label>
         <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
         <Label fx:id="labelSystemTime" alignment="CENTER_RIGHT" layoutX="13.0" layoutY="10.0" prefHeight="17.0"
-               prefWidth="300.0" text="Label">
+               prefWidth="300.0">
             <HBox.margin>
                 <Insets right="5.0"/>
             </HBox.margin>

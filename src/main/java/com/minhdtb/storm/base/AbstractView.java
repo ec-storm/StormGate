@@ -12,6 +12,9 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.io.IOException;
 
+import static com.minhdtb.storm.common.GlobalConstants.BUNDLE_NAME;
+import static java.util.ResourceBundle.getBundle;
+
 public abstract class AbstractView implements ApplicationContextAware {
 
     private AbstractApplication application;
@@ -40,6 +43,7 @@ public abstract class AbstractView implements ApplicationContextAware {
 
     protected void setFxml(String fxml) {
         this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + fxml));
+        this.fxmlLoader.setResources(getBundle(BUNDLE_NAME));
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());
