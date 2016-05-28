@@ -270,6 +270,7 @@ public class ApplicationController extends AbstractController {
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
             dataManager.deleteChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
+                propDetailBox.setVisible(false);
                 treeViewProfile.getRoot().setValue(profile);
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
@@ -330,7 +331,12 @@ public class ApplicationController extends AbstractController {
                     name = resources.getString(KEY_REFRESH_RATE);
                     break;
             }
-            propDetail.getItems().add(new PropertyItem(resources.getString(KEY_ATTRIBUTES), name, channelAttribute.getValue()));
+            PropertyItem attributeItem =
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), name, channelAttribute.getValue());
+            if (channelAttribute.getName().equals(PROG_ID)) {
+                attributeItem.setDisable();
+            }
+            propDetail.getItems().add(attributeItem);
         }
 
         Object[] userData = {ItemType.CHANNEL, channel};
@@ -625,7 +631,7 @@ public class ApplicationController extends AbstractController {
             return Optional.empty();
         }
 
-        public void setDisable() { editable = false; }
+        void setDisable() { editable = false; }
     }
 
     private final class TreeCellFactory extends TreeCell<Object> {
