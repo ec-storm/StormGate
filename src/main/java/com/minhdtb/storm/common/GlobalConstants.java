@@ -14,6 +14,7 @@ public class GlobalConstants {
     public static final String KEY_ERROR_VARIABLE_EXISTS = "errorVariableAlreadyExists";
 //    confirm
     public static final String KEY_CONFIRM_SAVE_PROFILE = "confirmDoYouReallyWantToSaveProfile";
+    public static final String KEY_CONFIRM_SAVE_CHANNEL = "confirmDoYouReallyWantToSaveChannel";
     public static final String KEY_CONFIRM_DELETE_VARIABLE = "confirmDoYouReallyWantToDeleteVariable";
     public static final String KEY_CONFIRM_DELETE_CHANNEL = "confirmDoYouReallyWantToDeleteChannel";
     public static final String KEY_CONFIRM_DELETE_PROFILE = "confirmDoYouReallyWantToDeleteProfile";
@@ -49,11 +50,11 @@ public class GlobalConstants {
     public static final String KEY_T13 = "t13MeasuredShortFloatingPointNumber";
     public static final String KEY_T45 = "t45SingleCommand";
     public static final String KEY_T46 = "t46DoubleCommand";
-    public static final String TYPE_KEY = "type";
-    public static final String ATTRIBUTES_KEY = "attributes";
-    public static final String BIND_IP_KEY = "bindIP";
-    public static final String PORT_KEY = "port";
-    public static final String SERVER_IP_KEY = "serverIP";
-    public static final String PROG_ID_KEY = "progID";
-    public static final String REFRESH_RATE_KEY = "refreshRate";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_ATTRIBUTES = "attributes";
+    public static final String KEY_BIND_IP = "bindIP";
+    public static final String KEY_PORT = "port";
+    public static final String KEY_SERVER_IP = "serverIP";
+    public static final String KEY_PROG_ID = "progID";
+    public static final String KEY_REFRESH_RATE = "refreshRate";
 }

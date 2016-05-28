@@ -85,6 +85,13 @@ public class DataManager {
         }
     }
 
+    public void saveChannel(Channel channel, ConsumerChannel callback) {
+        channelRepository.save(channel);
+        if (callback != null) {
+            callback.accept(currentProfile, channel);
+        }
+    }
+
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().remove(channel);
         channel.setProfile(null);

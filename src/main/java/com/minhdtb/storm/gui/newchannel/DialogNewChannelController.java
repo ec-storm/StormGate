@@ -26,6 +26,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static com.minhdtb.storm.common.GlobalConstants.*;
+import static com.minhdtb.storm.entities.Channel.ChannelType;
+import static com.minhdtb.storm.entities.Channel.ChannelType.*;
 import static java.util.ResourceBundle.getBundle;
 
 @Controller
@@ -73,8 +75,8 @@ public class DialogNewChannelController extends AbstractController {
     }
 
     private void loadChannelAttribute(NamedValueType type) {
-        switch (type.getValue()) {
-            case 0: {
+        switch (ChannelType.fromInt(type.getValue())) {
+            case CT_IEC_SERVER: {
                 loadFxml("NewChannelIECServer");
 
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
@@ -86,7 +88,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 break;
             }
-            case 1: {
+            case CT_IEC_CLIENT: {
                 loadFxml("NewChannelIECClient");
 
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
@@ -98,7 +100,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 break;
             }
-            case 2: {
+            case CT_OPC_CLIENT: {
                 loadFxml("NewChannelOPCClient");
 
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
@@ -127,9 +129,9 @@ public class DialogNewChannelController extends AbstractController {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         comboBoxChannelType.getItems().addAll(
-                new NamedValueType(resources.getString(KEY_IEC_60870_SERVER), 0),
-                new NamedValueType(resources.getString(KEY_IEC_60870_CLIENT), 1),
-                new NamedValueType(resources.getString(KEY_OPC_CLIENT), 2));
+                new NamedValueType(resources.getString(KEY_IEC_60870_SERVER), CT_IEC_SERVER.ordinal()),
+                new NamedValueType(resources.getString(KEY_IEC_60870_CLIENT), CT_IEC_CLIENT.ordinal()),
+                new NamedValueType(resources.getString(KEY_OPC_CLIENT), CT_OPC_CLIENT.ordinal()));
 
         comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> {
             loadChannelAttribute(newValue);
@@ -139,8 +141,8 @@ public class DialogNewChannelController extends AbstractController {
     public void actionOK() {
         NamedValueType channelType = comboBoxChannelType.getValue();
 
-        switch (channelType.getValue()) {
-            case 0: {
+        switch (ChannelType.fromInt(channelType.getValue())) {
+            case CT_IEC_SERVER: {
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
@@ -160,7 +162,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 break;
             }
-            case 1: {
+            case CT_IEC_CLIENT: {
                 TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editPort = (TextField) getView().getScene().lookup("#editPort");
 
@@ -180,7 +182,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 break;
             }
-            case 2: {
+            case CT_OPC_CLIENT: {
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
 
