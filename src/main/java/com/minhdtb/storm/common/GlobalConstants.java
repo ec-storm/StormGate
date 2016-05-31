@@ -27,6 +27,8 @@ public class GlobalConstants {
     public static final String KEY_MENU_NEW_CHANNEL = "menuNewChannel";
     public static final String KEY_MENU_DELETE_PROFILE = "menuDeleteProfile";
     public static final String KEY_MENU_CLOSE = "menuClose";
+    public static final String KEY_MENU_CLEAR_ALL = "menuClearAll";
+    public static final String KEY_MENU_COPY_ALL = "menuCopyAll";
 //    other
     public static final String KEY_COPYRIGHT = "stormGatewayServiceCopyright2016";
     public static final String KEY_NOW = "now";
