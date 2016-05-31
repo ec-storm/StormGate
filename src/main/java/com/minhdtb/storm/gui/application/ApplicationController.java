@@ -26,6 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -102,6 +103,8 @@ public class ApplicationController extends AbstractController {
     private DialogNewVariableIECView dialogNewVariableIECView;
 
     private ContextMenu menuTreeView = new ContextMenu();
+
+    private ContextMenu menuLog = new ContextMenu();
 
     private boolean isRunning;
 
@@ -191,6 +194,13 @@ public class ApplicationController extends AbstractController {
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(getView(), resources.getString(KEY_OPEN_PROFILE))).build());
+
+        menuLog.getItems().add(MenuItemBuilder.create()
+                .setText(resources.getString(KEY_MENU_CLEAR_ALL))
+                .setAction(event -> textFlowLog.getChildren().clear()).build());
+        menuLog.getItems().add(MenuItemBuilder.create()
+                .setText(resources.getString(KEY_MENU_COPY_ALL))
+                .setAction(event -> copyLog()).build());
 
         treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
 
@@ -353,6 +363,20 @@ public class ApplicationController extends AbstractController {
 
         textFlowLog.getChildren().addAll(txtTime, txtMessage);
         scrollLog.setVvalue(1.0);
+    }
+
+    private void copyLog() {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        StringBuilder log = new StringBuilder();
+        List<Node> nodes = textFlowLog.getChildren();
+        for (int i = 0; i < nodes.size() / 2; i++) {
+            for (int j = 2 * i; j <= 2 * i + 1; j++) {
+                log.append(((Text) nodes.get(j)).getText());
+            }
+        }
+        content.putString(log.toString());
+        clipboard.setContent(content);
     }
 
     private String replaceSpecialCharacters(String text) {
@@ -564,6 +588,18 @@ public class ApplicationController extends AbstractController {
     @FXML
     public void onHideMenu() {
         menuTreeView.hide();
+    }
+
+
+    @FXML
+    public void onLogShowContextMenu(ContextMenuEvent event) {
+        menuLog.show(textFlowLog, event.getScreenX(), event.getScreenY());
+        event.consume();
+    }
+
+    @FXML
+    public void onHideLogMenu() {
+        menuLog.hide();
     }
 
     private final class TimeDisplayTask extends TimerTask {
