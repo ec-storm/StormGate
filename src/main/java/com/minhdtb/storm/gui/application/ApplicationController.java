@@ -108,6 +108,8 @@ public class ApplicationController extends AbstractController {
 
     private boolean isRunning;
 
+    private boolean isAutoScroll;
+
     private ResourceBundle resources;
 
     private enum ItemType {
@@ -201,6 +203,10 @@ public class ApplicationController extends AbstractController {
         menuLog.getItems().add(MenuItemBuilder.create()
                 .setText(resources.getString(KEY_MENU_COPY_ALL))
                 .setAction(event -> copyLog()).build());
+        menuLog.getItems().add(MenuItemBuilder.create()
+                .setText(resources.getString(KEY_MENU_DISABLE_AUTO_SCROLL))
+                .setAction(event -> setAutoScroll()).build());
+        isAutoScroll = true;
 
         treeViewProfile.setCellFactory(p -> new TreeCellFactory(this));
 
@@ -362,7 +368,9 @@ public class ApplicationController extends AbstractController {
         txtMessage.setStyle(textStyle);
 
         textFlowLog.getChildren().addAll(txtTime, txtMessage);
-        scrollLog.setVvalue(1.0);
+        if (isAutoScroll) {
+            scrollLog.setVvalue(1.0);
+        }
     }
 
     private void copyLog() {
@@ -377,6 +385,16 @@ public class ApplicationController extends AbstractController {
         }
         content.putString(log.toString());
         clipboard.setContent(content);
+    }
+
+
+    private void setAutoScroll() {
+        isAutoScroll = !isAutoScroll;
+        if (isAutoScroll) {
+            menuLog.getItems().get(2).setText(resources.getString(KEY_MENU_DISABLE_AUTO_SCROLL));
+        } else {
+            menuLog.getItems().get(2).setText(resources.getString(KEY_MENU_ENABLE_AUTO_SCROLL));
+        }
     }
 
     private String replaceSpecialCharacters(String text) {
