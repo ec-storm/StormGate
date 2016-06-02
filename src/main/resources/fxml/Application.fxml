@@ -67,7 +67,7 @@
             <ScrollPane fx:id="scrollLog" focusTraversable="false" style="-fx-background-color: transparent"
                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0"
                         AnchorPane.topAnchor="0.0">
-                <TextFlow fx:id="textFlowLog" focusTraversable="false"/>
+                <TextFlow fx:id="textFlowLog" onContextMenuRequested="#onLogShowContextMenu" onMousePressed="#onHideLogMenu" focusTraversable="false"/>
             </ScrollPane>
         </AnchorPane>
     </SplitPane>
