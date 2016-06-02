@@ -11,27 +11,10 @@ abstract class StormChannelIEC extends StormChannel {
 
     protected final int TIMEOUT = 5000;
 
+    public static final String HOST = "host";
+    public static final String PORT = "port";
+
     private List<IStormVariable> variables = new ArrayList<>();
-
-    String getHost() {
-        return getAttribute("host");
-    }
-
-    public void setHost(String host) {
-        setAttribute("host", host);
-    }
-
-    int getPort() {
-        return Integer.parseInt(getAttribute("port"));
-    }
-
-    public void setPort(int port) {
-        setAttribute("port", String.valueOf(port));
-    }
-
-    StormChannelIEC() {
-        super();
-    }
 
     StormChannelIEC(Channel channel) {
         super(channel);
@@ -49,4 +32,24 @@ abstract class StormChannelIEC extends StormChannel {
     }
 
     public abstract void send(ASdu aSdu);
+
+    StormChannelIEC() {
+        super();
+    }
+
+    String getHost() {
+        return getAttribute(HOST);
+    }
+
+    public void setHost(String host) {
+        setAttribute(HOST, host);
+    }
+
+    int getPort() {
+        return Integer.parseInt(getAttribute(PORT));
+    }
+
+    public void setPort(int port) {
+        setAttribute(PORT, String.valueOf(port));
+    }
 }

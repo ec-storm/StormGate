@@ -6,6 +6,7 @@ import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.entities.ChannelAttribute;
 import com.minhdtb.storm.entities.Profile;
 import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
@@ -45,8 +46,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Calendar.getInstance;
 import static com.minhdtb.storm.common.GlobalConstants.*;
+import static com.minhdtb.storm.core.data.StormChannelIECClient.HOST;
+import static com.minhdtb.storm.core.data.StormChannelIECClient.PORT;
+import static com.minhdtb.storm.core.data.StormChannelOPCClient.PROG_ID;
+import static com.minhdtb.storm.core.data.StormChannelOPCClient.REFRESH_RATE;
+import static java.util.Calendar.getInstance;
 
 @Controller
 public class ApplicationController extends AbstractController {
@@ -102,6 +107,10 @@ public class ApplicationController extends AbstractController {
 
     private ResourceBundle resources;
 
+    private enum ItemType {
+        PROFILE, CHANNEL, VARIABLE
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
@@ -109,6 +118,7 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);
         getSubscriber().on("application:saveProfile", this::saveProfile);
+        getSubscriber().on("application:saveChannel", this::saveChannel);
 
         getSubscriber().on("application:addChannel", this::addChannel);
         getSubscriber().on("application:deleteChannel", this::deleteChannel);
@@ -190,7 +200,7 @@ public class ApplicationController extends AbstractController {
                 if (selected instanceof Profile) {
                     showProfile((Profile) selected);
                 } else if (selected instanceof Channel) {
-                    propDetail.getItems().clear();
+                    showChannel((Channel) selected);
                 } else {
                     propDetail.getItems().clear();
                 }
@@ -260,6 +270,7 @@ public class ApplicationController extends AbstractController {
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
             dataManager.deleteChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
+                propDetailBox.setVisible(false);
                 treeViewProfile.getRoot().setValue(profile);
                 TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
                 item.getParent().getChildren().remove(item);
@@ -289,7 +300,47 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
         propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
-        propDetail.setUserData(profile);
+        Object[] userData = {ItemType.PROFILE, profile};
+        propDetail.setUserData(userData);
+    }
+
+    private void showChannel(Channel channel) {
+        propDetail.getItems().clear();
+        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), channel.getName()));
+        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), channel.getDescription()));
+        PropertyItem typeItem = new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_TYPE), channel.getType());
+        typeItem.setDisable();
+        propDetail.getItems().add(typeItem);
+        for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+            String name = "";
+            switch (channelAttribute.getName()) {
+                case HOST:
+                    if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                        name = resources.getString(KEY_SERVER_IP);
+                    } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                        name = resources.getString(KEY_BIND_IP);
+                    }
+                    break;
+                case PORT:
+                    name = resources.getString(KEY_PORT);
+                    break;
+                case PROG_ID:
+                    name = resources.getString(KEY_PROG_ID);
+                    break;
+                case REFRESH_RATE:
+                    name = resources.getString(KEY_REFRESH_RATE);
+                    break;
+            }
+            PropertyItem attributeItem =
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), name, channelAttribute.getValue());
+            if (channelAttribute.getName().equals(PROG_ID)) {
+                attributeItem.setDisable();
+            }
+            propDetail.getItems().add(attributeItem);
+        }
+
+        Object[] userData = {ItemType.CHANNEL, channel};
+        propDetail.setUserData(userData);
     }
 
     private void writeLog(String timeStyle, String textStyle, String message) {
@@ -433,15 +484,21 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionSave() {
-        Object userData = propDetail.getUserData();
-        String confirmMessage = "";
-        String tmpKey = "application:";
-        if (userData instanceof Profile) {
-            confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData).getName());
-            tmpKey += "saveProfile";
+        Object[] userData = (Object[]) propDetail.getUserData();
+        String confirmMessage;
+        switch ((ItemType) userData[0]) {
+            case PROFILE:
+                confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData[1]).getName());
+                Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish("application:saveProfile", userData[1]));
+                break;
+            case CHANNEL:
+                confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_CHANNEL), ((Channel) userData[1]).getName());
+                Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish("application:saveChannel", userData[1]));
+                break;
+            case VARIABLE:
+                break;
         }
-        final String key = tmpKey;
-        Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish(key, userData));
+
     }
 
     private void saveProfile(Object userData) {
@@ -459,6 +516,41 @@ public class ApplicationController extends AbstractController {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
         }
+    }
+
+    private void saveChannel(Object userData) {
+        Channel channel = (Channel) userData;
+        List<PropertySheet.Item> items = propDetail.getItems();
+        channel.setName((String) items.get(0).getValue());
+        channel.setDescription((String) items.get(1).getValue());
+
+        for (int i = 3; i < items.size(); i++) {
+            for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+                String name = "";
+                switch (channelAttribute.getName()) {
+                    case HOST:
+                        if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                            name = resources.getString(KEY_SERVER_IP);
+                        } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                            name = resources.getString(KEY_BIND_IP);
+                        }
+                        break;
+                    case PORT:
+                        name = resources.getString(KEY_PORT);
+                        break;
+                    case PROG_ID:
+                        name = resources.getString(KEY_PROG_ID);
+                        break;
+                    case REFRESH_RATE:
+                        name = resources.getString(KEY_REFRESH_RATE);
+                        break;
+                }
+                if (items.get(i).getName().equals(name)) {
+                    channelAttribute.setValue((String) items.get(i).getValue());
+                }
+            }
+        }
+        dataManager.saveChannel(channel, null);
     }
 
     @FXML
@@ -489,6 +581,7 @@ public class ApplicationController extends AbstractController {
         private String category;
         private String name;
         private Object value;
+        private boolean editable = true;
 
         PropertyItem(String category, String name, Object value) {
             this.category = category;
@@ -531,9 +624,14 @@ public class ApplicationController extends AbstractController {
         }
 
         @Override
+        public boolean isEditable() { return editable; }
+
+        @Override
         public Optional<ObservableValue<?>> getObservableValue() {
             return Optional.empty();
         }
+
+        void setDisable() { editable = false; }
     }
 
     private final class TreeCellFactory extends TreeCell<Object> {
