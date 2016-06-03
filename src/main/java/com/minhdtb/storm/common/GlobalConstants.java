@@ -30,6 +30,8 @@ public class GlobalConstants {
     public static final String KEY_MENU_COPY_ALL = "menuCopyAll";
     public static final String KEY_MENU_ENABLE_AUTO_SCROLL = "menuEnableAutoScroll";
     public static final String KEY_MENU_DISABLE_AUTO_SCROLL = "menuDisableAutoScroll";
+    public static final String KEY_MENU_EXPORT = "menuExport";
+    public static final String KEY_MENU_IMPORT = "menuImport";
     //    other
     public static final String KEY_COPYRIGHT = "stormGatewayServiceCopyright2016";
     public static final String KEY_NOW = "now";

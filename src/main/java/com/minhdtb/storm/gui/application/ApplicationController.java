@@ -1,9 +1,15 @@
 package com.minhdtb.storm.gui.application;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.google.gson.*;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.data.StormChannelIECClient;
+import com.minhdtb.storm.core.data.StormChannelIECServer;
+import com.minhdtb.storm.core.data.StormChannelOPCClient;
 import com.minhdtb.storm.core.engine.StormEngine;
 import com.minhdtb.storm.entities.Channel;
 import com.minhdtb.storm.entities.ChannelAttribute;
@@ -42,6 +48,8 @@ import org.controlsfx.control.PropertySheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -136,12 +144,10 @@ public class ApplicationController extends AbstractController {
         getSubscriber().on("application:deleteVariable", this::deleteVariable);
 
         getSubscriber().on("application:log", message -> Platform.runLater(() ->
-                writeLog("-fx-fill: black;-fx-font-weight:bold;",
-                        "-fx-fill: black;-fx-font-size: 14px;", (String) message)));
+                writeLog((String) message)));
 
         getSubscriber().on("application:error", message -> Platform.runLater(() ->
-                writeLog("-fx-fill: red;-fx-font-weight:bold;",
-                        "-fx-fill: red;-fx-font-size: 14px;", (String) message)));
+                writeErrorLog((String) message)));
 
         initGUI();
     }
@@ -360,7 +366,15 @@ public class ApplicationController extends AbstractController {
         propDetail.setUserData(userData);
     }
 
-    private void writeLog(String timeStyle, String textStyle, String message) {
+    private void writeLog(String message) {
+        writeLog(message, "-fx-fill: black;-fx-font-weight:bold;", "-fx-fill: black;-fx-font-size: 14px;");
+    }
+
+    private void writeErrorLog(String message) {
+        writeLog(message, "-fx-fill: red;-fx-font-weight:bold;", "-fx-fill: red;-fx-font-size: 14px;")    ;
+    }
+
+    private void writeLog(String message, String timeStyle, String textStyle) {
         String now = new SimpleDateFormat(DATE_TIME_FORMAT).format(getInstance().getTime());
         Text txtTime = new Text(now + "> ");
         txtTime.setStyle(timeStyle);
@@ -497,12 +511,110 @@ public class ApplicationController extends AbstractController {
     public void actionSaveProfile() {
         Profile profile = dataManager.getCurrentProfile();
         if (profile != null) {
-            Platform.runLater(() -> {
-                String script = (String) webViewScript.getEngine().executeScript("editor.getValue()");
-                profile.setScript(script.getBytes());
-            });
-
+            String script = (String) webViewScript.getEngine().executeScript("editor.getValue()");
+            profile.setScript(script.getBytes());
             dataManager.saveProfile(profile, null);
+        }
+    }
+
+    @FXML
+    public void actionExport() {
+        Map data = new HashMap<>();
+        data.put("profiles", new ArrayList<>());
+        for (Profile profile : dataManager.getProfiles()) {
+            Map profileMap = new HashMap<>();
+            profileMap.put("name", profile.getName());
+            profileMap.put("description", profile.getDescription());
+            if (profile.getScript() != null) {
+                String script = replaceSpecialCharacters(new String(profile.getScript()));
+                profileMap.put("script", script);
+            }
+            profileMap.put("channels", new ArrayList<>());
+            for (Channel channel : profile.getChannels()) {
+                Map channelMap = new HashMap<>();
+                channelMap.put("name", channel.getName());
+                channelMap.put("description", channel.getDescription());
+                channelMap.put("type", channel.getType().toString());
+                for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+                    String name = getChannelAttributeDisplayName(channel, channelAttribute);
+                    channelMap.put(name, channelAttribute.getValue());
+                }
+                ((List) profileMap.get("channels")).add(channelMap);
+            }
+            ((List) data.get("profiles")).add(profileMap);
+        }
+        String exportedData = new Gson().toJson(data);
+        File file = new File("/Users/cuong/Documents/data.stormgate");
+        try {
+            Files.write(exportedData, file, Charsets.UTF_8);
+        } catch (IOException e) {
+            writeErrorLog(e.getMessage());
+        }
+        writeLog(exportedData);
+    }
+
+    @FXML
+    public void actionImport() {
+        File file = new File("/Users/cuong/Documents/data.stormgate");
+        String importedData;
+        try {
+            importedData = Files.toString(file, Charsets.UTF_8);
+        } catch (IOException e) {
+            writeErrorLog(e.getMessage());
+            return;
+        }
+        JsonParser parser = new JsonParser();
+        JsonArray profiles = parser.parse(importedData).getAsJsonObject().getAsJsonArray("profiles");
+        for (int i = 0; i < profiles.size(); i++) {
+            JsonObject profileData = profiles.get(i).getAsJsonObject();
+            Profile profile = new Profile();
+            profile.setName(profileData.get("name").getAsString());
+            profile.setDescription(profileData.get("description").getAsString());
+            profile.setScript(profileData.get("script").getAsString().getBytes());
+            JsonArray channels = profileData.getAsJsonArray("channels");
+            dataManager.saveProfile(profile, null);
+            for (int j = 0; j < channels.size(); j++) {
+                JsonObject channelData = channels.get(j).getAsJsonObject();
+                switch (Channel.ChannelType.valueOf(channelData.get("type").getAsString())) {
+                    case CT_IEC_SERVER: {
+                        StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
+                        stormChannelIECServer.setName(channelData.get("name").getAsString());
+                        stormChannelIECServer.setDescription(channelData.get("description").getAsString());
+                        stormChannelIECServer.setHost(channelData.get(resources.getString(KEY_BIND_IP)).getAsString());
+                        stormChannelIECServer.setPort(
+                                Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
+                        Channel channel = stormChannelIECServer.getRaw();
+                        channel.setProfile(profile);
+                        dataManager.saveChannel(channel, null);
+                        break;
+                    }
+                    case CT_IEC_CLIENT: {
+                        StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
+                        stormChannelIECClient.setName(channelData.get("name").getAsString());
+                        stormChannelIECClient.setDescription(channelData.get("description").getAsString());
+                        stormChannelIECClient.setHost(channelData.get(resources.getString(KEY_SERVER_IP)).getAsString());
+                        stormChannelIECClient.setPort(
+                                Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
+                        Channel channel = stormChannelIECClient.getRaw();
+                        channel.setProfile(profile);
+                        dataManager.saveChannel(channel, null);
+                        break;
+                    }
+                    case CT_OPC_CLIENT: {
+                        StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
+                        stormChannelOPCClient.setName(channelData.get("name").getAsString());
+                        stormChannelOPCClient.setDescription(channelData.get("description").getAsString());
+                        stormChannelOPCClient.setProgId(
+                                channelData.get(resources.getString(KEY_PROG_ID)).getAsString());
+                        stormChannelOPCClient.setRefreshRate(
+                                Integer.parseInt(channelData.get(resources.getString(KEY_REFRESH_RATE)).getAsString()));
+                        Channel channel = stormChannelOPCClient.getRaw();
+                        channel.setProfile(profile);
+                        dataManager.saveChannel(channel, null);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -565,6 +677,46 @@ public class ApplicationController extends AbstractController {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
         }
+    }
+
+    private String getChannelAttributeDisplayName(Channel channel, ChannelAttribute channelAttribute) {
+        String name = "";
+        switch (channelAttribute.getName()) {
+            case HOST:
+                if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                    name = resources.getString(KEY_SERVER_IP);
+                } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                    name = resources.getString(KEY_BIND_IP);
+                }
+                break;
+            case PORT:
+                name = resources.getString(KEY_PORT);
+                break;
+            case PROG_ID:
+                name = resources.getString(KEY_PROG_ID);
+                break;
+            case REFRESH_RATE:
+                name = resources.getString(KEY_REFRESH_RATE);
+                break;
+        }
+        return name;
+    }
+
+    private String getChannelAttributeName(String displayName) {
+        if (displayName.equals(resources.getString(KEY_SERVER_IP))
+                || displayName.equals(resources.getString(KEY_BIND_IP))) {
+            return HOST;
+        }
+        if (displayName.equals(resources.getString(KEY_PORT))) {
+            return PORT;
+        }
+        if (displayName.equals(resources.getString(KEY_PROG_ID))) {
+            return PROG_ID;
+        }
+        if (displayName.equals(resources.getString(KEY_REFRESH_RATE))) {
+            return REFRESH_RATE;
+        }
+        return "";
     }
 
     private void saveChannel(Object userData) {

@@ -12,6 +12,8 @@
             <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="%menuNewProfile"/>
             <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="%menuOpenProfile"/>
             <MenuItem fx:id="menuItemSave" onAction="#actionSaveProfile" text="%menuSave"/>
+            <MenuItem fx:id="menuItemExport" onAction="#actionExport" text="%menuExport"/>
+            <MenuItem fx:id="menuItemImport" onAction="#actionImport" text="%menuImport"/>
             <SeparatorMenuItem/>
             <MenuItem onAction="#actionCloseApplication" text="%menuClose"/>
         </Menu>
