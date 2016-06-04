@@ -47,4 +47,6 @@ abstract class StormChannelOPC extends StormChannel {
     public List<IStormVariable> getVariables() {
         return variables;
     }
+
+    public abstract void write(String tagName, Object value);
 }
