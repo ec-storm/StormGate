@@ -19,16 +19,16 @@ public class DialogListOpcServerController extends AbstractController {
     @FXML
     public ListView<String> listServer;
 
-    private OPCDaClient OPCDaClient = new OPCDaClient();
+    private OPCDaClient opcDaClient = new OPCDaClient();
 
     @Override
     public void onShow(WindowEvent event) {
         editHost.setText("localhost");
         buttonRefresh.setOnAction(actionEvent -> {
-            OPCDaClient.setHost(editHost.getText());
+            opcDaClient.setHost(editHost.getText());
 
             listServer.getItems().clear();
-            listServer.getItems().addAll(OPCDaClient.getAllServers());
+            listServer.getItems().addAll(opcDaClient.getServers());
         });
         buttonRefresh.getOnAction().handle(null);
 

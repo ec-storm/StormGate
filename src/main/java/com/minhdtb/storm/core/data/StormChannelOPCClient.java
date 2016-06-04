@@ -23,20 +23,20 @@ public class StormChannelOPCClient extends StormChannelOPC implements IOPCDaEven
 
     @Override
     public void write(String tagName, Object value) {
-        opcDaClient.write(tagName, value);
+        opcDaClient.writeTag(tagName, value);
     }
 
     @Override
     public void start() {
-        opcDaClient.setEventHandler(this);
+        opcDaClient.setEvent(this);
         opcDaClient.connect(getProgId());
 
-        getVariables().stream().forEach(variable -> opcDaClient.add(((StormVariableOPC) variable).getTagName()));
+        getVariables().stream().forEach(variable -> opcDaClient.addTag(((StormVariableOPC) variable).getTagName()));
     }
 
     @Override
     public void stop() {
-        opcDaClient.disconnect();
+        opcDaClient.destroy();
     }
 
     @Override
