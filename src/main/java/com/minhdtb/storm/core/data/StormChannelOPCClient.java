@@ -37,7 +37,8 @@ public class StormChannelOPCClient extends StormChannelOPC implements IOPCDaEven
 
     @Override
     public void stop() {
-        opcDaClient.destroy();
+        opcDaClient.clearTags();
+        opcDaClient.disconnect();
     }
 
     @Override

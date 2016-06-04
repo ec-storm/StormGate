@@ -70,6 +70,8 @@ class OPCDaManager {
 
     public native void connect(long client, String host, String progId);
 
+    public native void disconnect(long client);
+
     public native String[] getOpcServers(long client, String host);
 
     public native String[] getOpcServerTags(long client);
