@@ -52,6 +52,7 @@ public class DialogNewChannelController extends AbstractController {
     @Override
     public void onShow(WindowEvent event) {
         editChannelName.setText(resources.getString(KEY_NEW_CHANNEL));
+        editChannelDescription.setText("");
         comboBoxChannelType.getSelectionModel().selectFirst();
 
         getSubscriber().on("opc:progId", item -> Platform.runLater(() -> {
