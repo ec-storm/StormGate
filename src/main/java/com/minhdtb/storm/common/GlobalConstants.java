@@ -47,9 +47,9 @@ public class GlobalConstants {
     public static final String KEY_NEW_VARIABLE = "newVariable";
     public static final String KEY_OPEN_PROFILE = "openProfile";
     public static final String KEY_NEW_IEC_60870_VARIABLE = "newIEC60870Variable";
-    public static final String KEY_IEC_60870_SERVER = "IEC60870Server";
-    public static final String KEY_IEC_60870_CLIENT = "IEC60870Client";
-    public static final String KEY_OPC_CLIENT = "OPCClient";
+    public static final String KEY_IEC_60870_SERVER = "CT_IEC_SERVER";
+    public static final String KEY_IEC_60870_CLIENT = "CT_IEC_CLIENT";
+    public static final String KEY_OPC_CLIENT = "CT_OPC_CLIENT";
     public static final String KEY_T09 = "t09MeasuredNormalizedValue";
     public static final String KEY_T13 = "t13MeasuredShortFloatingPointNumber";
     public static final String KEY_T45 = "t45SingleCommand";

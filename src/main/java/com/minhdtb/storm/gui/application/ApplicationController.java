@@ -179,7 +179,8 @@ public class ApplicationController extends AbstractController {
         textFlowLog.setMaxHeight(4000.0);
         textFlowLog.setStyle("-fx-background-color: white");
 
-        menuItemNewProfile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
+        menuItemNewProfile.setAccelerator(
+                new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN));
 
         GlyphsDude.setIcon(menuItemOpenProfile, MaterialDesignIcon.FOLDER, "1.5em");
         menuItemOpenProfile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
@@ -189,13 +190,16 @@ public class ApplicationController extends AbstractController {
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
                 .setText(resources.getString(KEY_MENU_NEW_PROFILE))
-                .setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
-                .setAction(event -> dialogNewProfileView.showDialog(getView(), resources.getString(KEY_NEW_PROFILE))).build());
+                .setAccelerator(
+                        new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
+                .setAction(event -> dialogNewProfileView.showDialog(
+                        getView(), resources.getString(KEY_NEW_PROFILE))).build());
         menuTreeView.getItems().add(MenuItemBuilder.create()
                 .setText(resources.getString(KEY_MENU_OPEN_PROFILE))
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-                .setAction(event -> dialogOpenProfileView.showDialog(getView(), resources.getString(KEY_OPEN_PROFILE))).build());
+                .setAction(event -> dialogOpenProfileView.showDialog(
+                        getView(), resources.getString(KEY_OPEN_PROFILE))).build());
 
         menuLog.getItems().add(MenuItemBuilder.create()
                 .setText(resources.getString(KEY_MENU_CLEAR_ALL))
@@ -314,17 +318,26 @@ public class ApplicationController extends AbstractController {
     private void showProfile(Profile profile) {
         propDetailBox.setVisible(true);
         propDetail.getItems().clear();
-        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
-        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
+        propDetail.getItems().add(new PropertyItem(
+                resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
+        propDetail.getItems().add(new PropertyItem(
+                resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
         Object[] userData = {ItemType.PROFILE, profile};
         propDetail.setUserData(userData);
     }
 
     private void showChannel(Channel channel) {
         propDetail.getItems().clear();
-        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), channel.getName()));
-        propDetail.getItems().add(new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), channel.getDescription()));
-        PropertyItem typeItem = new PropertyItem(resources.getString(KEY_GENERAL), resources.getString(KEY_TYPE), channel.getType());
+        propDetail.getItems().add(new PropertyItem(
+                resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), channel.getName()));
+        propDetail.getItems().add(new PropertyItem(
+                resources.getString(KEY_GENERAL),
+                resources.getString(KEY_DESCRIPTION),
+                channel.getDescription()));
+        PropertyItem typeItem = new PropertyItem(
+                resources.getString(KEY_GENERAL),
+                resources.getString(KEY_TYPE),
+                resources.getString(channel.getType().toString()));
         typeItem.setDisable();
         propDetail.getItems().add(typeItem);
         for (ChannelAttribute channelAttribute : channel.getAttributes()) {
@@ -442,7 +455,8 @@ public class ApplicationController extends AbstractController {
 
                     try {
                         children.addAll(((Channel) treeItem.getValue())
-                                .getVariables().stream().map(variable -> createNode(variable)).collect(Collectors.toList()));
+                                .getVariables().stream().map(
+                                        variable -> createNode(variable)).collect(Collectors.toList()));
                     } catch (NullPointerException ignored) {
 
                     }
@@ -530,12 +544,16 @@ public class ApplicationController extends AbstractController {
         String confirmMessage;
         switch ((ItemType) userData[0]) {
             case PROFILE:
-                confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData[1]).getName());
-                Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish("application:saveProfile", userData[1]));
+                confirmMessage = String.format(
+                        resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData[1]).getName());
+                Utils.showConfirm(
+                        getView(), confirmMessage, e -> getPublisher().publish("application:saveProfile", userData[1]));
                 break;
             case CHANNEL:
-                confirmMessage = String.format(resources.getString(KEY_CONFIRM_SAVE_CHANNEL), ((Channel) userData[1]).getName());
-                Utils.showConfirm(getView(), confirmMessage, e -> getPublisher().publish("application:saveChannel", userData[1]));
+                confirmMessage = String.format(
+                        resources.getString(KEY_CONFIRM_SAVE_CHANNEL), ((Channel) userData[1]).getName());
+                Utils.showConfirm(
+                        getView(), confirmMessage, e -> getPublisher().publish("application:saveChannel", userData[1]));
                 break;
             case VARIABLE:
                 break;
@@ -552,8 +570,8 @@ public class ApplicationController extends AbstractController {
         if (dataManager.existProfile(profile)) {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
-            Platform.runLater(() ->
-                    Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_PROFILE_EXISTS), profile.getName())));
+            Platform.runLater(() -> Utils.showError(
+                    getView(), String.format(resources.getString(KEY_ERROR_PROFILE_EXISTS), profile.getName())));
         } else {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
@@ -722,7 +740,8 @@ public class ApplicationController extends AbstractController {
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
+                                    .showDialog(
+                                            getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
                         }
                     }).build());
 
@@ -739,7 +758,8 @@ public class ApplicationController extends AbstractController {
 
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText(resources.getString(KEY_MENU_NEW_CHANNEL))
-                    .setAction(event -> dialogNewChannelView.showDialog(getController().getView(), resources.getString(KEY_NEW_CHANNEL)))
+                    .setAction(event -> dialogNewChannelView.showDialog(
+                            getController().getView(), resources.getString(KEY_NEW_CHANNEL)))
                     .build());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText(resources.getString(KEY_MENU_DELETE_PROFILE))
