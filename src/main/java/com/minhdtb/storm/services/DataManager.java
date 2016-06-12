@@ -79,7 +79,7 @@ public class DataManager {
     public void addChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
-        channelRepository.save(channel);
+        currentProfile = profileRepository.save(currentProfile);
         if (callback != null) {
             callback.accept(currentProfile, channel);
         }
@@ -93,12 +93,14 @@ public class DataManager {
     }
 
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
-        currentProfile.getChannels().remove(channel);
-        channel.setProfile(null);
-        currentProfile = profileRepository.save(currentProfile);
-        channelRepository.delete(channel);
-        if (callback != null) {
-            callback.accept(currentProfile, channel);
+        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
+                Objects.equals(item.getName(), channel.getName())).findFirst();
+        if (found.isPresent()) {
+            currentProfile.getChannels().remove(found.get());
+            currentProfile = profileRepository.save(currentProfile);
+            if (callback != null) {
+                callback.accept(currentProfile, found.get());
+            }
         }
     }
 
@@ -112,9 +114,9 @@ public class DataManager {
         if (found.isPresent()) {
             Channel channelFound = found.get();
             if (channelFound != null) {
-                channelFound.getVariables().add(variable);
                 variable.setChannel(channelFound);
-                variableRepository.save(variable);
+                channelFound.getVariables().add(variable);
+                currentProfile = profileRepository.save(currentProfile);
                 if (callback != null) {
                     callback.accept(variable);
                 }
@@ -130,8 +132,7 @@ public class DataManager {
             Channel channelFound = found.get();
             if (channelFound != null) {
                 channelFound.getVariables().remove(variable);
-                variable.setChannel(null);
-                variableRepository.delete(variable);
+                currentProfile = profileRepository.save(currentProfile);
                 if (callback != null) {
                     callback.accept(variable);
                 }
