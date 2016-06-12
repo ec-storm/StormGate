@@ -79,7 +79,7 @@ public class DataManager {
     public void addChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
-        currentProfile = profileRepository.save(currentProfile);
+        channelRepository.save(channel);
         if (callback != null) {
             callback.accept(currentProfile, channel);
         }
@@ -116,7 +116,7 @@ public class DataManager {
             if (channelFound != null) {
                 variable.setChannel(channelFound);
                 channelFound.getVariables().add(variable);
-                currentProfile = profileRepository.save(currentProfile);
+                variableRepository.save(variable);
                 if (callback != null) {
                     callback.accept(variable);
                 }
