@@ -28,7 +28,7 @@ public class DataManager {
 
     @FunctionalInterface
     public interface ConsumerVariable {
-        void accept(Variable variable);
+        void accept(Channel channel);
     }
 
     @Autowired
@@ -109,34 +109,21 @@ public class DataManager {
     }
 
     public void addVariable(Channel channel, Variable variable, ConsumerVariable callback) {
-        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst();
-        if (found.isPresent()) {
-            Channel channelFound = found.get();
-            if (channelFound != null) {
-                variable.setChannel(channelFound);
-                channelFound.getVariables().add(variable);
-                variableRepository.save(variable);
-                if (callback != null) {
-                    callback.accept(variable);
-                }
-            }
+        variable.setChannel(channel);
+        variableRepository.save(variable);
+        channel.getVariables().add(variable);
+        channel = channelRepository.save(channel);
+        if (callback != null) {
+            callback.accept(channel);
         }
     }
 
     public void deleteVariable(Variable variable, ConsumerVariable callback) {
         Channel channel = variable.getChannel();
-        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst();
-        if (found.isPresent()) {
-            Channel channelFound = found.get();
-            if (channelFound != null) {
-                channelFound.getVariables().remove(variable);
-                currentProfile = profileRepository.save(currentProfile);
-                if (callback != null) {
-                    callback.accept(variable);
-                }
-            }
+        channel.getVariables().remove(variable);
+        channel = channelRepository.save(channel);
+        if (callback != null) {
+            callback.accept(channel);
         }
     }
 

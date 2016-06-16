@@ -38,6 +38,7 @@ import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
+import org.python.antlr.runtime.tree.Tree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -301,16 +302,32 @@ public class ApplicationController extends AbstractController {
     private void addVariable(Object object) {
         if (object instanceof Variable) {
             Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-            dataManager.addVariable(channel, (Variable) object, variable -> Platform.runLater(() ->
-                    treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variable))));
+            dataManager.addVariable(channel, (Variable) object, currentChannel -> Platform.runLater(() -> {
+                TreeItem profileItem = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem().getParent();
+                int i = -1;
+                for (int j = 0; j < profileItem.getChildren().size(); j++) {
+                    if (((Channel) ((TreeItem) profileItem.getChildren().get(j)).getValue()).getId() == currentChannel.getId()) {
+                        i = j;
+                        break;
+                    }
+                }
+                profileItem.getChildren().set(i, createNode(currentChannel));
+            }));
         }
     }
 
     private void deleteVariable(Object object) {
         if (object instanceof Variable) {
-            dataManager.deleteVariable((Variable) object, variable -> Platform.runLater(() -> {
-                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
-                item.getParent().getChildren().remove(item);
+            dataManager.deleteVariable((Variable) object, channel -> Platform.runLater(() -> {
+                TreeItem profileItem = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem().getParent().getParent();
+                int i = -1;
+                for (int j = 0; j < profileItem.getChildren().size(); j++) {
+                    if (((Channel) ((TreeItem) profileItem.getChildren().get(j)).getValue()).getId() == channel.getId()) {
+                        i = j;
+                        break;
+                    }
+                }
+                profileItem.getChildren().set(i, createNode(channel));
             }));
         }
     }
