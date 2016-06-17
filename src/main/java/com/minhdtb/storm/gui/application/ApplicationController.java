@@ -280,20 +280,16 @@ public class ApplicationController extends AbstractController {
 
     private void addChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.addChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
-                treeViewProfile.getRoot().setValue(profile);
-                treeViewProfile.getRoot().getChildren().add(createNode(channel));
+            dataManager.addChannel((Channel) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }
 
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.deleteChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
-                propDetailBox.setVisible(false);
-                treeViewProfile.getRoot().setValue(profile);
-                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
-                item.getParent().getChildren().remove(item);
+            dataManager.deleteChannel((Channel) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }
@@ -301,16 +297,16 @@ public class ApplicationController extends AbstractController {
     private void addVariable(Object object) {
         if (object instanceof Variable) {
             Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-            dataManager.addVariable(channel, (Variable) object, variable -> Platform.runLater(() ->
-                    treeViewProfile.getSelectionModel().getSelectedItem().getChildren().add(createNode(variable))));
+            dataManager.addVariable(channel, (Variable) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
+            }));
         }
     }
 
     private void deleteVariable(Object object) {
         if (object instanceof Variable) {
-            dataManager.deleteVariable((Variable) object, variable -> Platform.runLater(() -> {
-                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
-                item.getParent().getChildren().remove(item);
+            dataManager.deleteVariable((Variable) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }

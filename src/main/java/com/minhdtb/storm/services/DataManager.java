@@ -23,12 +23,12 @@ public class DataManager {
 
     @FunctionalInterface
     public interface ConsumerChannel {
-        void accept(Profile profile, Channel channel);
+        void accept(Profile profile);
     }
 
     @FunctionalInterface
     public interface ConsumerVariable {
-        void accept(Variable variable);
+        void accept(Profile profile);
     }
 
     @Autowired
@@ -77,28 +77,26 @@ public class DataManager {
     }
 
     public void addChannel(Channel channel, ConsumerChannel callback) {
-        currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
-        channelRepository.save(channel);
+        currentProfile.getChannels().add(channel);
+        currentProfile = profileRepository.save(currentProfile);
         if (callback != null) {
-            callback.accept(currentProfile, channel);
+            callback.accept(currentProfile);
         }
     }
 
     public void saveChannel(Channel channel, ConsumerChannel callback) {
-        channelRepository.save(channel);
+        channel = channelRepository.save(channel);
         if (callback != null) {
-            callback.accept(currentProfile, channel);
+            callback.accept(channel.getProfile());
         }
     }
 
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
         currentProfile.getChannels().remove(channel);
-        channel.setProfile(null);
         currentProfile = profileRepository.save(currentProfile);
-        channelRepository.delete(channel);
         if (callback != null) {
-            callback.accept(currentProfile, channel);
+            callback.accept(currentProfile);
         }
     }
 
@@ -107,35 +105,20 @@ public class DataManager {
     }
 
     public void addVariable(Channel channel, Variable variable, ConsumerVariable callback) {
-        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst();
-        if (found.isPresent()) {
-            Channel channelFound = found.get();
-            if (channelFound != null) {
-                channelFound.getVariables().add(variable);
-                variable.setChannel(channelFound);
-                variableRepository.save(variable);
-                if (callback != null) {
-                    callback.accept(variable);
-                }
-            }
+        variable.setChannel(channel);
+        channel.getVariables().add(variable);
+        channel = channelRepository.save(channel);
+        if (callback != null) {
+            callback.accept(channel.getProfile());
         }
     }
 
     public void deleteVariable(Variable variable, ConsumerVariable callback) {
         Channel channel = variable.getChannel();
-        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst();
-        if (found.isPresent()) {
-            Channel channelFound = found.get();
-            if (channelFound != null) {
-                channelFound.getVariables().remove(variable);
-                variable.setChannel(null);
-                variableRepository.delete(variable);
-                if (callback != null) {
-                    callback.accept(variable);
-                }
-            }
+        channel.getVariables().remove(variable);
+        channel = channelRepository.save(channel);
+        if (callback != null) {
+            callback.accept(channel.getProfile());
         }
     }
 
