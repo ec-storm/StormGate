@@ -23,12 +23,12 @@ public class DataManager {
 
     @FunctionalInterface
     public interface ConsumerChannel {
-        void accept(Profile profile, Channel channel);
+        void accept(Profile profile);
     }
 
     @FunctionalInterface
     public interface ConsumerVariable {
-        void accept(Channel channel);
+        void accept(Profile profile);
     }
 
     @Autowired
@@ -77,30 +77,26 @@ public class DataManager {
     }
 
     public void addChannel(Channel channel, ConsumerChannel callback) {
-        currentProfile.getChannels().add(channel);
         channel.setProfile(currentProfile);
-        channelRepository.save(channel);
+        currentProfile.getChannels().add(channel);
+        currentProfile = profileRepository.save(currentProfile);
         if (callback != null) {
-            callback.accept(currentProfile, channel);
+            callback.accept(currentProfile);
         }
     }
 
     public void saveChannel(Channel channel, ConsumerChannel callback) {
-        channelRepository.save(channel);
+        channel = channelRepository.save(channel);
         if (callback != null) {
-            callback.accept(currentProfile, channel);
+            callback.accept(channel.getProfile());
         }
     }
 
     public void deleteChannel(Channel channel, ConsumerChannel callback) {
-        Optional<Channel> found = currentProfile.getChannels().stream().filter(item ->
-                Objects.equals(item.getName(), channel.getName())).findFirst();
-        if (found.isPresent()) {
-            currentProfile.getChannels().remove(found.get());
-            currentProfile = profileRepository.save(currentProfile);
-            if (callback != null) {
-                callback.accept(currentProfile, found.get());
-            }
+        currentProfile.getChannels().remove(channel);
+        currentProfile = profileRepository.save(currentProfile);
+        if (callback != null) {
+            callback.accept(currentProfile);
         }
     }
 
@@ -110,11 +106,10 @@ public class DataManager {
 
     public void addVariable(Channel channel, Variable variable, ConsumerVariable callback) {
         variable.setChannel(channel);
-        variableRepository.save(variable);
         channel.getVariables().add(variable);
         channel = channelRepository.save(channel);
         if (callback != null) {
-            callback.accept(channel);
+            callback.accept(channel.getProfile());
         }
     }
 
@@ -123,7 +118,7 @@ public class DataManager {
         channel.getVariables().remove(variable);
         channel = channelRepository.save(channel);
         if (callback != null) {
-            callback.accept(channel);
+            callback.accept(channel.getProfile());
         }
     }
 

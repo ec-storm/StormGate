@@ -38,7 +38,6 @@ import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
-import org.python.antlr.runtime.tree.Tree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -281,20 +280,18 @@ public class ApplicationController extends AbstractController {
 
     private void addChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.addChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
-                treeViewProfile.getRoot().setValue(profile);
-                treeViewProfile.getRoot().getChildren().add(createNode(channel));
+            dataManager.addChannel((Channel) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }
 
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.deleteChannel((Channel) object, (profile, channel) -> Platform.runLater(() -> {
+            dataManager.deleteChannel((Channel) object, profile -> Platform.runLater(() -> {
                 propDetailBox.setVisible(false);
                 treeViewProfile.getRoot().setValue(profile);
-                TreeItem item = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem();
-                item.getParent().getChildren().remove(item);
+                openProfile(profile);
             }));
         }
     }
@@ -302,32 +299,16 @@ public class ApplicationController extends AbstractController {
     private void addVariable(Object object) {
         if (object instanceof Variable) {
             Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-            dataManager.addVariable(channel, (Variable) object, currentChannel -> Platform.runLater(() -> {
-                TreeItem profileItem = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem().getParent();
-                int i = -1;
-                for (int j = 0; j < profileItem.getChildren().size(); j++) {
-                    if (((Channel) ((TreeItem) profileItem.getChildren().get(j)).getValue()).getId() == currentChannel.getId()) {
-                        i = j;
-                        break;
-                    }
-                }
-                profileItem.getChildren().set(i, createNode(currentChannel));
+            dataManager.addVariable(channel, (Variable) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }
 
     private void deleteVariable(Object object) {
         if (object instanceof Variable) {
-            dataManager.deleteVariable((Variable) object, channel -> Platform.runLater(() -> {
-                TreeItem profileItem = (TreeItem) treeViewProfile.getSelectionModel().getSelectedItem().getParent().getParent();
-                int i = -1;
-                for (int j = 0; j < profileItem.getChildren().size(); j++) {
-                    if (((Channel) ((TreeItem) profileItem.getChildren().get(j)).getValue()).getId() == channel.getId()) {
-                        i = j;
-                        break;
-                    }
-                }
-                profileItem.getChildren().set(i, createNode(channel));
+            dataManager.deleteVariable((Variable) object, profile -> Platform.runLater(() -> {
+                openProfile(profile);
             }));
         }
     }
