@@ -289,8 +289,6 @@ public class ApplicationController extends AbstractController {
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
             dataManager.deleteChannel((Channel) object, profile -> Platform.runLater(() -> {
-                propDetailBox.setVisible(false);
-                treeViewProfile.getRoot().setValue(profile);
                 openProfile(profile);
             }));
         }
