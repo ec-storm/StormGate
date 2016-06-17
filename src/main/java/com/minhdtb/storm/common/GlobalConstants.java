@@ -47,6 +47,7 @@ public class GlobalConstants {
     public static final String KEY_NEW_VARIABLE = "newVariable";
     public static final String KEY_OPEN_PROFILE = "openProfile";
     public static final String KEY_NEW_IEC_60870_VARIABLE = "newIEC60870Variable";
+    public static final String KEY_NEW_OPC_VARIABLE = "newOPCVariable";
     public static final String KEY_IEC_60870_SERVER = "CT_IEC_SERVER";
     public static final String KEY_IEC_60870_CLIENT = "CT_IEC_CLIENT";
     public static final String KEY_OPC_CLIENT = "CT_OPC_CLIENT";
@@ -61,4 +62,9 @@ public class GlobalConstants {
     public static final String KEY_SERVER_IP = "serverIP";
     public static final String KEY_PROG_ID = "progID";
     public static final String KEY_REFRESH_RATE = "refreshRate";
+
+    public static final String KEY_BOOLEAN = "boolean";
+    public static final String KEY_INTEGER = "integer";
+    public static final String KEY_FLOAT = "float";
+    public static final String KEY_STRING = "string";
 }
