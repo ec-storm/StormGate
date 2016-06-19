@@ -9,16 +9,36 @@ import javax.annotation.PostConstruct;
 @Component
 public class DialogListOpcTagView extends AbstractView {
 
+    private String host;
+
+    private String progId;
+
     @PostConstruct
     public void init() {
         setFxml("ListOpcTag.fxml");
     }
 
     public void showDialog(AbstractView owner) {
-        this.setTitle("Select OPC Server")
+        this.setTitle("Select OPC Tag")
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
                 .show();
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getProgId() {
+        return progId;
+    }
+
+    public void setProgId(String progId) {
+        this.progId = progId;
     }
 }

@@ -12,6 +12,7 @@ public class GlobalConstants {
     public static final String KEY_ERROR_PROFILE_EXISTS = "errorProfileAlreadyExists";
     public static final String KEY_ERROR_CHANNEL_EXISTS = "errorChannelAlreadyExists";
     public static final String KEY_ERROR_VARIABLE_EXISTS = "errorVariableAlreadyExists";
+    public static final String KEY_ERROR_PROGID_MUST_BE_NOT_EMPTY = "errorProgIdMustBeNotEmpty";
 //    confirm
     public static final String KEY_CONFIRM_SAVE_PROFILE = "confirmDoYouReallyWantToSaveProfile";
     public static final String KEY_CONFIRM_SAVE_CHANNEL = "confirmDoYouReallyWantToSaveChannel";

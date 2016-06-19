@@ -24,8 +24,18 @@ abstract class StormChannelOPC extends StormChannel {
             variables.add(variableOPC);
         }
     }
+
+    public static final String HOST = "host";
     public static final String PROG_ID = "progId";
     public static final String REFRESH_RATE = "refreshRate";
+
+    public String getHost() {
+        return getAttribute(HOST);
+    }
+
+    public void setHost(String host) {
+        setAttribute(HOST, host);
+    }
 
     public String getProgId() {
         return getAttribute(PROG_ID);

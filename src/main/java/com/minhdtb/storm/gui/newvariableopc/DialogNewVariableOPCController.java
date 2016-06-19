@@ -3,10 +3,13 @@ package com.minhdtb.storm.gui.newvariableopc;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
+import com.minhdtb.storm.core.data.StormChannelOPCClient;
 import com.minhdtb.storm.core.data.StormVariableOPC;
 import com.minhdtb.storm.entities.Channel;
+import com.minhdtb.storm.gui.listopctag.DialogListOpcTagView;
 import com.minhdtb.storm.services.DataManager;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
@@ -27,9 +30,14 @@ public class DialogNewVariableOPCController extends AbstractController {
     public TextField editTagName;
     @FXML
     public ComboBox<NamedValueType> comboBoxVariableType;
+    @FXML
+    public Button buttonListTags;
 
     @Autowired
     private DataManager dataManager;
+
+    @Autowired
+    private DialogListOpcTagView dialogListOpcTagView;
 
     private ResourceBundle resources;
 
@@ -41,14 +49,23 @@ public class DialogNewVariableOPCController extends AbstractController {
                 new NamedValueType(resources.getString(KEY_INTEGER), 1),
                 new NamedValueType(resources.getString(KEY_FLOAT), 2),
                 new NamedValueType(resources.getString(KEY_STRING), 3));
-
+        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
+        editTagName.setText("");
+        comboBoxVariableType.getSelectionModel().selectFirst();
+        buttonListTags.setOnAction(event -> {
+            Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
+            if (channel != null) {
+                StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient(channel);
+                dialogListOpcTagView.setHost(stormChannelOPCClient.getHost());
+                dialogListOpcTagView.setProgId(stormChannelOPCClient.getProgId());
+                dialogListOpcTagView.showDialog(getView());
+            }
+        });
     }
 
     @Override
     public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
-        editTagName.setText("");
-        comboBoxVariableType.getSelectionModel().selectFirst();
+
     }
 
     public void actionOK() {

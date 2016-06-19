@@ -32,9 +32,15 @@
         </Label>
         <TextField fx:id="editTagName" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <GridPane.margin>
-                <Insets left="3.0" right="40.0"/>
+                <Insets left="3.0" right="35.0"/>
             </GridPane.margin>
         </TextField>
+        <Button mnemonicParsing="false" fx:id="buttonListTags" text="..." GridPane.columnIndex="1" GridPane.rowIndex="3"
+                GridPane.halignment="RIGHT">
+            <GridPane.margin>
+                <Insets right="5.0"/>
+            </GridPane.margin>
+        </Button>
         <Label prefHeight="24.0" text="%tagName" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
             <GridPane.margin>
                 <Insets right="3.0"/>
