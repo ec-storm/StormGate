@@ -192,7 +192,7 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
 
                 if (Strings.isNullOrEmpty(editProgId.getText())) {
-                    Utils.showError(getView(), resources.getString(KEY_ERROR_PROGID_MUST_BE_NOT_EMPTY));
+                    Utils.showError(getView(), resources.getString(KEY_ERROR_PROGID_MUST_NOT_BE_EMPTY));
                     return;
                 }
 

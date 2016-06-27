@@ -122,11 +122,11 @@ public abstract class AbstractView implements ApplicationContextAware {
         return this.image;
     }
 
-    public void show() {
+    public void show(boolean resizeable) {
         if (this.getStage() == null) {
             this.setStage(new Stage());
             this.getStage().initModality(modality);
-            this.getStage().setResizable(false);
+            this.getStage().setResizable(resizeable);
             this.getStage().initOwner(this.getOwner().getWindow());
         }
 

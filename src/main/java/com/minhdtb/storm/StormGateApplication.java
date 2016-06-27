@@ -49,7 +49,7 @@ public class StormGateApplication extends AbstractApplication {
                 .setTitle(ResourceBundle.getBundle(BUNDLE_NAME).getString(KEY_COPYRIGHT))
                 .setIcon(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")))
                 .setStage(primaryStage)
-                .show();
+                .show(true);
     }
 
     public static void main(String[] args) {

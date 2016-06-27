@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.newvariableopc;
 
+import com.google.common.base.Strings;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
@@ -61,6 +62,8 @@ public class DialogNewVariableOPCController extends AbstractController {
                 dialogListOpcTagView.showDialog(getView());
             }
         });
+
+        getSubscriber().on("opc:select", object -> editTagName.setText((String) object));
     }
 
     @Override
@@ -69,6 +72,11 @@ public class DialogNewVariableOPCController extends AbstractController {
     }
 
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editTagName.getText())) {
+            Utils.showError(getView(), resources.getString(KEY_ERROR_TAGNAME_MUST_NOT_BE_EMPTY));
+            return;
+        }
+
         NamedValueType variableType = comboBoxVariableType.getValue();
         StormVariableOPC variableOPC = new StormVariableOPC();
         variableOPC.setName(editVariableName.getText());

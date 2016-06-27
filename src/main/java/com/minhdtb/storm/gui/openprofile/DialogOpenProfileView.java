@@ -19,6 +19,6 @@ public class DialogOpenProfileView extends AbstractView {
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
-                .show();
+                .show(false);
     }
 }

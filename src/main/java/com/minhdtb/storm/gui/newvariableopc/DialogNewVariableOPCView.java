@@ -22,7 +22,7 @@ public class DialogNewVariableOPCView extends AbstractView {
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
-                .show();
+                .show(false);
     }
 
     public Channel getChannel() {

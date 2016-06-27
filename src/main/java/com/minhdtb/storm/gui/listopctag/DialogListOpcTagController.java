@@ -57,7 +57,11 @@ public class DialogListOpcTagController extends AbstractController {
     }
 
     public void actionOK() {
-        close();
+        TreeItem<DataItem> item = treeTags.getSelectionModel().getSelectedItem();
+        if (item != null && item.isLeaf() && item.getValue() != null) {
+            getPublisher().publish("opc:select", item.getValue().getFullPath());
+            close();
+        }
     }
 
     public void actionCancel() {
@@ -100,6 +104,7 @@ public class DialogListOpcTagController extends AbstractController {
     @Data
     private class DataItem {
         private String path;
+        private String fullPath;
         private HashMap<String, DataItem> childs;
 
         public DataItem() {
@@ -146,15 +151,33 @@ public class DialogListOpcTagController extends AbstractController {
         private ObservableList<TreeItem<DataItem>> buildChildren() {
             if (isRoot) {
                 return (new ArrayList<>(root.values())).stream()
-                        .sorted(Comparator.comparing(DataItem::getPath))
-                        .map(dataItem -> new OpcTagTreeItem(false, dataItem))
+                        .sorted(Comparator.comparing(item -> {
+                            if (item.childs.values().size() > 0) {
+                                return "0-" + item.getPath();
+                            } else {
+                                return "1-" + item.getPath();
+                            }
+                        }))
+                        .map(dataItem -> {
+                            dataItem.setFullPath(dataItem.getPath());
+                            return new OpcTagTreeItem(false, dataItem);
+                        })
                         .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
             } else {
                 if (getValue() != null) {
                     return (new ArrayList<>(getValue().childs.values())).stream()
-                            .sorted(Comparator.comparing(DataItem::getPath))
-                            .map(dataItem -> new OpcTagTreeItem(false, dataItem))
+                            .sorted(Comparator.comparing(item -> {
+                                if (item.childs.values().size() > 0) {
+                                    return "0-" + item.getPath();
+                                } else {
+                                    return "1-" + item.getPath();
+                                }
+                            }))
+                            .map(dataItem -> {
+                                dataItem.setFullPath(getValue().getFullPath() + "/" + dataItem.getPath());
+                                return new OpcTagTreeItem(false, dataItem);
+                            })
                             .collect(Collectors.toCollection(FXCollections::observableArrayList));
                 }
             }

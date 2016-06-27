@@ -23,7 +23,7 @@ public class DialogListOpcTagView extends AbstractView {
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())
-                .show();
+                .show(true);
     }
 
     public String getHost() {
