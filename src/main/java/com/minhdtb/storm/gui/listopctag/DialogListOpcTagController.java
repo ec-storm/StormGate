@@ -107,7 +107,7 @@ public class DialogListOpcTagController extends AbstractController {
         private String fullPath;
         private HashMap<String, DataItem> childs;
 
-        public DataItem() {
+        DataItem() {
             this.childs = new HashMap<>();
         }
     }
@@ -119,7 +119,7 @@ public class DialogListOpcTagController extends AbstractController {
         private boolean isLeaf = false;
         private boolean isRoot = false;
 
-        public OpcTagTreeItem(Boolean flag, DataItem dataItem) {
+        OpcTagTreeItem(Boolean flag, DataItem dataItem) {
             if (flag) {
                 isRoot = true;
                 setExpanded(true);
