@@ -284,34 +284,26 @@ public class ApplicationController extends AbstractController {
 
     private void addChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.addChannel((Channel) object, profile -> Platform.runLater(() -> {
-                openProfile(profile);
-            }));
+            dataManager.addChannel((Channel) object, profile -> Platform.runLater(() -> openProfile(profile)));
         }
     }
 
     private void deleteChannel(Object object) {
         if (object instanceof Channel) {
-            dataManager.deleteChannel((Channel) object, profile -> Platform.runLater(() -> {
-                openProfile(profile);
-            }));
+            dataManager.deleteChannel((Channel) object, profile -> Platform.runLater(() -> openProfile(profile)));
         }
     }
 
     private void addVariable(Object object) {
         if (object instanceof Variable) {
             Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
-            dataManager.addVariable(channel, (Variable) object, profile -> Platform.runLater(() -> {
-                openProfile(profile);
-            }));
+            dataManager.addVariable(channel, (Variable) object, profile -> Platform.runLater(() -> openProfile(profile)));
         }
     }
 
     private void deleteVariable(Object object) {
         if (object instanceof Variable) {
-            dataManager.deleteVariable((Variable) object, profile -> Platform.runLater(() -> {
-                openProfile(profile);
-            }));
+            dataManager.deleteVariable((Variable) object, profile -> Platform.runLater(() -> openProfile(profile)));
         }
     }
 
@@ -324,6 +316,30 @@ public class ApplicationController extends AbstractController {
                 resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
         Object[] userData = {ItemType.PROFILE, profile};
         propDetail.setUserData(userData);
+    }
+
+    private String getName(Channel channel, ChannelAttribute channelAttribute) {
+        String name = "";
+        switch (channelAttribute.getName()) {
+            case HOST:
+                if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                    name = resources.getString(KEY_SERVER_IP);
+                } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                    name = resources.getString(KEY_BIND_IP);
+                }
+                break;
+            case PORT:
+                name = resources.getString(KEY_PORT);
+                break;
+            case PROG_ID:
+                name = resources.getString(KEY_PROG_ID);
+                break;
+            case REFRESH_RATE:
+                name = resources.getString(KEY_REFRESH_RATE);
+                break;
+        }
+
+        return name;
     }
 
     private void showChannel(Channel channel) {
@@ -341,27 +357,8 @@ public class ApplicationController extends AbstractController {
         typeItem.setDisable();
         propDetail.getItems().add(typeItem);
         for (ChannelAttribute channelAttribute : channel.getAttributes()) {
-            String name = "";
-            switch (channelAttribute.getName()) {
-                case HOST:
-                    if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                        name = resources.getString(KEY_SERVER_IP);
-                    } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                        name = resources.getString(KEY_BIND_IP);
-                    }
-                    break;
-                case PORT:
-                    name = resources.getString(KEY_PORT);
-                    break;
-                case PROG_ID:
-                    name = resources.getString(KEY_PROG_ID);
-                    break;
-                case REFRESH_RATE:
-                    name = resources.getString(KEY_REFRESH_RATE);
-                    break;
-            }
             PropertyItem attributeItem =
-                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), name, channelAttribute.getValue());
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(channel, channelAttribute), channelAttribute.getValue());
             if (channelAttribute.getName().equals(PROG_ID)) {
                 attributeItem.setDisable();
             }
@@ -586,26 +583,7 @@ public class ApplicationController extends AbstractController {
 
         for (int i = 3; i < items.size(); i++) {
             for (ChannelAttribute channelAttribute : channel.getAttributes()) {
-                String name = "";
-                switch (channelAttribute.getName()) {
-                    case HOST:
-                        if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                            name = resources.getString(KEY_SERVER_IP);
-                        } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                            name = resources.getString(KEY_BIND_IP);
-                        }
-                        break;
-                    case PORT:
-                        name = resources.getString(KEY_PORT);
-                        break;
-                    case PROG_ID:
-                        name = resources.getString(KEY_PROG_ID);
-                        break;
-                    case REFRESH_RATE:
-                        name = resources.getString(KEY_REFRESH_RATE);
-                        break;
-                }
-                if (items.get(i).getName().equals(name)) {
+                if (items.get(i).getName().equals(getName(channel, channelAttribute))) {
                     channelAttribute.setValue((String) items.get(i).getValue());
                 }
             }
@@ -696,14 +674,18 @@ public class ApplicationController extends AbstractController {
         }
 
         @Override
-        public boolean isEditable() { return editable; }
+        public boolean isEditable() {
+            return editable;
+        }
 
         @Override
         public Optional<ObservableValue<?>> getObservableValue() {
             return Optional.empty();
         }
 
-        void setDisable() { editable = false; }
+        void setDisable() {
+            editable = false;
+        }
     }
 
     private final class TreeCellFactory extends TreeCell<Object> {
