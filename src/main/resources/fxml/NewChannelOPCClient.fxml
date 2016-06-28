@@ -3,7 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0"
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0"
           prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" percentWidth="23.0" prefWidth="110.0"/>
@@ -12,28 +12,39 @@
     <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-    <Label text="%progID" GridPane.halignment="RIGHT">
+    <Label text="%host" GridPane.halignment="RIGHT">
         <GridPane.margin>
             <Insets right="3.0"/>
         </GridPane.margin>
     </Label>
-    <Label text="%refreshRate" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+    <Label text="%progID" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets right="3.0"/>
         </GridPane.margin>
     </Label>
-    <TextField fx:id="editProgId" GridPane.columnIndex="1">
+    <Label text="%refreshRate" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+        <GridPane.margin>
+            <Insets right="3.0"/>
+        </GridPane.margin>
+    </Label>
+    <TextField fx:id="editHost" GridPane.columnIndex="1">
         <GridPane.margin>
             <Insets left="3.0" right="34.0"/>
         </GridPane.margin>
     </TextField>
-    <TextField fx:id="editRefreshRate" GridPane.columnIndex="1" GridPane.rowIndex="1">
+    <TextField fx:id="editProgId" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets left="3.0" right="34.0"/>
+        </GridPane.margin>
+    </TextField>
+    <TextField fx:id="editRefreshRate" GridPane.columnIndex="1" GridPane.rowIndex="2">
         <GridPane.margin>
             <Insets left="3.0" right="5.0"/>
         </GridPane.margin>
     </TextField>
-    <Button mnemonicParsing="false" fx:id="buttonListServer" text="..." GridPane.columnIndex="1"
+    <Button mnemonicParsing="false" fx:id="buttonListServer" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1"
             GridPane.halignment="RIGHT">
         <GridPane.margin>
             <Insets right="5.0"/>

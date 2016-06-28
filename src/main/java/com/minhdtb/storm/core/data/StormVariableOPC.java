@@ -20,6 +20,14 @@ public class StormVariableOPC extends StormVariable {
         setAttribute("tagName", tagName);
     }
 
+    public int getDataType() {
+        return Integer.parseInt(getAttribute("dataType"));
+    }
+
+    public void setDataType(int dataType) {
+        setAttribute("dataType", String.valueOf(dataType));
+    }
+
     @Override
     public void write(Object value) {
         IStormChannel channel = getChannel();

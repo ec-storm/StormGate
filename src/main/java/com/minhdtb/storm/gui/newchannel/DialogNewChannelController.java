@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.newchannel;
 
+import com.google.common.base.Strings;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
@@ -104,6 +105,7 @@ public class DialogNewChannelController extends AbstractController {
             case CT_OPC_CLIENT: {
                 loadFxml("NewChannelOPCClient");
 
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
                 Button buttonListServer = (Button) getView().getScene().lookup("#buttonListServer");
@@ -114,6 +116,7 @@ public class DialogNewChannelController extends AbstractController {
 
                 editRefreshRate.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
+                editHost.setText("localhost");
                 editProgId.setText("");
                 editRefreshRate.setText("1000");
 
@@ -184,13 +187,19 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_OPC_CLIENT: {
+                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
                 TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
                 TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
+
+                if (Strings.isNullOrEmpty(editProgId.getText())) {
+                    Utils.showError(getView(), resources.getString(KEY_ERROR_PROGID_MUST_NOT_BE_EMPTY));
+                    return;
+                }
 
                 StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
                 stormChannelOPCClient.setName(editChannelName.getText());
                 stormChannelOPCClient.setDescription(editChannelDescription.getText());
-
+                stormChannelOPCClient.setHost(editHost.getText());
                 stormChannelOPCClient.setProgId(editProgId.getText());
                 stormChannelOPCClient.setRefreshRate(Integer.parseInt(editRefreshRate.getText()));
 

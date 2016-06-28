@@ -12,6 +12,7 @@ import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.newvariableiec.DialogNewVariableIECView;
+import com.minhdtb.storm.gui.newvariableopc.DialogNewVariableOPCView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.DataManager;
 import de.jensd.fx.glyphs.GlyphIcon;
@@ -101,6 +102,9 @@ public class ApplicationController extends AbstractController {
 
     @Autowired
     private DialogNewVariableIECView dialogNewVariableIECView;
+
+    @Autowired
+    private DialogNewVariableOPCView dialogNewVariableOPCView;
 
     private ContextMenu menuTreeView = new ContextMenu();
 
@@ -736,8 +740,11 @@ public class ApplicationController extends AbstractController {
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView
                                     .setChannel(channel)
-                                    .showDialog(
-                                            getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
+                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
+                        } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
+                            dialogNewVariableOPCView
+                                    .setChannel(channel)
+                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_OPC_VARIABLE));
                         }
                     }).build());
 

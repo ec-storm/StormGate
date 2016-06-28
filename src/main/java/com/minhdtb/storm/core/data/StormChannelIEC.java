@@ -9,7 +9,7 @@ import java.util.List;
 
 abstract class StormChannelIEC extends StormChannel {
 
-    protected final int TIMEOUT = 5000;
+    final int TIMEOUT = 5000;
 
     public static final String HOST = "host";
     public static final String PORT = "port";
