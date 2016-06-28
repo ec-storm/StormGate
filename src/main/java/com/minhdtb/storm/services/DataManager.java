@@ -73,7 +73,7 @@ public class DataManager {
 
     public boolean existProfile(Profile profile) {
         Profile foundProfile = profileRepository.findByName(profile.getName());
-        return foundProfile != null && foundProfile.getId() != profile.getId();
+        return foundProfile != null && !Objects.equals(foundProfile.getId(), profile.getId());
     }
 
     public void addChannel(Channel channel, ConsumerChannel callback) {

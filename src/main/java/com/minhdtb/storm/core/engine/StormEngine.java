@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.security.InvalidParameterException;
@@ -50,11 +49,17 @@ public class StormEngine {
             jython = null;
             jython = engineManager.getEngineByName("jython");
             jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/functions.py"))));
-            jython.eval(new String(profile.getScript()));
+
+            byte[] script = profile.getScript();
+            if (script == null) {
+                throw new IllegalArgumentException("No action script.");
+            }
+
+            jython.eval(new String(script));
             jython.eval(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/engine.py"))));
             PyObject main = (PyObject) jython.get("main");
             main.__call__();
-        } catch (ScriptException e) {
+        } catch (Exception e) {
             Utils.error(e);
         }
 

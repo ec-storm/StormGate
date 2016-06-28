@@ -1,24 +1,23 @@
 package com.minhdtb.storm.common;
 
-/**
- * Created by cuong on 5/12/16.
- */
 public class GlobalConstants {
     public static final String BUNDLE_NAME = "bundles.StormGate";
     public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
-//    resource bundle keys
-//    error
+    //    resource bundle keys
+    //    error
     public static final String KEY_ERROR_PROFILE_EXISTS = "errorProfileAlreadyExists";
     public static final String KEY_ERROR_CHANNEL_EXISTS = "errorChannelAlreadyExists";
     public static final String KEY_ERROR_VARIABLE_EXISTS = "errorVariableAlreadyExists";
-//    confirm
+    public static final String KEY_ERROR_PROGID_MUST_NOT_BE_EMPTY = "errorProgIdMustNotBeEmpty";
+    public static final String KEY_ERROR_TAGNAME_MUST_NOT_BE_EMPTY = "errorTagNameMustNotBeEmpty";
+    //    confirm
     public static final String KEY_CONFIRM_SAVE_PROFILE = "confirmDoYouReallyWantToSaveProfile";
     public static final String KEY_CONFIRM_SAVE_CHANNEL = "confirmDoYouReallyWantToSaveChannel";
     public static final String KEY_CONFIRM_DELETE_VARIABLE = "confirmDoYouReallyWantToDeleteVariable";
     public static final String KEY_CONFIRM_DELETE_CHANNEL = "confirmDoYouReallyWantToDeleteChannel";
     public static final String KEY_CONFIRM_DELETE_PROFILE = "confirmDoYouReallyWantToDeleteProfile";
-//    menu
+    //    menu
     public static final String KEY_MENU_NEW_PROFILE = "menuNewProfile";
     public static final String KEY_MENU_OPEN_PROFILE = "menuOpenProfile";
     public static final String KEY_MENU_DELETE_VARIABLE = "menuDeleteVariable";
@@ -31,7 +30,7 @@ public class GlobalConstants {
     public static final String KEY_MENU_COPY_ALL = "menuCopyAll";
     public static final String KEY_MENU_ENABLE_AUTO_SCROLL = "menuEnableAutoScroll";
     public static final String KEY_MENU_DISABLE_AUTO_SCROLL = "menuDisableAutoScroll";
-//    other
+    //    other
     public static final String KEY_COPYRIGHT = "stormGatewayServiceCopyright2016";
     public static final String KEY_NOW = "now";
     public static final String KEY_START = "start";
@@ -47,6 +46,7 @@ public class GlobalConstants {
     public static final String KEY_NEW_VARIABLE = "newVariable";
     public static final String KEY_OPEN_PROFILE = "openProfile";
     public static final String KEY_NEW_IEC_60870_VARIABLE = "newIEC60870Variable";
+    public static final String KEY_NEW_OPC_VARIABLE = "newOPCVariable";
     public static final String KEY_IEC_60870_SERVER = "CT_IEC_SERVER";
     public static final String KEY_IEC_60870_CLIENT = "CT_IEC_CLIENT";
     public static final String KEY_OPC_CLIENT = "CT_OPC_CLIENT";
@@ -61,4 +61,9 @@ public class GlobalConstants {
     public static final String KEY_SERVER_IP = "serverIP";
     public static final String KEY_PROG_ID = "progID";
     public static final String KEY_REFRESH_RATE = "refreshRate";
+
+    public static final String KEY_BOOLEAN = "boolean";
+    public static final String KEY_INTEGER = "integer";
+    public static final String KEY_FLOAT = "float";
+    public static final String KEY_STRING = "string";
 }
