@@ -10,10 +10,6 @@ class Worker(Thread):
         Thread.__init__(self)
 
     def run(self):
-        config = Configuration()
-        global callback_list
-        callback_list = config.load()
-
         global stopped
         while not stopped:
             time.sleep(1)
