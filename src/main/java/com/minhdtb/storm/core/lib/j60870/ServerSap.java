@@ -221,6 +221,7 @@ public class ServerSap {
     }
 
     public void stop() {
-        serverThread.stopServer();
+        if (serverThread != null)
+            serverThread.stopServer();
     }
 }

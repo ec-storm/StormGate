@@ -439,6 +439,10 @@ public class Connection {
         }
     }
 
+    public boolean isConnected() {
+        return socket.isConnected();
+    }
+
     private void scheduleMaxTimeNoAckReceivedFuture() {
         maxTimeNoAckReceivedFuture = maxTimeNoAckReceivedTimer.schedule(new Runnable() {
             @Override
