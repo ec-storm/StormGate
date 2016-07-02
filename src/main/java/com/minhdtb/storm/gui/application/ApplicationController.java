@@ -166,17 +166,6 @@ public class ApplicationController extends AbstractController {
             AnchorPane.setBottomAnchor(webViewScript, 3.0);
             AnchorPane.setLeftAnchor(webViewScript, 3.0);
             AnchorPane.setRightAnchor(webViewScript, 3.0);
-
-            webViewScript.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-                if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V) {
-                    Clipboard clipboard = Clipboard.getSystemClipboard();
-                    String content = replaceSpecialCharacters((String) clipboard.getContent(DataFormat.PLAIN_TEXT));
-                    if (content != null) {
-                        webViewScript.getEngine().executeScript("pasteContent(\"" + content + "\")");
-                    }
-                }
-            });
-
             webViewScript.setContextMenuEnabled(false);
         });
 

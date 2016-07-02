@@ -29,8 +29,11 @@ public class DialogListOpcTagController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
+        root.clear();
+
         DialogListOpcTagView view = (DialogListOpcTagView) getView();
         opcDaClient.setHost(view.getHost());
+        opcDaClient.disconnect();
         opcDaClient.connect(view.getProgId());
 
         opcDaClient.getTags().stream().forEach(this::parseText);
