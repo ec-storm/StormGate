@@ -49,24 +49,24 @@ public class StormVariableIEC extends StormVariable {
 
             switch (TypeId.getInstance(getDataType())) {
                 case M_ME_NA_1: {
-                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NA_1, CauseOfTransmission.SPONTANEOUS, 0, getSectorAddress(),
                             getInformationObjectAddress(), value);
                     break;
                 }
                 case M_ME_NC_1: {
-                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NC_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                    aSdu = Utils.ObjectToASdu(TypeId.M_ME_NC_1, CauseOfTransmission.SPONTANEOUS, 0, getSectorAddress(),
                             getInformationObjectAddress(), value);
 
                     break;
                 }
                 case C_SC_NA_1: {
-                    aSdu = Utils.ObjectToASdu(TypeId.C_SC_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                    aSdu = Utils.ObjectToASdu(TypeId.C_SC_NA_1, CauseOfTransmission.SPONTANEOUS, 0, getSectorAddress(),
                             getInformationObjectAddress(), value);
 
                     break;
                 }
                 case C_DC_NA_1: {
-                    aSdu = Utils.ObjectToASdu(TypeId.C_DC_NA_1, CauseOfTransmission.SPONTANEOUS, 1, getSectorAddress(),
+                    aSdu = Utils.ObjectToASdu(TypeId.C_DC_NA_1, CauseOfTransmission.SPONTANEOUS, 0, getSectorAddress(),
                             getInformationObjectAddress(), value);
 
                     break;
