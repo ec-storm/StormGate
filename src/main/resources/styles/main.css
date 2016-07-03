@@ -22,3 +22,7 @@
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
+
+.property-pane {
+    -fx-padding: 18 15 5 15;
+}

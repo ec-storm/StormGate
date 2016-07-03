@@ -158,6 +158,8 @@ public class ApplicationController extends AbstractController {
         setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(KEY_START));
         buttonRun.setDisable(true);
 
+        propDetail.setSearchBoxVisible(false);
+
         Platform.runLater(() -> {
             webViewScript = new WebView();
             webViewScript.getEngine().load(getClass().getResource("/html/ace.html").toExternalForm());
@@ -454,7 +456,8 @@ public class ApplicationController extends AbstractController {
             }
         };
 
-        treeItem.setExpanded(true);
+        if (o instanceof Profile)
+            treeItem.setExpanded(true);
 
         return treeItem;
     }
