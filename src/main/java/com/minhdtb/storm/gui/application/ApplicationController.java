@@ -783,11 +783,22 @@ public class ApplicationController extends AbstractController {
                 if (item instanceof Channel) {
                     Channel channel = (Channel) item;
 
-                    GlyphIcon icon = GlyphsBuilder.create(MaterialDesignIconView.class)
-                            .glyph(MaterialDesignIcon.PANORAMA_FISHEYE)
-                            .size("1.2em")
-                            .style("-fx-fill: " + getColor(channel.getType()))
-                            .build();
+                    GlyphIcon icon;
+                    if (channel.getVariables().size() == 0) {
+                        icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                                .glyph(MaterialDesignIcon.PANORAMA_FISHEYE)
+                                .size("1.2em")
+                                .style("-fx-background-color: " + getColor(channel.getType()))
+                                .style("-fx-fill: " + getColor(channel.getType()))
+                                .build();
+                    } else {
+                        icon = GlyphsBuilder.create(MaterialDesignIconView.class)
+                                .glyph(MaterialDesignIcon.ADJUST)
+                                .size("1.2em")
+                                .style("-fx-background-color: " + getColor(channel.getType()))
+                                .style("-fx-fill: " + getColor(channel.getType()))
+                                .build();
+                    }
 
                     setGraphic(GraphicItemBuilder.create()
                             .setIcon(icon)
