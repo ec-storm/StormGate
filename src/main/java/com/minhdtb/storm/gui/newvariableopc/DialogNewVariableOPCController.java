@@ -45,14 +45,12 @@ public class DialogNewVariableOPCController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
+
         comboBoxVariableType.getItems().addAll(
                 new NamedValueType(resources.getString(KEY_BOOLEAN), 0),
                 new NamedValueType(resources.getString(KEY_INTEGER), 1),
                 new NamedValueType(resources.getString(KEY_FLOAT), 2),
                 new NamedValueType(resources.getString(KEY_STRING), 3));
-        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
-        editTagName.setText("");
-        comboBoxVariableType.getSelectionModel().selectFirst();
         buttonListTags.setOnAction(event -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
@@ -68,7 +66,9 @@ public class DialogNewVariableOPCController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-
+        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
+        comboBoxVariableType.getSelectionModel().selectFirst();
+        editTagName.setText("");
     }
 
     public void actionOK() {
