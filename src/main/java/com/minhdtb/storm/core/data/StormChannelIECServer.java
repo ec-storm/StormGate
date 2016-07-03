@@ -102,8 +102,13 @@ public class StormChannelIECServer extends StormChannelIEC {
     public void send(ASdu aSdu) {
         connections.stream().forEach(connection -> {
             try {
-                connection.send(aSdu);
+                if (connection.isConnected()) {
+                    connection.send(aSdu);
+                } else {
+                    connections.remove(connection);
+                }
             } catch (IOException e) {
+                connections.remove(connection);
                 Utils.error(e);
             }
         });

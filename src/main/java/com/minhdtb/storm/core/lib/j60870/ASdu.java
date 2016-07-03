@@ -271,7 +271,7 @@ public class ASdu {
             System.arraycopy(privateInformation, 0, buffer, i, privateInformation.length);
             i += privateInformation.length;
         }
-        return i - origi;
+        return i - origi + 1;
     }
 
     @Override

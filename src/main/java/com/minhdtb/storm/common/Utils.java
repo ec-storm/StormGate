@@ -137,18 +137,24 @@ public class Utils {
                                     int sectorAddress, int informationObjectAddress, Object object) {
         switch (typeId) {
             case M_ME_NA_1: {
+                if (!(object instanceof Number))
+                    object = 0;
+
                 return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
                         new InformationObject[]{
                                 new InformationObject(informationObjectAddress, new InformationElement[][]{
-                                        {new IeNormalizedValue((int) object)}
+                                        {new IeNormalizedValue(((Number) object).intValue())}
                                 })
                         });
             }
             case M_ME_NC_1: {
+                if (!(object instanceof Number))
+                    object = 0;
+
                 return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
                         new InformationObject[]{
                                 new InformationObject(informationObjectAddress, new InformationElement[][]{
-                                        {new IeShortFloat((float) object)}
+                                        {new IeShortFloat(((Number) object).floatValue())}
                                 })
                         });
             }
@@ -161,10 +167,14 @@ public class Utils {
                         });
             }
             case C_DC_NA_1: {
+                if (!(object instanceof Number))
+                    object = 0;
+
                 return new ASdu(typeId, false, causeOfTransmission, false, false, originatorAddress, sectorAddress,
                         new InformationObject[]{
                                 new InformationObject(informationObjectAddress, new InformationElement[][]{
-                                        {new IeDoubleCommand(IeDoubleCommand.DoubleCommandState.getInstance((int) object), 0, false)}
+                                        {new IeDoubleCommand(IeDoubleCommand.
+                                                DoubleCommandState.getInstance(((Number) object).intValue()), 0, false)}
                                 })
                         });
             }
