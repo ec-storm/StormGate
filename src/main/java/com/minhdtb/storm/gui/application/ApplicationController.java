@@ -599,7 +599,7 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void onLogShowContextMenu(ContextMenuEvent event) {
-        menuLog.show(textFlowLog, event.getScreenX(), event.getScreenY());
+        menuLog.show(scrollLog, event.getScreenX(), event.getScreenY());
         event.consume();
     }
 
