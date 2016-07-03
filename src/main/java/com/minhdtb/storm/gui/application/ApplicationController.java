@@ -580,7 +580,12 @@ public class ApplicationController extends AbstractController {
                 }
             }
         }
-        dataManager.saveChannel(channel, null);
+        dataManager.saveChannel(channel, profile -> Platform.runLater(() -> {
+            TreeItem selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
+            Object value = selectedItem.getValue();
+            selectedItem.setValue(null);
+            selectedItem.setValue(value);
+        }));
     }
 
     @FXML
