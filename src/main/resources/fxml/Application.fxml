@@ -43,13 +43,16 @@
                                           AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0"
                                           AnchorPane.topAnchor="3.0"/>
                             </AnchorPane>
-                            <AnchorPane minHeight="0.0" prefHeight="160.0" prefWidth="100.0" minWidth="300.0">
-                                <VBox fx:id="propDetailBox" visible="false" AnchorPane.topAnchor="3.0"
-                                      AnchorPane.leftAnchor="3.0"  style="-fx-border-style: solid; -fx-border-color: #c8c8c8;">
-                                    <PropertySheet fx:id="propDetail"/>
-                                    <Button prefHeight="28.0" prefWidth="82.0" mnemonicParsing="false" onAction="#actionSave" text="%save">
+                            <AnchorPane minHeight="0.0" minWidth="300.0" prefHeight="160.0" prefWidth="100.0">
+                                <VBox fx:id="propDetailBox" style="-fx-border-style: solid; -fx-border-color: #c8c8c8;"
+                                      visible="false" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0"
+                                      AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                    <PropertySheet fx:id="propDetail">
+                                    </PropertySheet>
+                                    <Button mnemonicParsing="false" onAction="#actionSave" prefHeight="28.0"
+                                            prefWidth="82.0" text="%save">
                                         <VBox.margin>
-                                            <Insets left="6.0" bottom="6.0" />
+                                            <Insets left="15.0" top="10.0"/>
                                         </VBox.margin>
                                     </Button>
                                 </VBox>
@@ -67,7 +70,8 @@
             <ScrollPane fx:id="scrollLog" focusTraversable="false" style="-fx-background-color: transparent"
                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0"
                         AnchorPane.topAnchor="0.0">
-                <TextFlow fx:id="textFlowLog" onContextMenuRequested="#onLogShowContextMenu" onMousePressed="#onHideLogMenu" focusTraversable="false"/>
+                <TextFlow fx:id="textFlowLog" focusTraversable="false" onContextMenuRequested="#onLogShowContextMenu"
+                          onMousePressed="#onHideLogMenu"/>
             </ScrollPane>
         </AnchorPane>
     </SplitPane>
