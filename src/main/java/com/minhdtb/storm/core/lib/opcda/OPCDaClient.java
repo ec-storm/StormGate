@@ -39,6 +39,14 @@ public class OPCDaClient {
         return Arrays.asList(manager.getOpcServerTags(client));
     }
 
+    public List<String> getTagBranches(String input) {
+        return Arrays.asList(manager.getOpcServerTagBranches(client, input));
+    }
+
+    public List<String> getTagLeafs(String input) {
+        return Arrays.asList(manager.getOpcServerTagLeafs(client, input));
+    }
+
     public void addTag(String tagName) {
         int handle = manager.addTag(client, tagName);
         tagMap.put(tagName, handle);
