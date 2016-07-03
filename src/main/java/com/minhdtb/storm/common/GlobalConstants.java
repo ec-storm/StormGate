@@ -41,6 +41,7 @@ public class GlobalConstants {
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_CHANNELS = "channels";
+    public static final String KEY_ITEMID= "itemId";
     public static final String KEY_NEW_CHANNEL = "newChannel";
     public static final String KEY_NEW_PROFILE = "newProfile";
     public static final String KEY_NEW_VARIABLE = "newVariable";

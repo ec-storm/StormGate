@@ -76,6 +76,10 @@ class OPCDaManager {
 
     public native String[] getOpcServerTags(long client);
 
+    public native String[] getOpcServerTagBranches(long client, String input);
+
+    public native String[] getOpcServerTagLeafs(long client, String input);
+
     public native int addTag(long client, String tagName);
 
     public native void removeTag(long client, int tagHandle);
