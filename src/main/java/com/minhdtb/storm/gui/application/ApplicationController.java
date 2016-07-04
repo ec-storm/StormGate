@@ -569,8 +569,12 @@ public class ApplicationController extends AbstractController {
 
     private void saveChannel(Object userData) {
         Channel channel = (Channel) userData;
+        String oldName = channel.getName();
         List<PropertySheet.Item> items = propDetail.getItems();
-        channel.setName((String) items.get(0).getValue());
+        String newName = (String) items.get(0).getValue();
+        if (!oldName.equals(newName)) {
+            channel.setName(newName);
+        }
         channel.setDescription((String) items.get(1).getValue());
 
         for (int i = 3; i < items.size(); i++) {
@@ -580,7 +584,15 @@ public class ApplicationController extends AbstractController {
                 }
             }
         }
-        dataManager.saveChannel(channel, null);
+        dataManager.saveChannel(channel, profile -> Platform.runLater(() -> {
+            if (oldName.equals(newName)) {
+                return;
+            }
+            TreeItem selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
+            Object value = selectedItem.getValue();
+            selectedItem.setValue(null);
+            selectedItem.setValue(value);
+        }));
     }
 
     @FXML
