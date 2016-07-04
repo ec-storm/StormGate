@@ -43,6 +43,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,6 +202,9 @@ public class ApplicationController extends AbstractController {
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(
                         getView(), resources.getString(KEY_OPEN_PROFILE))).build());
+        menuTreeView.getItems().add(MenuItemBuilder.create()
+                .setText(resources.getString(KEY_MENU_IMPORT_PROFILE))
+                .setAction(event -> actionImport()).build());
 
         menuLog.getItems().add(MenuItemBuilder.create()
                 .setText(resources.getString(KEY_MENU_CLEAR_ALL))
@@ -519,32 +523,36 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionExport() {
-        Map data = new HashMap<>();
-        data.put("profiles", new ArrayList<>());
-        for (Profile profile : dataManager.getProfiles()) {
-            Map profileMap = new HashMap<>();
-            profileMap.put("name", profile.getName());
-            profileMap.put("description", profile.getDescription());
-            if (profile.getScript() != null) {
-                String script = replaceSpecialCharacters(new String(profile.getScript()));
-                profileMap.put("script", script);
-            }
-            profileMap.put("channels", new ArrayList<>());
-            for (Channel channel : profile.getChannels()) {
-                Map channelMap = new HashMap<>();
-                channelMap.put("name", channel.getName());
-                channelMap.put("description", channel.getDescription());
-                channelMap.put("type", channel.getType().toString());
-                for (ChannelAttribute channelAttribute : channel.getAttributes()) {
-                    String name = getChannelAttributeDisplayName(channel, channelAttribute);
-                    channelMap.put(name, channelAttribute.getValue());
-                }
-                ((List) profileMap.get("channels")).add(channelMap);
-            }
-            ((List) data.get("profiles")).add(profileMap);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(resources.getString(KEY_SAVE_EXPORTED_FILE));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("StormGate", "*.stormgate")
+        );
+        File file = fileChooser.showSaveDialog(getView().getStage());
+        if (file == null) {
+            return;
         }
-        String exportedData = new Gson().toJson(data);
-        File file = new File("/Users/cuong/Documents/data.stormgate");
+        Profile profile = dataManager.getCurrentProfile();
+        Map profileMap = new HashMap<>();
+        profileMap.put("name", profile.getName());
+        profileMap.put("description", profile.getDescription());
+        if (profile.getScript() != null) {
+            String script = replaceSpecialCharacters(new String(profile.getScript()));
+            profileMap.put("script", script);
+        }
+        profileMap.put("channels", new ArrayList<>());
+        for (Channel channel : profile.getChannels()) {
+            Map channelMap = new HashMap<>();
+            channelMap.put("name", channel.getName());
+            channelMap.put("description", channel.getDescription());
+            channelMap.put("type", channel.getType().toString());
+            for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+                String name = getChannelAttributeDisplayName(channel, channelAttribute);
+                channelMap.put(name, channelAttribute.getValue());
+            }
+            ((List) profileMap.get("channels")).add(channelMap);
+        }
+        String exportedData = new Gson().toJson(profileMap);
         try {
             Files.write(exportedData, file, Charsets.UTF_8);
         } catch (IOException e) {
@@ -555,7 +563,15 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionImport() {
-        File file = new File("/Users/cuong/Documents/data.stormgate");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(resources.getString(KEY_SELECT_IMPORTED_FILE));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("StormGate", "*.stormgate")
+        );
+        File file = fileChooser.showOpenDialog(getView().getStage());
+        if (file == null) {
+            return;
+        }
         String importedData;
         try {
             importedData = Files.toString(file, Charsets.UTF_8);
@@ -563,56 +579,52 @@ public class ApplicationController extends AbstractController {
             writeErrorLog(e.getMessage());
             return;
         }
-        JsonParser parser = new JsonParser();
-        JsonArray profiles = parser.parse(importedData).getAsJsonObject().getAsJsonArray("profiles");
-        for (int i = 0; i < profiles.size(); i++) {
-            JsonObject profileData = profiles.get(i).getAsJsonObject();
-            Profile profile = new Profile();
-            profile.setName(profileData.get("name").getAsString());
-            profile.setDescription(profileData.get("description").getAsString());
-            profile.setScript(profileData.get("script").getAsString().getBytes());
-            JsonArray channels = profileData.getAsJsonArray("channels");
-            dataManager.saveProfile(profile, null);
-            for (int j = 0; j < channels.size(); j++) {
-                JsonObject channelData = channels.get(j).getAsJsonObject();
-                switch (Channel.ChannelType.valueOf(channelData.get("type").getAsString())) {
-                    case CT_IEC_SERVER: {
-                        StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
-                        stormChannelIECServer.setName(channelData.get("name").getAsString());
-                        stormChannelIECServer.setDescription(channelData.get("description").getAsString());
-                        stormChannelIECServer.setHost(channelData.get(resources.getString(KEY_BIND_IP)).getAsString());
-                        stormChannelIECServer.setPort(
-                                Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
-                        Channel channel = stormChannelIECServer.getRaw();
-                        channel.setProfile(profile);
-                        dataManager.saveChannel(channel, null);
-                        break;
-                    }
-                    case CT_IEC_CLIENT: {
-                        StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
-                        stormChannelIECClient.setName(channelData.get("name").getAsString());
-                        stormChannelIECClient.setDescription(channelData.get("description").getAsString());
-                        stormChannelIECClient.setHost(channelData.get(resources.getString(KEY_SERVER_IP)).getAsString());
-                        stormChannelIECClient.setPort(
-                                Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
-                        Channel channel = stormChannelIECClient.getRaw();
-                        channel.setProfile(profile);
-                        dataManager.saveChannel(channel, null);
-                        break;
-                    }
-                    case CT_OPC_CLIENT: {
-                        StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
-                        stormChannelOPCClient.setName(channelData.get("name").getAsString());
-                        stormChannelOPCClient.setDescription(channelData.get("description").getAsString());
-                        stormChannelOPCClient.setProgId(
-                                channelData.get(resources.getString(KEY_PROG_ID)).getAsString());
-                        stormChannelOPCClient.setRefreshRate(
-                                Integer.parseInt(channelData.get(resources.getString(KEY_REFRESH_RATE)).getAsString()));
-                        Channel channel = stormChannelOPCClient.getRaw();
-                        channel.setProfile(profile);
-                        dataManager.saveChannel(channel, null);
-                        break;
-                    }
+        JsonObject profileData = new JsonParser().parse(importedData).getAsJsonObject();
+        Profile profile = new Profile();
+        profile.setName(profileData.get("name").getAsString());
+        profile.setDescription(profileData.get("description").getAsString());
+        profile.setScript(profileData.get("script").getAsString().getBytes());
+        JsonArray channels = profileData.getAsJsonArray("channels");
+        dataManager.saveProfile(profile, null);
+        for (int j = 0; j < channels.size(); j++) {
+            JsonObject channelData = channels.get(j).getAsJsonObject();
+            switch (Channel.ChannelType.valueOf(channelData.get("type").getAsString())) {
+                case CT_IEC_SERVER: {
+                    StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
+                    stormChannelIECServer.setName(channelData.get("name").getAsString());
+                    stormChannelIECServer.setDescription(channelData.get("description").getAsString());
+                    stormChannelIECServer.setHost(channelData.get(resources.getString(KEY_BIND_IP)).getAsString());
+                    stormChannelIECServer.setPort(
+                            Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
+                    Channel channel = stormChannelIECServer.getRaw();
+                    channel.setProfile(profile);
+                    dataManager.saveChannel(channel, null);
+                    break;
+                }
+                case CT_IEC_CLIENT: {
+                    StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
+                    stormChannelIECClient.setName(channelData.get("name").getAsString());
+                    stormChannelIECClient.setDescription(channelData.get("description").getAsString());
+                    stormChannelIECClient.setHost(channelData.get(resources.getString(KEY_SERVER_IP)).getAsString());
+                    stormChannelIECClient.setPort(
+                            Integer.parseInt(channelData.get(resources.getString(KEY_PORT)).getAsString()));
+                    Channel channel = stormChannelIECClient.getRaw();
+                    channel.setProfile(profile);
+                    dataManager.saveChannel(channel, null);
+                    break;
+                }
+                case CT_OPC_CLIENT: {
+                    StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient();
+                    stormChannelOPCClient.setName(channelData.get("name").getAsString());
+                    stormChannelOPCClient.setDescription(channelData.get("description").getAsString());
+                    stormChannelOPCClient.setProgId(
+                            channelData.get(resources.getString(KEY_PROG_ID)).getAsString());
+                    stormChannelOPCClient.setRefreshRate(
+                            Integer.parseInt(channelData.get(resources.getString(KEY_REFRESH_RATE)).getAsString()));
+                    Channel channel = stormChannelOPCClient.getRaw();
+                    channel.setProfile(profile);
+                    dataManager.saveChannel(channel, null);
+                    break;
                 }
             }
         }
@@ -900,6 +912,10 @@ public class ApplicationController extends AbstractController {
                                 String.format(resources.getString(KEY_CONFIRM_DELETE_PROFILE), profile.getName()),
                                 e -> getPublisher().publish("application:deleteProfile", profile));
                     }).build());
+            menuProfile.getItems().add(MenuItemBuilder.create()
+                    .setText(resources.getString(KEY_MENU_EXPORT_PROFILE))
+                    .setAction(event -> actionExport())
+                    .build());
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
                     .setText(resources.getString(KEY_MENU_CLOSE))

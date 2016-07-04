@@ -20,6 +20,8 @@ public class GlobalConstants {
     //    menu
     public static final String KEY_MENU_NEW_PROFILE = "menuNewProfile";
     public static final String KEY_MENU_OPEN_PROFILE = "menuOpenProfile";
+    public static final String KEY_MENU_IMPORT_PROFILE = "menuImportProfile";
+    public static final String KEY_MENU_EXPORT_PROFILE = "menuExportProfile";
     public static final String KEY_MENU_DELETE_VARIABLE = "menuDeleteVariable";
     public static final String KEY_MENU_NEW_VARIABLE = "menuNewVariable";
     public static final String KEY_MENU_DELETE_CHANNEL = "menuDeleteChannel";
@@ -69,4 +71,7 @@ public class GlobalConstants {
     public static final String KEY_INTEGER = "integer";
     public static final String KEY_FLOAT = "float";
     public static final String KEY_STRING = "string";
+
+    public static final String KEY_SAVE_EXPORTED_FILE = "saveExportedFile";
+    public static final String KEY_SELECT_IMPORTED_FILE = "selectImportedFile";
 }
