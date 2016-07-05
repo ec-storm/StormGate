@@ -550,6 +550,9 @@ public class ApplicationController extends AbstractController {
                 String name = getChannelAttributeDisplayName(channel, channelAttribute);
                 channelMap.put(name, channelAttribute.getValue());
             }
+            for (Variable variable : channel.getVariables()) {
+
+            }
             ((List) profileMap.get("channels")).add(channelMap);
         }
         String exportedData = new Gson().toJson(profileMap);
@@ -583,7 +586,9 @@ public class ApplicationController extends AbstractController {
         Profile profile = new Profile();
         profile.setName(profileData.get("name").getAsString());
         profile.setDescription(profileData.get("description").getAsString());
-        profile.setScript(profileData.get("script").getAsString().getBytes());
+        if (profileData.has("script")) {
+            profile.setScript(profileData.get("script").getAsString().getBytes());
+        }
         JsonArray channels = profileData.getAsJsonArray("channels");
         dataManager.saveProfile(profile, null);
         for (int j = 0; j < channels.size(); j++) {
@@ -628,6 +633,7 @@ public class ApplicationController extends AbstractController {
                 }
             }
         }
+        openProfile(dataManager.getProfile(profile.getName()));
     }
 
     @FXML

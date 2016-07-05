@@ -46,6 +46,10 @@ public class DataManager {
         return profileRepository.findAll();
     }
 
+    public Profile getProfile(String name) {
+        return profileRepository.findByName(name);
+    }
+
     public void openProfile(Profile profile, ConsumerProfile callback) {
         currentProfile = profile;
         if (callback != null) {
