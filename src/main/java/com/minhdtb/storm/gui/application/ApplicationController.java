@@ -5,10 +5,7 @@ import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.engine.StormEngine;
-import com.minhdtb.storm.entities.Channel;
-import com.minhdtb.storm.entities.ChannelAttribute;
-import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.entities.Variable;
+import com.minhdtb.storm.entities.*;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.newvariableiec.DialogNewVariableIECView;
@@ -217,7 +214,7 @@ public class ApplicationController extends AbstractController {
                 } else if (selected instanceof Channel) {
                     showChannel((Channel) selected);
                 } else {
-                    propDetail.getItems().clear();
+                    showVariable((Variable) selected);
                 }
             }
         });
@@ -333,6 +330,30 @@ public class ApplicationController extends AbstractController {
         return name;
     }
 
+    private String getName(Variable variable, VariableAttribute variableAttribute) {
+        String name = "";
+        switch (variableAttribute.getName()) {
+            case HOST:
+                if (variable.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
+                    name = resources.getString(KEY_SERVER_IP);
+                } else if (variable.getType() == Channel.ChannelType.CT_IEC_SERVER) {
+                    name = resources.getString(KEY_BIND_IP);
+                }
+                break;
+            case PORT:
+                name = resources.getString(KEY_PORT);
+                break;
+            case PROG_ID:
+                name = resources.getString(KEY_PROG_ID);
+                break;
+            case REFRESH_RATE:
+                name = resources.getString(KEY_REFRESH_RATE);
+                break;
+        }
+
+        return name;
+    }
+
     private void showChannel(Channel channel) {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
@@ -357,6 +378,23 @@ public class ApplicationController extends AbstractController {
         }
 
         Object[] userData = {ItemType.CHANNEL, channel};
+        propDetail.setUserData(userData);
+    }
+
+    private void showVariable(Variable variable) {
+        propDetail.getItems().clear();
+        propDetail.getItems().add(new PropertyItem(
+                resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), variable.getName()));
+        for (VariableAttribute variableAttribute : variable.getAttributes()) {
+            PropertyItem attributeItem =
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(variable, variableAttribute), variableAttribute.getValue());
+            if (variableAttribute.getName().equals(PROG_ID)) {
+                attributeItem.setDisable();
+            }
+            propDetail.getItems().add(attributeItem);
+        }
+
+        Object[] userData = {ItemType.CHANNEL, variable};
         propDetail.setUserData(userData);
     }
 
