@@ -5,6 +5,7 @@ import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.engine.StormEngine;
+import com.minhdtb.storm.core.lib.j60870.TypeId;
 import com.minhdtb.storm.entities.*;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
@@ -50,6 +51,9 @@ import static com.minhdtb.storm.core.data.StormChannelIECClient.HOST;
 import static com.minhdtb.storm.core.data.StormChannelIECClient.PORT;
 import static com.minhdtb.storm.core.data.StormChannelOPCClient.PROG_ID;
 import static com.minhdtb.storm.core.data.StormChannelOPCClient.REFRESH_RATE;
+import static com.minhdtb.storm.core.data.StormVariableIEC.DATA_TYPE;
+import static com.minhdtb.storm.core.data.StormVariableIEC.INFORMATION_OBJECT_ADDRESS;
+import static com.minhdtb.storm.core.data.StormVariableIEC.SECTOR_ADDRESS;
 import static java.util.Calendar.getInstance;
 
 @Controller
@@ -306,7 +310,7 @@ public class ApplicationController extends AbstractController {
         propDetail.setUserData(userData);
     }
 
-    private String getName(Channel channel, ChannelAttribute channelAttribute) {
+    private String getNameAndValue(Channel channel, ChannelAttribute channelAttribute) {
         String name = "";
         switch (channelAttribute.getName()) {
             case HOST:
@@ -330,28 +334,32 @@ public class ApplicationController extends AbstractController {
         return name;
     }
 
-    private String getName(Variable variable, VariableAttribute variableAttribute) {
+    private String[] getNameAndValue(Variable variable, VariableAttribute variableAttribute) {
         String name = "";
+        String value = variableAttribute.getValue();
         switch (variableAttribute.getName()) {
-            case HOST:
-                if (variable.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                    name = resources.getString(KEY_SERVER_IP);
-                } else if (variable.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                    name = resources.getString(KEY_BIND_IP);
+            case DATA_TYPE:
+                name = resources.getString(KEY_DATA_TYPE);
+                int typeId = Integer.parseInt(variableAttribute.getValue());
+                if (typeId == TypeId.M_ME_NA_1.getId()) {
+                    value = resources.getString(KEY_T09);
+                } else if (typeId == TypeId.M_ME_NC_1.getId()) {
+                    value = resources.getString(KEY_T13);
+                } else if (typeId == TypeId.C_SC_NA_1.getId()) {
+                    value = resources.getString(KEY_T45);
+                } else if (typeId == TypeId.C_DC_NA_1.getId()) {
+                    value = resources.getString(KEY_T46);
                 }
                 break;
-            case PORT:
-                name = resources.getString(KEY_PORT);
+            case SECTOR_ADDRESS:
+                name = resources.getString(KEY_SECTOR_ADDRESS);
                 break;
-            case PROG_ID:
-                name = resources.getString(KEY_PROG_ID);
-                break;
-            case REFRESH_RATE:
-                name = resources.getString(KEY_REFRESH_RATE);
+            case INFORMATION_OBJECT_ADDRESS:
+                name = resources.getString(KEY_INFORMATION_OBJECT_ADDRESS);
                 break;
         }
 
-        return name;
+        return new String[] {name, value};
     }
 
     private void showChannel(Channel channel) {
@@ -370,7 +378,7 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().add(typeItem);
         for (ChannelAttribute channelAttribute : channel.getAttributes()) {
             PropertyItem attributeItem =
-                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(channel, channelAttribute), channelAttribute.getValue());
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getNameAndValue(channel, channelAttribute), channelAttribute.getValue());
             if (channelAttribute.getName().equals(PROG_ID)) {
                 attributeItem.setDisable();
             }
@@ -385,10 +393,13 @@ public class ApplicationController extends AbstractController {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
                 resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), variable.getName()));
-        for (VariableAttribute variableAttribute : variable.getAttributes()) {
+        List<VariableAttribute> attributes = variable.getAttributes();
+        attributes.sort((a1, a2) -> a1.getName().compareTo(a2.getName()));
+        for (VariableAttribute variableAttribute : attributes) {
+            String[] nameAndValue = getNameAndValue(variable, variableAttribute);
             PropertyItem attributeItem =
-                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(variable, variableAttribute), variableAttribute.getValue());
-            if (variableAttribute.getName().equals(PROG_ID)) {
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), nameAndValue[0], nameAndValue[1]);
+            if (variableAttribute.getName().equals(DATA_TYPE)) {
                 attributeItem.setDisable();
             }
             propDetail.getItems().add(attributeItem);
@@ -613,7 +624,7 @@ public class ApplicationController extends AbstractController {
 
         for (int i = 3; i < items.size(); i++) {
             for (ChannelAttribute channelAttribute : channel.getAttributes()) {
-                if (items.get(i).getName().equals(getName(channel, channelAttribute))) {
+                if (items.get(i).getName().equals(getNameAndValue(channel, channelAttribute))) {
                     channelAttribute.setValue((String) items.get(i).getValue());
                 }
             }

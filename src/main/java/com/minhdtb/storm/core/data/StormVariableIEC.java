@@ -9,6 +9,10 @@ import com.minhdtb.storm.entities.Variable;
 
 public class StormVariableIEC extends StormVariable {
 
+    public static final String SECTOR_ADDRESS = "sectorAddress";
+    public static final String INFORMATION_OBJECT_ADDRESS = "informationObjectAddress";
+    public static final String DATA_TYPE = "dataType";
+
     public StormVariableIEC() {
         super();
     }
@@ -18,27 +22,27 @@ public class StormVariableIEC extends StormVariable {
     }
 
     int getSectorAddress() {
-        return Integer.parseInt(getAttribute("sectorAddress"));
+        return Integer.parseInt(getAttribute(SECTOR_ADDRESS));
     }
 
     public void setSectorAddress(int sectorAddress) {
-        setAttribute("sectorAddress", String.valueOf(sectorAddress));
+        setAttribute(SECTOR_ADDRESS, String.valueOf(sectorAddress));
     }
 
     int getInformationObjectAddress() {
-        return Integer.parseInt(getAttribute("informationObjectAddress"));
+        return Integer.parseInt(getAttribute(INFORMATION_OBJECT_ADDRESS));
     }
 
     public void setInformationObjectAddress(int informationObjectAddress) {
-        setAttribute("informationObjectAddress", String.valueOf(informationObjectAddress));
+        setAttribute(INFORMATION_OBJECT_ADDRESS, String.valueOf(informationObjectAddress));
     }
 
     private int getDataType() {
-        return Integer.parseInt(getAttribute("dataType"));
+        return Integer.parseInt(getAttribute(DATA_TYPE));
     }
 
     public void setDataType(int dataType) {
-        setAttribute("dataType", String.valueOf(dataType));
+        setAttribute(DATA_TYPE, String.valueOf(dataType));
     }
 
     @Override

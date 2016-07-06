@@ -62,6 +62,9 @@ public class GlobalConstants {
     public static final String KEY_SERVER_IP = "serverIP";
     public static final String KEY_PROG_ID = "progID";
     public static final String KEY_REFRESH_RATE = "refreshRate";
+    public static final String KEY_DATA_TYPE = "dataType";
+    public static final String KEY_INFORMATION_OBJECT_ADDRESS = "informationObjectAddress";
+    public static final String KEY_SECTOR_ADDRESS = "sectorAddress";
 
     public static final String KEY_BOOLEAN = "boolean";
     public static final String KEY_INTEGER = "integer";
