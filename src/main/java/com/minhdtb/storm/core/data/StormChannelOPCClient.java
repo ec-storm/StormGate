@@ -32,7 +32,7 @@ public class StormChannelOPCClient extends StormChannelOPC implements IOPCDaEven
         opcDaClient.setHost("localhost");
         opcDaClient.connect(getProgId());
 
-        getVariables().stream().forEach(variable -> opcDaClient.addTag(((StormVariableOPC) variable).getTagName()));
+        getVariables().forEach(variable -> opcDaClient.addTag(((StormVariableOPC) variable).getTagName()));
     }
 
     @Override
