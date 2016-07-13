@@ -120,7 +120,7 @@ public class DialogListOpcTagController extends AbstractController {
             childs.clear();
 
             List<String> items = opcDaClient.getTagBranches(getPath());
-            items.stream().forEach(item -> {
+            items.forEach(item -> {
                 DataItem dataItem = new DataItem(item);
                 childs.add(dataItem);
             });
@@ -132,7 +132,7 @@ public class DialogListOpcTagController extends AbstractController {
             childLeafs.clear();
 
             List<String> items = opcDaClient.getTagLeafs(getPath());
-            items.stream().forEach(item -> {
+            items.forEach(item -> {
                 DataItem dataItem = new DataItem(item);
                 childLeafs.add(dataItem);
             });

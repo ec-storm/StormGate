@@ -45,7 +45,7 @@ public class StormChannelIECServer extends StormChannelIEC {
 
     @Override
     public void stop() {
-        connections.stream().forEach(Connection::close);
+        connections.forEach(Connection::close);
         connections.clear();
 
         serverSap.stop();
@@ -100,7 +100,7 @@ public class StormChannelIECServer extends StormChannelIEC {
 
     @Override
     public void send(ASdu aSdu) {
-        connections.stream().forEach(connection -> {
+        connections.forEach(connection -> {
             try {
                 if (connection.isConnected()) {
                     connection.send(aSdu);

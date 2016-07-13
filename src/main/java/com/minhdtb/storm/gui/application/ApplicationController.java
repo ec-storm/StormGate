@@ -588,7 +588,7 @@ public class ApplicationController extends AbstractController {
             if (oldName.equals(newName)) {
                 return;
             }
-            TreeItem selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
+            TreeItem<Object> selectedItem = treeViewProfile.getSelectionModel().getSelectedItem();
             Object value = selectedItem.getValue();
             selectedItem.setValue(null);
             selectedItem.setValue(value);

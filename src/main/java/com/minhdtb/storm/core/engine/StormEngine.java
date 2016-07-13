@@ -138,7 +138,7 @@ public class StormEngine {
             }
         }
 
-        channelList.stream().forEach(stormChannel -> {
+        channelList.forEach(stormChannel -> {
             stormChannel.getVariables().forEach(stormVariable -> {
                 stormVariable.setEngine(this);
                 variableList.put(stormVariable.getFullName(), stormVariable);
@@ -149,7 +149,7 @@ public class StormEngine {
     }
 
     private void stopChannels() {
-        channelList.stream().forEach(IStormChannel::stop);
+        channelList.forEach(IStormChannel::stop);
     }
 
     public static void writeVariable(String name, Object value) {

@@ -137,9 +137,7 @@ public class DialogNewChannelController extends AbstractController {
                 new NamedValueType(resources.getString(KEY_IEC_60870_CLIENT), CT_IEC_CLIENT.ordinal()),
                 new NamedValueType(resources.getString(KEY_OPC_CLIENT), CT_OPC_CLIENT.ordinal()));
 
-        comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> {
-            loadChannelAttribute(newValue);
-        });
+        comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> loadChannelAttribute(newValue));
     }
 
     public void actionOK() {
