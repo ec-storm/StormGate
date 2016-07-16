@@ -8,12 +8,26 @@ import com.minhdtb.storm.repositories.ProfileRepository;
 import com.minhdtb.storm.repositories.VariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class DataManager {
+
+    @Autowired
+    public DataManager(VariableRepository variableRepository,
+                       ChannelRepository channelRepository,
+                       ProfileRepository profileRepository) {
+        Assert.notNull(variableRepository, "VariableRepository must not be empty");
+        Assert.notNull(channelRepository, "ChannelRepository must not be empty");
+        Assert.notNull(profileRepository, "ProfileRepository must not be empty");
+
+        this.variableRepository = variableRepository;
+        this.channelRepository = channelRepository;
+        this.profileRepository = profileRepository;
+    }
 
     @FunctionalInterface
     public interface ConsumerProfile {
@@ -30,14 +44,11 @@ public class DataManager {
         void accept(Profile profile);
     }
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
 
-    @Autowired
-    private ChannelRepository channelRepository;
+    private final ChannelRepository channelRepository;
 
-    @Autowired
-    private VariableRepository variableRepository;
+    private final VariableRepository variableRepository;
 
     private Profile currentProfile;
 

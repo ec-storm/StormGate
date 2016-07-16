@@ -41,6 +41,7 @@ import javafx.stage.WindowEvent;
 import org.controlsfx.control.PropertySheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -85,26 +86,19 @@ public class ApplicationController extends AbstractController {
     @FXML
     private VBox propDetailBox;
 
-    @Autowired
-    private DataManager dataManager;
+    private final DataManager dataManager;
 
-    @Autowired
-    private StormEngine stormEngine;
+    private final StormEngine stormEngine;
 
-    @Autowired
-    private DialogNewProfileView dialogNewProfileView;
+    private final DialogNewProfileView dialogNewProfileView;
 
-    @Autowired
-    private DialogNewChannelView dialogNewChannelView;
+    private final DialogNewChannelView dialogNewChannelView;
 
-    @Autowired
-    private DialogOpenProfileView dialogOpenProfileView;
+    private final DialogOpenProfileView dialogOpenProfileView;
 
-    @Autowired
-    private DialogNewVariableIECView dialogNewVariableIECView;
+    private final DialogNewVariableIECView dialogNewVariableIECView;
 
-    @Autowired
-    private DialogNewVariableOPCView dialogNewVariableOPCView;
+    private final DialogNewVariableOPCView dialogNewVariableOPCView;
 
     private ContextMenu menuTreeView = new ContextMenu();
 
@@ -115,6 +109,27 @@ public class ApplicationController extends AbstractController {
     private boolean isAutoScroll;
 
     private ResourceBundle resources;
+
+    @Autowired
+    public ApplicationController(DialogNewChannelView dialogNewChannelView,
+                                 DialogOpenProfileView dialogOpenProfileView,
+                                 DialogNewVariableIECView dialogNewVariableIECView,
+                                 DialogNewVariableOPCView dialogNewVariableOPCView,
+                                 DialogNewProfileView dialogNewProfileView,
+                                 StormEngine stormEngine,
+                                 DataManager dataManager) {
+        Assert.notNull(stormEngine, "StormEngine must not be null.");
+        Assert.notNull(dataManager, "DataManager must not be null");
+
+        this.dialogNewChannelView = dialogNewChannelView;
+        this.dialogOpenProfileView = dialogOpenProfileView;
+        this.dialogNewVariableIECView = dialogNewVariableIECView;
+        this.dialogNewVariableOPCView = dialogNewVariableOPCView;
+        this.dialogNewProfileView = dialogNewProfileView;
+
+        this.stormEngine = stormEngine;
+        this.dataManager = dataManager;
+    }
 
     private enum ItemType {
         PROFILE, CHANNEL, VARIABLE

@@ -21,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,12 +44,18 @@ public class DialogNewChannelController extends AbstractController {
     @FXML
     private AnchorPane paneAttribute;
 
-    @Autowired
-    private DataManager dataManager;
+    private final DataManager dataManager;
+
+    private final DialogListOpcServerView dialogListOpcServerView;
+    private ResourceBundle resources;
 
     @Autowired
-    private DialogListOpcServerView dialogListOpcServerView;
-    private ResourceBundle resources;
+    public DialogNewChannelController(DialogListOpcServerView dialogListOpcServerView, DataManager dataManager) {
+        Assert.notNull(dataManager, "DataManager must not be null");
+
+        this.dataManager = dataManager;
+        this.dialogListOpcServerView = dialogListOpcServerView;
+    }
 
     @Override
     public void onShow(WindowEvent event) {

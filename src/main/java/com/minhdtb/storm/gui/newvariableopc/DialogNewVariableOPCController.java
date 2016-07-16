@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,13 +35,19 @@ public class DialogNewVariableOPCController extends AbstractController {
     @FXML
     public Button buttonListTags;
 
-    @Autowired
-    private DataManager dataManager;
+    private final DataManager dataManager;
 
-    @Autowired
-    private DialogListOpcTagView dialogListOpcTagView;
+    private final DialogListOpcTagView dialogListOpcTagView;
 
     private ResourceBundle resources;
+
+    @Autowired
+    public DialogNewVariableOPCController(DialogListOpcTagView dialogListOpcTagView, DataManager dataManager) {
+        Assert.notNull(dataManager, "DataManager must not be null");
+
+        this.dataManager = dataManager;
+        this.dialogListOpcTagView = dialogListOpcTagView;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
