@@ -8,6 +8,7 @@ import com.minhdtb.storm.services.DataManager;
 import org.python.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
@@ -23,7 +24,6 @@ import java.util.function.Consumer;
 @Service
 public class StormEngine {
 
-    @Autowired
     private DataManager dataManager;
 
     private ScriptEngine jython;
@@ -37,6 +37,12 @@ public class StormEngine {
     private void initialize() {
         engineManager = new ScriptEngineManager();
         jython = engineManager.getEngineByName("jython");
+    }
+
+    @Autowired
+    public void setDataManager(DataManager dataManager) {
+        Assert.notNull(dataManager, "DataManager must not be null");
+        this.dataManager = dataManager;
     }
 
     public void start(Consumer<Profile> callback) {

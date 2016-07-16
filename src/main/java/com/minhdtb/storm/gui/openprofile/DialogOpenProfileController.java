@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,11 +26,17 @@ import static com.minhdtb.storm.common.GlobalConstants.*;
 @Controller
 public class DialogOpenProfileController extends AbstractController {
 
-    @Autowired
+    final
     DataManager dataManager;
 
     @FXML
     TableView<Profile> tableProfile;
+
+    @Autowired
+    public DialogOpenProfileController(DataManager dataManager) {
+        Assert.notNull(dataManager, "DataManager must not be null");
+        this.dataManager = dataManager;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

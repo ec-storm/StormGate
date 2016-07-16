@@ -14,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,10 +33,15 @@ public class DialogNewVariableIECController extends AbstractController {
     @FXML
     public ComboBox<NamedValueType> comboBoxVariableType;
 
-    @Autowired
-    private DataManager dataManager;
+    private final DataManager dataManager;
 
     private ResourceBundle resources;
+
+    @Autowired
+    public DialogNewVariableIECController(DataManager dataManager) {
+        Assert.notNull(dataManager, "DataManager must not be null");
+        this.dataManager = dataManager;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,10 +14,8 @@ import java.util.ResourceBundle;
 @Controller
 public abstract class AbstractController implements Initializable {
 
-    @Autowired
     private Publisher<Object> publisher;
 
-    @Autowired
     private Subscriber<Object> subscriber;
 
     private AbstractView view;
@@ -45,5 +44,17 @@ public abstract class AbstractController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    }
+
+    @Autowired
+    public void setPublisher(Publisher<Object> publisher) {
+        Assert.notNull(publisher, "Publisher must not be empty.");
+        this.publisher = publisher;
+    }
+
+    @Autowired
+    public void setSubscriber(Subscriber<Object> subscriber) {
+        Assert.notNull(publisher, "Subscriber must not be empty.");
+        this.subscriber = subscriber;
     }
 }
