@@ -363,11 +363,19 @@ public class ApplicationController extends AbstractController {
         typeItem.setDisable();
         propDetail.getItems().add(typeItem);
         for (ChannelAttribute channelAttribute : channel.getAttributes()) {
+            Object value = null;
+            if (Objects.equals(channelAttribute.getType(), "java.lang.String")) {
+                value = channelAttribute.getValue();
+            } else if (Objects.equals(channelAttribute.getType(), "java.lang.Integer")) {
+                value = Integer.parseInt(channelAttribute.getValue());
+            }
+
             PropertyItem attributeItem =
-                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(channel, channelAttribute), channelAttribute.getValue());
+                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(channel, channelAttribute), value);
             if (channelAttribute.getName().equals(PROG_ID)) {
                 attributeItem.setDisable();
             }
+
             propDetail.getItems().add(attributeItem);
         }
 
