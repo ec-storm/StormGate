@@ -410,8 +410,7 @@ public class ApplicationController extends AbstractController {
         content.putString(log.toString());
         clipboard.setContent(content);
     }
-
-
+    
     private void setAutoScroll() {
         isAutoScroll = !isAutoScroll;
         if (isAutoScroll) {
