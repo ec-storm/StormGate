@@ -17,6 +17,8 @@ public class ChannelAttribute implements Serializable {
 
     private String value;
 
+    private String type;
+
     @ManyToOne
     @JoinColumn(name = "channel_id", nullable = false)
     private Channel channel;

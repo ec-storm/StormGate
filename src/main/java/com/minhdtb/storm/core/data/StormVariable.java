@@ -5,6 +5,7 @@ import com.minhdtb.storm.entities.Variable;
 import com.minhdtb.storm.entities.VariableAttribute;
 
 import java.util.Objects;
+import java.util.Optional;
 
 abstract class StormVariable implements IStormVariable {
 
@@ -26,22 +27,18 @@ abstract class StormVariable implements IStormVariable {
         return null;
     }
 
-    void setAttribute(String name, String value) {
-        boolean found = false;
+    void setAttribute(String name, Object value) {
+        Optional<VariableAttribute> found = variable.getAttributes().stream()
+                .filter(item -> Objects.equals(item.getName(), name)).findFirst();
 
-        for (VariableAttribute attribute : variable.getAttributes()) {
-            if (Objects.equals(attribute.getName(), name)) {
-                found = true;
-                attribute.setValue(value);
-                break;
-            }
-        }
-
-        if (!found) {
+        if (found.isPresent()) {
+            found.get().setValue(String.valueOf(value));
+        } else {
             VariableAttribute attribute = new VariableAttribute();
             attribute.setVariable(variable);
             attribute.setName(name);
-            attribute.setValue(value);
+            attribute.setValue(String.valueOf(value));
+            attribute.setType(value.getClass().getTypeName());
 
             variable.getAttributes().add(attribute);
         }

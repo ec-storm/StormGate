@@ -50,6 +50,6 @@ abstract class StormChannelIEC extends StormChannel {
     }
 
     public void setPort(int port) {
-        setAttribute(PORT, String.valueOf(port));
+        setAttribute(PORT, port);
     }
 }

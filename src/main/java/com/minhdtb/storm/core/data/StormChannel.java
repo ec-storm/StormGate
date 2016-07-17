@@ -31,17 +31,18 @@ abstract class StormChannel implements IStormChannel {
         return null;
     }
 
-    void setAttribute(String name, String value) {
+    void setAttribute(String name, Object value) {
         Optional<ChannelAttribute> found = channel.getAttributes().stream()
                 .filter(item -> Objects.equals(item.getName(), name)).findFirst();
 
         if (found.isPresent()) {
-            found.get().setValue(value);
+            found.get().setValue(String.valueOf(value));
         } else {
             ChannelAttribute attribute = new ChannelAttribute();
             attribute.setChannel(channel);
             attribute.setName(name);
-            attribute.setValue(value);
+            attribute.setValue(String.valueOf(value));
+            attribute.setType(value.getClass().getTypeName());
 
             channel.getAttributes().add(attribute);
         }
