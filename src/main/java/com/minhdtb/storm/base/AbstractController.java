@@ -48,13 +48,13 @@ public abstract class AbstractController implements Initializable {
 
     @Autowired
     public void setPublisher(Publisher<Object> publisher) {
-        Assert.notNull(publisher, "Publisher must not be empty.");
+        Assert.notNull(publisher, "Publisher must not be null.");
         this.publisher = publisher;
     }
 
     @Autowired
     public void setSubscriber(Subscriber<Object> subscriber) {
-        Assert.notNull(publisher, "Subscriber must not be empty.");
+        Assert.notNull(subscriber, "Subscriber must not be null.");
         this.subscriber = subscriber;
     }
 }

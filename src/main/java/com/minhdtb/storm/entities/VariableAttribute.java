@@ -17,6 +17,8 @@ public class VariableAttribute implements Serializable {
 
     private String value;
 
+    private String type;
+
     @ManyToOne
     @JoinColumn(name = "variable_id", nullable = false)
     private Variable variable;

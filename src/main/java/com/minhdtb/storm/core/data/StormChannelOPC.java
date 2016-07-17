@@ -50,7 +50,7 @@ abstract class StormChannelOPC extends StormChannel {
     }
 
     public void setRefreshRate(int refreshRate) {
-        setAttribute(REFRESH_RATE, String.valueOf(refreshRate));
+        setAttribute(REFRESH_RATE, refreshRate);
     }
 
     @Override

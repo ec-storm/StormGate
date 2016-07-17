@@ -22,7 +22,7 @@ public class StormVariableIEC extends StormVariable {
     }
 
     public void setSectorAddress(int sectorAddress) {
-        setAttribute("sectorAddress", String.valueOf(sectorAddress));
+        setAttribute("sectorAddress", sectorAddress);
     }
 
     int getInformationObjectAddress() {
@@ -30,7 +30,7 @@ public class StormVariableIEC extends StormVariable {
     }
 
     public void setInformationObjectAddress(int informationObjectAddress) {
-        setAttribute("informationObjectAddress", String.valueOf(informationObjectAddress));
+        setAttribute("informationObjectAddress", informationObjectAddress);
     }
 
     private int getDataType() {
@@ -38,7 +38,7 @@ public class StormVariableIEC extends StormVariable {
     }
 
     public void setDataType(int dataType) {
-        setAttribute("dataType", String.valueOf(dataType));
+        setAttribute("dataType", dataType);
     }
 
     @Override

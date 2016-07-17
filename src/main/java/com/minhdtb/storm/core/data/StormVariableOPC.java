@@ -25,7 +25,7 @@ public class StormVariableOPC extends StormVariable {
     }
 
     public void setDataType(int dataType) {
-        setAttribute("dataType", String.valueOf(dataType));
+        setAttribute("dataType", dataType);
     }
 
     @Override
