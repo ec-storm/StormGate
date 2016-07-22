@@ -29,7 +29,7 @@
             <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;"
                      tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Tab text="%configuration">
+                <Tab text="%tabConfiguration">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <SplitPane dividerPositions="0.3987654320987654" layoutX="82.0" layoutY="45.0"
                                    prefHeight="160.0" prefWidth="200.0" style="-fx-background-color: transparent;"
@@ -50,7 +50,7 @@
                                     <PropertySheet fx:id="propDetail">
                                     </PropertySheet>
                                     <Button mnemonicParsing="false" onAction="#actionSave" prefHeight="28.0"
-                                            prefWidth="82.0" text="%save">
+                                            prefWidth="82.0" text="%buttonSave">
                                         <VBox.margin>
                                             <Insets left="15.0" top="10.0"/>
                                         </VBox.margin>
@@ -60,7 +60,7 @@
                         </SplitPane>
                     </AnchorPane>
                 </Tab>
-                <Tab text="%actionScript">
+                <Tab text="%tabActionScript">
                     <AnchorPane fx:id="paneScript" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
                 </Tab>
             </TabPane>

@@ -10,11 +10,13 @@ import javafx.stage.Window;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.ResourceBundle;
 
 import static com.minhdtb.storm.common.GlobalConstants.BUNDLE_NAME;
-import static java.util.ResourceBundle.getBundle;
 
 public abstract class AbstractView implements ApplicationContextAware {
 
@@ -44,7 +46,7 @@ public abstract class AbstractView implements ApplicationContextAware {
 
     protected void setFxml(String fxml) {
         this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + fxml));
-        this.fxmlLoader.setResources(getBundle(BUNDLE_NAME));
+        this.fxmlLoader.setResources(new StormResourceBundle(BUNDLE_NAME, this.getClass().getSimpleName()));
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());
@@ -152,5 +154,44 @@ public abstract class AbstractView implements ApplicationContextAware {
 
     public Node getNodeById(String id) {
         return getScene().lookup("#" + id);
+    }
+
+    private class StormResourceBundle extends ResourceBundle {
+
+        private ResourceBundle resourceBundle;
+        private String category;
+
+        StormResourceBundle(String baseName, String category) {
+            Assert.notNull(baseName, "baseName must not be null.");
+            Assert.notNull(category, "category must not be null.");
+
+            resourceBundle = getBundle(baseName);
+            this.category = category;
+        }
+
+        @Override
+        protected Object handleGetObject(String key) {
+            Object value = null;
+            try {
+                value = resourceBundle.getObject(category + "." + key);
+            } catch (Exception ignored) {
+            }
+
+            if (value != null) {
+                return value;
+            } else {
+                return "";
+            }
+        }
+
+        @Override
+        public Enumeration<String> getKeys() {
+            return resourceBundle.getKeys();
+        }
+
+        @Override
+        public boolean containsKey(String key) {
+            return true;
+        }
     }
 }
