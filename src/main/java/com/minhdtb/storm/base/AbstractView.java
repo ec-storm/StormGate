@@ -51,8 +51,8 @@ public abstract class AbstractView implements ApplicationContextAware {
             this.scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
             this.controller = this.fxmlLoader.getController();
             this.controller.setView(this);
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
+        } catch (IOException e) {
+            throw new RuntimeException("setFxml failed - " + e.getMessage());
         }
     }
 

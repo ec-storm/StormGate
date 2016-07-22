@@ -69,7 +69,7 @@ public class DialogNewChannelController extends AbstractController {
         }));
     }
 
-    private void loadFxml(String fxml) {
+    private void loadPartialFxml(String fxml) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxml + ".fxml"));
         loader.setResources(getBundle(BUNDLE_NAME));
         try {
@@ -79,14 +79,14 @@ public class DialogNewChannelController extends AbstractController {
             AnchorPane.setRightAnchor(pane, 0.0);
             paneAttribute.getChildren().setAll(pane);
         } catch (IOException e) {
-            throw new RuntimeException("loadFxml failed - " + e.getMessage());
+            throw new RuntimeException("loadPartialFxml failed - " + e.getMessage());
         }
     }
 
     private void loadChannelAttribute(NamedValueType type) {
         switch (ChannelType.fromInt(type.getValue())) {
             case CT_IEC_SERVER: {
-                loadFxml("NewChannelIECServer");
+                loadPartialFxml("NewChannelIECServer");
 
                 TextField editHost = (TextField) getView().getNodeById("editHost");
                 TextField editPort = (TextField) getView().getNodeById("editPort");
@@ -98,7 +98,7 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_IEC_CLIENT: {
-                loadFxml("NewChannelIECClient");
+                loadPartialFxml("NewChannelIECClient");
 
                 TextField editHost = (TextField) getView().getNodeById("editHost");
                 TextField editPort = (TextField) getView().getNodeById("editPort");
@@ -110,7 +110,7 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_OPC_CLIENT: {
-                loadFxml("NewChannelOPCClient");
+                loadPartialFxml("NewChannelOPCClient");
 
                 TextField editHost = (TextField) getView().getNodeById("editHost");
                 TextField editProgId = (TextField) getView().getNodeById("editProgId");
