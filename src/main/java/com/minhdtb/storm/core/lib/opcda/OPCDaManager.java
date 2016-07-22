@@ -41,6 +41,7 @@ class OPCDaManager {
         InputStream inputStream = getClass().getResourceAsStream("/native/" + name);
         try {
             File tempFile = new File(new File(System.getProperty("java.io.tmpdir")), name);
+            tempFile.deleteOnExit();
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(tempFile);

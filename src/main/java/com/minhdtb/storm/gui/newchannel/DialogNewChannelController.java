@@ -64,12 +64,12 @@ public class DialogNewChannelController extends AbstractController {
         comboBoxChannelType.getSelectionModel().selectFirst();
 
         getSubscriber().on("opc:progId", item -> Platform.runLater(() -> {
-            TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
+            TextField editProgId = (TextField) getView().getNodeById("editProgId");
             editProgId.setText((String) item);
         }));
     }
 
-    private void loadFxml(String fxml) {
+    private void loadPartialFxml(String fxml) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxml + ".fxml"));
         loader.setResources(getBundle(BUNDLE_NAME));
         try {
@@ -79,17 +79,17 @@ public class DialogNewChannelController extends AbstractController {
             AnchorPane.setRightAnchor(pane, 0.0);
             paneAttribute.getChildren().setAll(pane);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("loadPartialFxml failed - " + e.getMessage());
         }
     }
 
     private void loadChannelAttribute(NamedValueType type) {
         switch (ChannelType.fromInt(type.getValue())) {
             case CT_IEC_SERVER: {
-                loadFxml("NewChannelIECServer");
+                loadPartialFxml("NewChannelIECServer");
 
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editPort = (TextField) getView().getNodeById("editPort");
                 editPort.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editHost.setText("127.0.0.1");
@@ -98,10 +98,10 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_IEC_CLIENT: {
-                loadFxml("NewChannelIECClient");
+                loadPartialFxml("NewChannelIECClient");
 
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editPort = (TextField) getView().getNodeById("editPort");
                 editPort.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
 
                 editHost.setText("127.0.0.1");
@@ -110,12 +110,12 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_OPC_CLIENT: {
-                loadFxml("NewChannelOPCClient");
+                loadPartialFxml("NewChannelOPCClient");
 
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
-                TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
-                Button buttonListServer = (Button) getView().getScene().lookup("#buttonListServer");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editProgId = (TextField) getView().getNodeById("editProgId");
+                TextField editRefreshRate = (TextField) getView().getNodeById("editRefreshRate");
+                Button buttonListServer = (Button) getView().getNodeById("buttonListServer");
 
                 if (buttonListServer.getOnAction() == null) {
                     buttonListServer.setOnAction(event -> dialogListOpcServerView.showDialog(getView()));
@@ -152,8 +152,8 @@ public class DialogNewChannelController extends AbstractController {
 
         switch (ChannelType.fromInt(channelType.getValue())) {
             case CT_IEC_SERVER: {
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editPort = (TextField) getView().getNodeById("editPort");
 
                 StormChannelIECServer stormChannelIECServer = new StormChannelIECServer();
                 stormChannelIECServer.setName(editChannelName.getText());
@@ -172,8 +172,8 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_IEC_CLIENT: {
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editPort = (TextField) getView().getScene().lookup("#editPort");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editPort = (TextField) getView().getNodeById("editPort");
 
                 StormChannelIECClient stormChannelIECClient = new StormChannelIECClient();
                 stormChannelIECClient.setName(editChannelName.getText());
@@ -192,9 +192,9 @@ public class DialogNewChannelController extends AbstractController {
                 break;
             }
             case CT_OPC_CLIENT: {
-                TextField editHost = (TextField) getView().getScene().lookup("#editHost");
-                TextField editProgId = (TextField) getView().getScene().lookup("#editProgId");
-                TextField editRefreshRate = (TextField) getView().getScene().lookup("#editRefreshRate");
+                TextField editHost = (TextField) getView().getNodeById("editHost");
+                TextField editProgId = (TextField) getView().getNodeById("editProgId");
+                TextField editRefreshRate = (TextField) getView().getNodeById("editRefreshRate");
 
                 if (Strings.isNullOrEmpty(editProgId.getText())) {
                     Utils.showError(getView(), resources.getString(KEY_ERROR_PROGID_MUST_NOT_BE_EMPTY));
