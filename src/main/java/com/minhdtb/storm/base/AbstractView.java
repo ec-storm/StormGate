@@ -1,6 +1,7 @@
 package com.minhdtb.storm.base;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -147,5 +148,9 @@ public abstract class AbstractView implements ApplicationContextAware {
         this.getStage().setOnShowing(controller::onShow);
         this.getStage().setScene(this.getScene());
         this.getStage().show();
+    }
+
+    public Node getNodeById(String id) {
+        return getScene().lookup("#" + id);
     }
 }
