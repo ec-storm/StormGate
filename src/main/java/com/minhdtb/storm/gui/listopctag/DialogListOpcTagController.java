@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static com.minhdtb.storm.common.GlobalConstants.KEY_ITEMID;
-import static com.minhdtb.storm.common.GlobalConstants.KEY_NAME;
-
 @Controller
 public class DialogListOpcTagController extends AbstractController {
 
@@ -33,11 +30,11 @@ public class DialogListOpcTagController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TableColumn<DataItem, String> columnName = new TableColumn<>(resources.getString(KEY_NAME));
+        TableColumn<DataItem, String> columnName = new TableColumn<>(resources.getString("TXT001"));
         columnName.setPrefWidth(120);
         columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
 
-        TableColumn<DataItem, String> columnChannels = new TableColumn<>(resources.getString(KEY_ITEMID));
+        TableColumn<DataItem, String> columnChannels = new TableColumn<>(resources.getString("TXT002"));
         columnChannels.setPrefWidth(300);
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
 

@@ -21,8 +21,6 @@ import org.springframework.util.Assert;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static com.minhdtb.storm.common.GlobalConstants.*;
-
 @Controller
 public class DialogNewVariableOPCController extends AbstractController {
 
@@ -54,10 +52,10 @@ public class DialogNewVariableOPCController extends AbstractController {
         this.resources = resources;
 
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString(KEY_BOOLEAN), 0),
-                new NamedValueType(resources.getString(KEY_INTEGER), 1),
-                new NamedValueType(resources.getString(KEY_FLOAT), 2),
-                new NamedValueType(resources.getString(KEY_STRING), 3));
+                new NamedValueType(resources.getString("TXT001"), 0),
+                new NamedValueType(resources.getString("TXT002"), 1),
+                new NamedValueType(resources.getString("TXT003"), 2),
+                new NamedValueType(resources.getString("TXT004"), 3));
         buttonListTags.setOnAction(event -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
@@ -73,14 +71,14 @@ public class DialogNewVariableOPCController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
+        editVariableName.setText(resources.getString("TXT005"));
         comboBoxVariableType.getSelectionModel().selectFirst();
         editTagName.setText("");
     }
 
     public void actionOK() {
         if (Strings.isNullOrEmpty(editTagName.getText())) {
-            Utils.showError(getView(), resources.getString(KEY_ERROR_TAGNAME_MUST_NOT_BE_EMPTY));
+            Utils.showError(getView(), resources.getString("MSG001"));
             return;
         }
 
@@ -96,7 +94,7 @@ public class DialogNewVariableOPCController extends AbstractController {
             getPublisher().publish("application:addVariable", variableOPC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_VARIABLE_EXISTS), variableOPC.getName()));
+            Utils.showError(getView(), String.format(resources.getString("MSG002"), variableOPC.getName()));
         }
     }
 

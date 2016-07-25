@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
-import static com.minhdtb.storm.common.GlobalConstants.BUNDLE_NAME;
-
 public abstract class AbstractView implements ApplicationContextAware {
 
     private AbstractApplication application;
@@ -46,7 +44,7 @@ public abstract class AbstractView implements ApplicationContextAware {
 
     protected void setFxml(String fxml) {
         this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + fxml));
-        this.fxmlLoader.setResources(new StormResourceBundle(BUNDLE_NAME, this.getClass().getSimpleName()));
+        this.fxmlLoader.setResources(new StormResourceBundle("bundles.StormGate", this.getClass().getSimpleName()));
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());

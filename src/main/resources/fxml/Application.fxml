@@ -8,15 +8,15 @@
 <VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minhdtb.storm.gui.application.ApplicationController">
     <MenuBar>
-        <Menu mnemonicParsing="false" text="%menuFile">
-            <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="%menuNewProfile"/>
-            <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="%menuOpenProfile"/>
-            <MenuItem fx:id="menuItemSave" onAction="#actionSaveProfile" text="%menuSave"/>
+        <Menu mnemonicParsing="false" text="%TXT001">
+            <MenuItem fx:id="menuItemNewProfile" onAction="#actionNewProfile" text="%TXT002"/>
+            <MenuItem fx:id="menuItemOpenProfile" onAction="#actionOpenProfile" text="%TXT003"/>
+            <MenuItem fx:id="menuItemSave" onAction="#actionSaveProfile" text="%TXT004"/>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#actionCloseApplication" text="%menuClose"/>
+            <MenuItem onAction="#actionCloseApplication" text="%TXT005"/>
         </Menu>
-        <Menu mnemonicParsing="false" text="%menuHelp">
-            <MenuItem mnemonicParsing="false" text="%menuAbout"/>
+        <Menu mnemonicParsing="false" text="%TXT006">
+            <MenuItem mnemonicParsing="false" text="%TXT007"/>
         </Menu>
     </MenuBar>
     <ToolBar prefHeight="40.0" prefWidth="200.0">
@@ -29,7 +29,7 @@
             <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;"
                      tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Tab text="%tabConfiguration">
+                <Tab text="%TXT013">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <SplitPane dividerPositions="0.3987654320987654" layoutX="82.0" layoutY="45.0"
                                    prefHeight="160.0" prefWidth="200.0" style="-fx-background-color: transparent;"
@@ -60,7 +60,7 @@
                         </SplitPane>
                     </AnchorPane>
                 </Tab>
-                <Tab text="%tabActionScript">
+                <Tab text="%TXT014">
                     <AnchorPane fx:id="paneScript" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
                 </Tab>
             </TabPane>

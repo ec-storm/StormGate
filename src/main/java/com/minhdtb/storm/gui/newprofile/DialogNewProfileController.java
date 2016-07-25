@@ -1,8 +1,6 @@
 package com.minhdtb.storm.gui.newprofile;
 
 import com.minhdtb.storm.base.AbstractController;
-import static com.minhdtb.storm.common.GlobalConstants.KEY_ERROR_PROFILE_EXISTS;
-import static com.minhdtb.storm.common.GlobalConstants.KEY_NEW_PROFILE;
 
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
@@ -49,12 +47,12 @@ public class DialogNewProfileController extends AbstractController {
             getPublisher().publish("application:newProfile", profile);
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_PROFILE_EXISTS), profile.getName()));
+            Utils.showError(getView(), String.format(resources.getString("TXT001"), profile.getName()));
         }
     }
 
     @Override
     public void onShow(WindowEvent event) {
-        editNewProfileName.setText(resources.getString(KEY_NEW_PROFILE));
+        editNewProfileName.setText(resources.getString("TXT002"));
     }
 }
