@@ -20,6 +20,8 @@ public abstract class AbstractController implements Initializable {
 
     private AbstractView view;
 
+    private ResourceBundle resources;
+
     protected Publisher<Object> getPublisher() {
         return publisher;
     }
@@ -43,7 +45,8 @@ public abstract class AbstractController implements Initializable {
     public abstract void onShow(WindowEvent event);
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public final void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
     }
 
     @Autowired
@@ -56,5 +59,17 @@ public abstract class AbstractController implements Initializable {
     public void setSubscriber(Subscriber<Object> subscriber) {
         Assert.notNull(subscriber, "Subscriber must not be null.");
         this.subscriber = subscriber;
+    }
+
+    private Object getResource(String key) {
+        return resources.getObject(key);
+    }
+
+    protected String getResourceString(String key) {
+        return String.valueOf(getResource(key));
+    }
+
+    protected ResourceBundle getResources() {
+        return resources;
     }
 }

@@ -11,11 +11,9 @@ import javafx.scene.control.*;
 import javafx.stage.WindowEvent;
 import org.springframework.stereotype.Controller;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,19 +27,19 @@ public class DialogListOpcTagController extends AbstractController {
     private OPCDaClient opcDaClient = new OPCDaClient();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        TableColumn<DataItem, String> columnName = new TableColumn<>(resources.getString("TXT001"));
+    public void onShow(WindowEvent event) {
+        TableColumn<DataItem, String> columnName = new TableColumn<>(getResourceString("TXT001"));
         columnName.setPrefWidth(120);
         columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
 
-        TableColumn<DataItem, String> columnChannels = new TableColumn<>(resources.getString("TXT002"));
+        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("TXT002"));
         columnChannels.setPrefWidth(300);
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
 
         tableTags.setRowFactory(tv -> {
             TableRow<DataItem> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+            row.setOnMouseClicked(eventMouse -> {
+                if (eventMouse.getClickCount() == 2 && (!row.isEmpty())) {
                     actionOK();
                 }
             });
@@ -52,7 +50,7 @@ public class DialogListOpcTagController extends AbstractController {
         tableTags.getColumns().add(columnName);
         tableTags.getColumns().add(columnChannels);
 
-        treeTags.setOnMouseClicked(event -> {
+        treeTags.setOnMouseClicked(eventMouse -> {
             if (treeTags.getSelectionModel().getSelectedItem() != null) {
                 DataItem selected = treeTags.getSelectionModel().getSelectedItem().getValue();
                 tableTags.getItems().clear();
@@ -61,10 +59,7 @@ public class DialogListOpcTagController extends AbstractController {
                         comparing(DataItem::getName)).collect(Collectors.toList()));
             }
         });
-    }
 
-    @Override
-    public void onShow(WindowEvent event) {
         DialogListOpcTagView view = (DialogListOpcTagView) getView();
         opcDaClient.setHost(view.getHost());
         opcDaClient.disconnect();

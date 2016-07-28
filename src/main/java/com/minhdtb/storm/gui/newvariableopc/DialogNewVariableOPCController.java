@@ -18,9 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 @Controller
 public class DialogNewVariableOPCController extends AbstractController {
 
@@ -37,8 +34,6 @@ public class DialogNewVariableOPCController extends AbstractController {
 
     private final DialogListOpcTagView dialogListOpcTagView;
 
-    private ResourceBundle resources;
-
     @Autowired
     public DialogNewVariableOPCController(DialogListOpcTagView dialogListOpcTagView, DataManager dataManager) {
         Assert.notNull(dataManager, "DataManager must not be null");
@@ -48,15 +43,13 @@ public class DialogNewVariableOPCController extends AbstractController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
-
+    public void onShow(WindowEvent event) {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString("TXT001"), 0),
-                new NamedValueType(resources.getString("TXT002"), 1),
-                new NamedValueType(resources.getString("TXT003"), 2),
-                new NamedValueType(resources.getString("TXT004"), 3));
-        buttonListTags.setOnAction(event -> {
+                new NamedValueType(getResourceString("TXT001"), 0),
+                new NamedValueType(getResourceString("TXT002"), 1),
+                new NamedValueType(getResourceString("TXT003"), 2),
+                new NamedValueType(getResourceString("TXT004"), 3));
+        buttonListTags.setOnAction(eventMouse -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
                 StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient(channel);
@@ -67,18 +60,15 @@ public class DialogNewVariableOPCController extends AbstractController {
         });
 
         getSubscriber().on("opc:select", object -> editTagName.setText((String) object));
-    }
 
-    @Override
-    public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString("TXT005"));
+        editVariableName.setText(getResourceString("TXT005"));
         comboBoxVariableType.getSelectionModel().selectFirst();
         editTagName.setText("");
     }
 
     public void actionOK() {
         if (Strings.isNullOrEmpty(editTagName.getText())) {
-            Utils.showError(getView(), resources.getString("MSG001"));
+            Utils.showError(getView(), getResourceString("MSG001"));
             return;
         }
 
@@ -94,7 +84,7 @@ public class DialogNewVariableOPCController extends AbstractController {
             getPublisher().publish("application:addVariable", variableOPC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString("MSG002"), variableOPC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG002"), variableOPC.getName()));
         }
     }
 

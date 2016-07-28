@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 @Controller
 public class DialogNewVariableIECController extends AbstractController {
 
@@ -33,8 +30,6 @@ public class DialogNewVariableIECController extends AbstractController {
 
     private final DataManager dataManager;
 
-    private ResourceBundle resources;
-
     @Autowired
     public DialogNewVariableIECController(DataManager dataManager) {
         Assert.notNull(dataManager, "DataManager must not be null");
@@ -42,21 +37,17 @@ public class DialogNewVariableIECController extends AbstractController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
+    public void onShow(WindowEvent event) {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString("TXT001"), TypeId.M_ME_NA_1.getId()),
-                new NamedValueType(resources.getString("TXT002"), TypeId.M_ME_NC_1.getId()),
-                new NamedValueType(resources.getString("TXT003"), TypeId.C_SC_NA_1.getId()),
-                new NamedValueType(resources.getString("TXT004"), TypeId.C_DC_NA_1.getId()));
+                new NamedValueType(getResourceString("TXT001"), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(getResourceString("TXT002"), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(getResourceString("TXT003"), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(getResourceString("TXT004"), TypeId.C_DC_NA_1.getId()));
 
         editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
         editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
-    }
 
-    @Override
-    public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString("TXT005"));
+        editVariableName.setText(getResourceString("TXT005"));
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");
         comboBoxVariableType.getSelectionModel().selectFirst();
@@ -76,7 +67,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString("MSG001"), variableIEC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG001"), variableIEC.getName()));
         }
     }
 

@@ -67,10 +67,10 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="812.0"
                     style="-fx-background-color: white" SplitPane.resizableWithParent="false">
-            <ScrollPane fx:id="scrollLog" focusTraversable="false" style="-fx-background-color: transparent"
+            <ScrollPane fx:id="scrollLog" style="-fx-background-color: transparent"
                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0"
                         AnchorPane.topAnchor="0.0" onContextMenuRequested="#onLogShowContextMenu" onMousePressed="#onHideLogMenu">
-                <TextFlow fx:id="textFlowLog" focusTraversable="false"/>
+                <TextFlow fx:id="textFlowLog"/>
             </ScrollPane>
         </AnchorPane>
     </SplitPane>
@@ -80,7 +80,7 @@
                 <Insets left="5.0"/>
             </HBox.margin>
         </Label>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
+        <Pane HBox.hgrow="ALWAYS"/>
         <Label fx:id="labelSystemTime" alignment="CENTER_RIGHT" layoutX="13.0" layoutY="10.0" prefHeight="17.0"
                prefWidth="300.0">
             <HBox.margin>

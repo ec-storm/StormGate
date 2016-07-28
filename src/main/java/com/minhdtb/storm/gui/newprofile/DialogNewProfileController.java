@@ -23,17 +23,10 @@ public class DialogNewProfileController extends AbstractController {
 
     private final DataManager dataManager;
 
-    private ResourceBundle resources;
-
     @Autowired
     public DialogNewProfileController(DataManager dataManager) {
         Assert.notNull(dataManager, "DataManager must not be null");
         this.dataManager = dataManager;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
     }
 
     public void actionCancel() {
@@ -47,12 +40,12 @@ public class DialogNewProfileController extends AbstractController {
             getPublisher().publish("application:newProfile", profile);
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString("TXT001"), profile.getName()));
+            Utils.showError(getView(), String.format(getResourceString("TXT001"), profile.getName()));
         }
     }
 
     @Override
     public void onShow(WindowEvent event) {
-        editNewProfileName.setText(resources.getString("TXT002"));
+        editNewProfileName.setText(getResourceString("TXT002"));
     }
 }
