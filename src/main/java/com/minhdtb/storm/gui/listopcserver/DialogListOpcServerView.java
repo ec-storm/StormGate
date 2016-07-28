@@ -15,7 +15,7 @@ public class DialogListOpcServerView extends AbstractView {
     }
 
     public void showDialog(AbstractView owner) {
-        this.setTitle("Select OPC Server")
+        this.setTitle(getController().getResourceString("title"))
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())

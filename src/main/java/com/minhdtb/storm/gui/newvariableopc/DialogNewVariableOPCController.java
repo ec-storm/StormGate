@@ -45,10 +45,10 @@ public class DialogNewVariableOPCController extends AbstractController {
     @Override
     public void onShow(WindowEvent event) {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(getResourceString("TXT001"), 0),
-                new NamedValueType(getResourceString("TXT002"), 1),
-                new NamedValueType(getResourceString("TXT003"), 2),
-                new NamedValueType(getResourceString("TXT004"), 3));
+                new NamedValueType(getResourceString("boolean"), 0),
+                new NamedValueType(getResourceString("integer"), 1),
+                new NamedValueType(getResourceString("float"), 2),
+                new NamedValueType(getResourceString("string"), 3));
         buttonListTags.setOnAction(eventMouse -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
@@ -64,6 +64,11 @@ public class DialogNewVariableOPCController extends AbstractController {
         editVariableName.setText(getResourceString("TXT005"));
         comboBoxVariableType.getSelectionModel().selectFirst();
         editTagName.setText("");
+    }
+
+    @Override
+    public void onCreate() {
+
     }
 
     public void actionOK() {

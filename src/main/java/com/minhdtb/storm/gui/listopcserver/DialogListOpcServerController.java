@@ -24,6 +24,10 @@ public class DialogListOpcServerController extends AbstractController {
     @Override
     public void onShow(WindowEvent event) {
         editHost.setText("localhost");
+    }
+
+    @Override
+    public void onCreate() {
         buttonRefresh.setOnAction(actionEvent -> {
             opcDaClient.setHost(editHost.getText());
 

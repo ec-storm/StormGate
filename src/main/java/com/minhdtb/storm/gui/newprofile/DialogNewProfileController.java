@@ -40,12 +40,17 @@ public class DialogNewProfileController extends AbstractController {
             getPublisher().publish("application:newProfile", profile);
             close();
         } else {
-            Utils.showError(getView(), String.format(getResourceString("TXT001"), profile.getName()));
+            Utils.showError(getView(), String.format(getResourceString(""), profile.getName()));
         }
     }
 
     @Override
     public void onShow(WindowEvent event) {
-        editNewProfileName.setText(getResourceString("TXT002"));
+        editNewProfileName.setText(getResourceString("newProfile"));
+    }
+
+    @Override
+    public void onCreate() {
+
     }
 }

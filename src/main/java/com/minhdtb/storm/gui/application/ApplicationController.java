@@ -133,6 +133,11 @@ public class ApplicationController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
+
+    }
+
+    @Override
+    public void onCreate() {
         getSubscriber().on("application:openProfile", this::openProfile);
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);

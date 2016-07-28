@@ -38,19 +38,22 @@ public class DialogNewVariableIECController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        comboBoxVariableType.getItems().addAll(
-                new NamedValueType(getResourceString("TXT001"), TypeId.M_ME_NA_1.getId()),
-                new NamedValueType(getResourceString("TXT002"), TypeId.M_ME_NC_1.getId()),
-                new NamedValueType(getResourceString("TXT003"), TypeId.C_SC_NA_1.getId()),
-                new NamedValueType(getResourceString("TXT004"), TypeId.C_DC_NA_1.getId()));
-
-        editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
-        editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
-
-        editVariableName.setText(getResourceString("TXT005"));
+        editVariableName.setText(getResourceString("newVariable"));
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");
         comboBoxVariableType.getSelectionModel().selectFirst();
+    }
+
+    @Override
+    public void onCreate() {
+        comboBoxVariableType.getItems().addAll(
+                new NamedValueType(getResourceString("T09"), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(getResourceString("T13"), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(getResourceString("T45"), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(getResourceString("T46"), TypeId.C_DC_NA_1.getId()));
+
+        editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
+        editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
     }
 
     public void actionOK() {
@@ -67,7 +70,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(getResourceString("MSG001"), variableIEC.getName()));
+            Utils.showError(getView(), String.format(getResourceString(""), variableIEC.getName()));
         }
     }
 

@@ -28,38 +28,6 @@ public class DialogListOpcTagController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        TableColumn<DataItem, String> columnName = new TableColumn<>(getResourceString("TXT001"));
-        columnName.setPrefWidth(120);
-        columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
-
-        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("TXT002"));
-        columnChannels.setPrefWidth(300);
-        columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
-
-        tableTags.setRowFactory(tv -> {
-            TableRow<DataItem> row = new TableRow<>();
-            row.setOnMouseClicked(eventMouse -> {
-                if (eventMouse.getClickCount() == 2 && (!row.isEmpty())) {
-                    actionOK();
-                }
-            });
-
-            return row;
-        });
-
-        tableTags.getColumns().add(columnName);
-        tableTags.getColumns().add(columnChannels);
-
-        treeTags.setOnMouseClicked(eventMouse -> {
-            if (treeTags.getSelectionModel().getSelectedItem() != null) {
-                DataItem selected = treeTags.getSelectionModel().getSelectedItem().getValue();
-                tableTags.getItems().clear();
-
-                tableTags.getItems().addAll(selected.getChildLeafs().stream().sorted(Comparator.
-                        comparing(DataItem::getName)).collect(Collectors.toList()));
-            }
-        });
-
         DialogListOpcTagView view = (DialogListOpcTagView) getView();
         opcDaClient.setHost(view.getHost());
         opcDaClient.disconnect();
@@ -86,6 +54,41 @@ public class DialogListOpcTagController extends AbstractController {
                         setText(dataItem.getName());
                     }
                 }
+            }
+        });
+    }
+
+    @Override
+    public void onCreate() {
+        TableColumn<DataItem, String> columnName = new TableColumn<>(getResourceString("name"));
+        columnName.setPrefWidth(120);
+        columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
+
+        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("value"));
+        columnChannels.setPrefWidth(300);
+        columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
+
+        tableTags.setRowFactory(tv -> {
+            TableRow<DataItem> row = new TableRow<>();
+            row.setOnMouseClicked(eventMouse -> {
+                if (eventMouse.getClickCount() == 2 && (!row.isEmpty())) {
+                    actionOK();
+                }
+            });
+
+            return row;
+        });
+
+        tableTags.getColumns().add(columnName);
+        tableTags.getColumns().add(columnChannels);
+
+        treeTags.setOnMouseClicked(eventMouse -> {
+            if (treeTags.getSelectionModel().getSelectedItem() != null) {
+                DataItem selected = treeTags.getSelectionModel().getSelectedItem().getValue();
+                tableTags.getItems().clear();
+
+                tableTags.getItems().addAll(selected.getChildLeafs().stream().sorted(Comparator.
+                        comparing(DataItem::getName)).collect(Collectors.toList()));
             }
         });
     }

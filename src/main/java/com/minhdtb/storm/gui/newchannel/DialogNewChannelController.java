@@ -54,16 +54,19 @@ public class DialogNewChannelController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        comboBoxChannelType.getItems().addAll(
-                new NamedValueType(getResourceString("labelIEC60870Server"), CT_IEC_SERVER.ordinal()),
-                new NamedValueType(getResourceString("labelIEC60870Client"), CT_IEC_CLIENT.ordinal()),
-                new NamedValueType(getResourceString("labelOPCClient"), CT_OPC_CLIENT.ordinal()));
-
-        comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> loadChannelAttribute(newValue));
-
-        editChannelName.setText(getResourceString("menuNewChannel"));
+        editChannelName.setText(getResourceString("newChannel"));
         editChannelDescription.setText("");
         comboBoxChannelType.getSelectionModel().selectFirst();
+    }
+
+    @Override
+    public void onCreate() {
+        comboBoxChannelType.getItems().addAll(
+                new NamedValueType(getResourceString("60870Server"), CT_IEC_SERVER.ordinal()),
+                new NamedValueType(getResourceString("60870Client"), CT_IEC_CLIENT.ordinal()),
+                new NamedValueType(getResourceString("OPCClient"), CT_OPC_CLIENT.ordinal()));
+
+        comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> loadChannelAttribute(newValue));
 
         getSubscriber().on("opc:progId", item -> Platform.runLater(() -> {
             TextField editProgId = (TextField) getView().getNodeById("editProgId");
@@ -158,7 +161,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelIECServer.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString("messageErrorChannelExist"), stormChannelIECServer.getName()));
+                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelIECServer.getName()));
                 }
 
                 break;
@@ -178,7 +181,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelIECClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString("messageErrorChannelExist"), stormChannelIECClient.getName()));
+                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelIECClient.getName()));
                 }
 
                 break;
@@ -189,7 +192,7 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editRefreshRate = (TextField) getView().getNodeById("editRefreshRate");
 
                 if (Strings.isNullOrEmpty(editProgId.getText())) {
-                    Utils.showError(getView(), getResourceString("messageErrorProgIdMustNotEmpty"));
+                    Utils.showError(getView(), getResourceString(""));
                     return;
                 }
 
@@ -204,7 +207,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelOPCClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString("messageErrorChannelExist"), stormChannelOPCClient.getName()));
+                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelOPCClient.getName()));
                 }
 
                 break;

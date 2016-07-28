@@ -44,10 +44,13 @@ public abstract class AbstractController implements Initializable {
 
     public abstract void onShow(WindowEvent event);
 
+    public abstract void onCreate();
+
     @Override
     public final void initialize(URL location, ResourceBundle resources) {
         Assert.notNull(resources, "ResourceBundle must not be null.");
         this.resources = resources;
+        onCreate();
     }
 
     @Autowired
@@ -66,7 +69,7 @@ public abstract class AbstractController implements Initializable {
         return resources.getObject(key);
     }
 
-    protected String getResourceString(String key) {
+    public String getResourceString(String key) {
         return String.valueOf(getResource(key));
     }
 

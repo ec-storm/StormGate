@@ -43,11 +43,16 @@ public class DialogOpenProfileController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        TableColumn<Profile, String> columnName = new TableColumn<>(getResourceString("TXT001"));
+        
+    }
+
+    @Override
+    public void onCreate() {
+        TableColumn<Profile, String> columnName = new TableColumn<>(getResourceString("name"));
         columnName.setPrefWidth(310);
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Profile, Integer> columnChannels = new TableColumn<>(getResourceString("TXT002"));
+        TableColumn<Profile, Integer> columnChannels = new TableColumn<>(getResourceString("channels"));
         columnChannels.setPrefWidth(120);
         columnChannels.setStyle("-fx-alignment: CENTER;");
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getChannels().size()));
@@ -68,11 +73,11 @@ public class DialogOpenProfileController extends AbstractController {
 
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("TXT003")).setAction(eventMouse -> {
+                .setText(getResourceString("deleteProfile")).setAction(eventMouse -> {
                     Profile profile = tableProfile.getSelectionModel().getSelectedItem();
 
                     Utils.showConfirm(this.getView(),
-                            String.format(getResourceString("MSG001"), profile.getName()),
+                            String.format(getResourceString(""), profile.getName()),
                             e -> {
                                 tableProfile.getItems().remove(profile);
                                 getPublisher().publish("application:deleteProfile", profile);
@@ -80,7 +85,6 @@ public class DialogOpenProfileController extends AbstractController {
                 }).build());
 
         tableProfile.setContextMenu(contextMenu);
-
         tableProfile.setItems(FXCollections.observableArrayList(dataManager.getProfiles()));
     }
 

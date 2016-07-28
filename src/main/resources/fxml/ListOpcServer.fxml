@@ -26,12 +26,12 @@
                 <Insets left="3.0" right="5.0"/>
             </GridPane.margin>
         </TextField>
-        <Label text="%TXT001" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+        <Label text="%host" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
             <GridPane.margin>
                 <Insets right="3.0"/>
             </GridPane.margin>
         </Label>
-        <Button fx:id="buttonRefresh" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="%TXT002"
+        <Button fx:id="buttonRefresh" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="%refresh"
                 GridPane.columnIndex="2" GridPane.rowIndex="2">
             <GridPane.margin>
                 <Insets right="5.0"/>
@@ -41,7 +41,7 @@
     <ListView fx:id="listServer" layoutX="12.0" layoutY="58.0" prefHeight="227.0" prefWidth="333.0"
               AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"/>
     <Button layoutX="123.0" layoutY="291.0" mnemonicParsing="false" onAction="#actionOK" prefHeight="31.0"
-            prefWidth="112.0" text="%TXT003" AnchorPane.rightAnchor="120.0"/>
+            prefWidth="112.0" text="%ok" AnchorPane.rightAnchor="120.0"/>
     <Button layoutX="240.0" layoutY="291.0" mnemonicParsing="false" onAction="#actionCancel" prefHeight="31.0"
-            prefWidth="112.0" text="%TXT004" AnchorPane.rightAnchor="5.0"/>
+            prefWidth="112.0" text="%cancel" AnchorPane.rightAnchor="5.0"/>
 </AnchorPane>
