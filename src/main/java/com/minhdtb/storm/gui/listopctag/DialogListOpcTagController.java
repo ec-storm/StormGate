@@ -64,7 +64,7 @@ public class DialogListOpcTagController extends AbstractController {
         columnName.setPrefWidth(120);
         columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
 
-        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("value"));
+        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("path"));
         columnChannels.setPrefWidth(300);
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
 

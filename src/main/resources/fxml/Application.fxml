@@ -50,7 +50,7 @@
                                     <PropertySheet fx:id="propDetail">
                                     </PropertySheet>
                                     <Button mnemonicParsing="false" onAction="#actionSave" prefHeight="28.0"
-                                            prefWidth="82.0" text="%buttonSave">
+                                            prefWidth="82.0" text="%save">
                                         <VBox.margin>
                                             <Insets left="15.0" top="10.0"/>
                                         </VBox.margin>
