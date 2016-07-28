@@ -43,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -161,9 +160,9 @@ public class ApplicationController extends AbstractController {
     }
 
     private void initGUI() {
-        labelStatus.setText(getResourceString("TXT019"));
+        labelStatus.setText(getResourceString("stopped"));
 
-        setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("TXT016"));
+        setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("start"));
         buttonRun.setDisable(true);
 
         propDetail.setSearchBoxVisible(false);
@@ -192,17 +191,17 @@ public class ApplicationController extends AbstractController {
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("TXT002"))
+                .setText(getResourceString("newProfile"))
                 .setAccelerator(
                         new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
                 .setAction(event -> dialogNewProfileView.showDialog(
-                        getView(), getResourceString("TXT002"))).build());
+                        getView(), getResourceString("newProfile"))).build());
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("TXT003"))
+                .setText(getResourceString("openProfile"))
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(
-                        getView(), getResourceString("TXT003"))).build());
+                        getView(), getResourceString("openProfile"))).build());
 
         menuLog.getItems().add(MenuItemBuilder.create()
                 .setText(getResourceString("menuClearAll"))
@@ -310,9 +309,9 @@ public class ApplicationController extends AbstractController {
         propDetailBox.setVisible(true);
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
-                getResourceString("TXT021"), getResourceString("TXT023"), profile.getName()));
+                getResourceString("general"), getResourceString("name"), profile.getName()));
         propDetail.getItems().add(new PropertyItem(
-                getResourceString("TXT021"), getResourceString("TXT024"), profile.getDescription()));
+                getResourceString("general"), getResourceString("description"), profile.getDescription()));
         Object[] userData = {ItemType.PROFILE, profile};
         propDetail.setUserData(userData);
     }
@@ -322,22 +321,21 @@ public class ApplicationController extends AbstractController {
         switch (channelAttribute.getName()) {
             case HOST:
                 if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                    name = getResourceString("TXT025");
+                    name = getResourceString("serverIp");
                 } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                    name = getResourceString("TXT026");
-                }
-                else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
-                    name = getResourceString("TXT027");
+                    name = getResourceString("bindIp");
+                } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
+                    name = getResourceString("host");
                 }
                 break;
             case PORT:
-                name = getResourceString("TXT028");
+                name = getResourceString("port");
                 break;
             case PROG_ID:
-                name = getResourceString("TXT029");
+                name = getResourceString("progId");
                 break;
             case REFRESH_RATE:
-                name = getResourceString("TXT030");
+                name = getResourceString("refreshRate");
                 break;
         }
 
@@ -347,14 +345,14 @@ public class ApplicationController extends AbstractController {
     private void showChannel(Channel channel) {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
-                getResourceString("TXT021"), getResourceString("TXT023"), channel.getName()));
+                getResourceString("general"), getResourceString("name"), channel.getName()));
         propDetail.getItems().add(new PropertyItem(
-                getResourceString("TXT021"),
-                getResourceString("TXT024"),
+                getResourceString("general"),
+                getResourceString("description"),
                 channel.getDescription()));
         PropertyItem typeItem = new PropertyItem(
-                getResourceString("TXT021"),
-                getResourceString("TXT031"),
+                getResourceString("general"),
+                getResourceString("type"),
                 getResourceString(channel.getType().toString()));
         typeItem.setDisable();
         propDetail.getItems().add(typeItem);
@@ -406,7 +404,7 @@ public class ApplicationController extends AbstractController {
         content.putString(log.toString());
         clipboard.setContent(content);
     }
-    
+
     private void setAutoScroll() {
         isAutoScroll = !isAutoScroll;
         if (isAutoScroll) {
@@ -503,12 +501,12 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionNewProfile() {
-        dialogNewProfileView.showDialog(getView(), getResourceString("TXT002"));
+        dialogNewProfileView.showDialog(getView(), getResourceString("newProfile"));
     }
 
     @FXML
     public void actionOpenProfile() {
-        dialogOpenProfileView.showDialog(getView(), getResourceString("TXT003"));
+        dialogOpenProfileView.showDialog(getView(), getResourceString("openProfile"));
     }
 
     @FXML
@@ -528,18 +526,18 @@ public class ApplicationController extends AbstractController {
     public void actionRun() {
         if (!isRunning) {
             stormEngine.start(profile -> {
-                setButtonRun(MaterialDesignIcon.STOP, "red", getResourceString("TXT017"));
+                setButtonRun(MaterialDesignIcon.STOP, "red", getResourceString("stop"));
                 treeViewProfile.setDisable(true);
-                labelStatus.setText(getResourceString("TXT018"));
+                labelStatus.setText(getResourceString("running"));
                 textFlowLog.getChildren().clear();
                 isRunning = true;
                 Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(true)"));
             });
         } else {
             stormEngine.stop();
-            setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("TXT016"));
+            setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("start"));
             isRunning = false;
-            labelStatus.setText(getResourceString("TXT019"));
+            labelStatus.setText(getResourceString("stopped"));
             treeViewProfile.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
@@ -643,7 +641,7 @@ public class ApplicationController extends AbstractController {
             Platform.runLater(() -> {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Calendar cal = Calendar.getInstance();
-                labelSystemTime.setText(String.format(getResourceString("TXT020"), dateFormat.format(cal.getTime())));
+                labelSystemTime.setText(String.format(getResourceString("now"), dateFormat.format(cal.getTime())));
             });
         }
     }
@@ -726,7 +724,7 @@ public class ApplicationController extends AbstractController {
             this.controller = controller;
 
             menuVariable.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT008"))
+                    .setText(getResourceString("deleteVariable"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
@@ -737,23 +735,23 @@ public class ApplicationController extends AbstractController {
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT009"))
+                    .setText(getResourceString("newVariable"))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT ||
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), getResourceString("TXT009"));
+                                    .showDialog(getController().getView(), getResourceString("newVariable"));
                         } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
                             dialogNewVariableOPCView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), getResourceString("TXT009"));
+                                    .showDialog(getController().getView(), getResourceString("newVariable"));
                         }
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT010"))
+                    .setText(getResourceString("deleteChannel"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
@@ -764,12 +762,12 @@ public class ApplicationController extends AbstractController {
                     }).build());
 
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT011"))
+                    .setText(getResourceString("newChannel"))
                     .setAction(event -> dialogNewChannelView.showDialog(
-                            getController().getView(), getResourceString("TXT011")))
+                            getController().getView(), getResourceString("newChannel")))
                     .build());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT012"))
+                    .setText(getResourceString("deleteProfile"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
@@ -780,7 +778,7 @@ public class ApplicationController extends AbstractController {
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(getResourceString("TXT005"))
+                    .setText(getResourceString("close"))
                     .setAction(event -> {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);

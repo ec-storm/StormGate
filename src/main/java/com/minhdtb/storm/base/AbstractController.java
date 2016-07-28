@@ -46,6 +46,7 @@ public abstract class AbstractController implements Initializable {
 
     @Override
     public final void initialize(URL location, ResourceBundle resources) {
+        Assert.notNull(resources, "ResourceBundle must not be null.");
         this.resources = resources;
     }
 
