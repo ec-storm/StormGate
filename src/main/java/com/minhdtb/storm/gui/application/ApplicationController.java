@@ -568,7 +568,6 @@ public class ApplicationController extends AbstractController {
             case VARIABLE:
                 break;
         }
-
     }
 
     private void saveProfile(Object userData) {
