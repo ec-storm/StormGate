@@ -1,5 +1,6 @@
 package com.minhdtb.storm.base;
 
+import com.google.common.base.Strings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -8,15 +9,20 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public abstract class AbstractView implements ApplicationContextAware {
+
+    @Value("${application.language:}")
+    private String language;
 
     private AbstractApplication application;
 
@@ -43,8 +49,16 @@ public abstract class AbstractView implements ApplicationContextAware {
     }
 
     protected void setFxml(String fxml) {
+        Locale locale = new Locale("en", "US");
+        if (!Strings.isNullOrEmpty(language)) {
+            String[] languages = language.split(",");
+            if (languages.length == 2) {
+                locale = new Locale(languages[0], languages[1]);
+            }
+        }
+
         this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/" + fxml));
-        this.fxmlLoader.setResources(new StormResourceBundle("bundles.StormGate", this.getClass().getSimpleName()));
+        this.fxmlLoader.setResources(new StormResourceBundle("i18n.language", this.getClass().getSimpleName(), locale));
         this.fxmlLoader.setControllerFactory(this::createControllerForType);
         try {
             this.scene = new Scene(this.fxmlLoader.load());
@@ -159,11 +173,11 @@ public abstract class AbstractView implements ApplicationContextAware {
         private ResourceBundle resourceBundle;
         private String category;
 
-        StormResourceBundle(String baseName, String category) {
+        StormResourceBundle(String baseName, String category, Locale locale) {
             Assert.notNull(baseName, "baseName must not be null.");
             Assert.notNull(category, "category must not be null.");
 
-            resourceBundle = getBundle(baseName);
+            resourceBundle = getBundle(baseName, locale);
             this.category = category;
         }
 
