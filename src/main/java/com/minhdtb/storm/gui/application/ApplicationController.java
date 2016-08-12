@@ -355,7 +355,6 @@ public class ApplicationController extends AbstractController {
                 getResourceString("general"),
                 getResourceString("description"),
                 channel.getDescription()));
-        System.out.println(channel.getType().toString());
         PropertyItem typeItem = new PropertyItem(
                 getResourceString("general"),
                 getResourceString("type"),
@@ -371,7 +370,7 @@ public class ApplicationController extends AbstractController {
             }
 
             PropertyItem attributeItem =
-                    new PropertyItem(getResourceString("TXT022"), getName(channel, channelAttribute), value);
+                    new PropertyItem(getResourceString("attributes"), getName(channel, channelAttribute), value);
             if (channelAttribute.getName().equals(PROG_ID)) {
                 attributeItem.setDisable();
             }
@@ -601,7 +600,7 @@ public class ApplicationController extends AbstractController {
         for (int i = 3; i < items.size(); i++) {
             for (ChannelAttribute channelAttribute : channel.getAttributes()) {
                 if (items.get(i).getName().equals(getName(channel, channelAttribute))) {
-                    channelAttribute.setValue((String) items.get(i).getValue());
+                    channelAttribute.setValue(String.valueOf(items.get(i).getValue()));
                 }
             }
         }
