@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.newvariableiec;
 
+import com.google.common.base.Strings;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
@@ -57,6 +58,11 @@ public class DialogNewVariableIECController extends AbstractController {
     }
 
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editVariableName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
         NamedValueType variableType = comboBoxVariableType.getValue();
         StormVariableIEC variableIEC = new StormVariableIEC();
         variableIEC.setName(editVariableName.getText());
@@ -70,7 +76,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(getResourceString(""), variableIEC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG002"), variableIEC.getName()));
         }
     }
 

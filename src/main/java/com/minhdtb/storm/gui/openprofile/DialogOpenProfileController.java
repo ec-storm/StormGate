@@ -77,7 +77,7 @@ public class DialogOpenProfileController extends AbstractController {
                     Profile profile = tableProfile.getSelectionModel().getSelectedItem();
 
                     Utils.showConfirm(this.getView(),
-                            String.format(getResourceString(""), profile.getName()),
+                            String.format(getResourceString("MSG001"), profile.getName()),
                             e -> {
                                 tableProfile.getItems().remove(profile);
                                 getPublisher().publish("application:deleteProfile", profile);

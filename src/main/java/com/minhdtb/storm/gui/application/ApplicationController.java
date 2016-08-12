@@ -209,13 +209,13 @@ public class ApplicationController extends AbstractController {
                         getView(), getResourceString("openProfile"))).build());
 
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("menuClearAll"))
+                .setText(getResourceString("clearAll"))
                 .setAction(event -> textFlowLog.getChildren().clear()).build());
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("menuCopyAll"))
+                .setText(getResourceString("copyAll"))
                 .setAction(event -> copyLog()).build());
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(getResourceString("menuDisableAutoScroll"))
+                .setText(getResourceString("disableAutoScroll"))
                 .setAction(event -> setAutoScroll()).build());
         isAutoScroll = true;
 
@@ -355,6 +355,7 @@ public class ApplicationController extends AbstractController {
                 getResourceString("general"),
                 getResourceString("description"),
                 channel.getDescription()));
+        System.out.println(channel.getType().toString());
         PropertyItem typeItem = new PropertyItem(
                 getResourceString("general"),
                 getResourceString("type"),
@@ -413,9 +414,9 @@ public class ApplicationController extends AbstractController {
     private void setAutoScroll() {
         isAutoScroll = !isAutoScroll;
         if (isAutoScroll) {
-            menuLog.getItems().get(2).setText(getResourceString("menuDisableAutoScroll"));
+            menuLog.getItems().get(2).setText(getResourceString("disableAutoScroll"));
         } else {
-            menuLog.getItems().get(2).setText(getResourceString("menuEnableAutoScroll"));
+            menuLog.getItems().get(2).setText(getResourceString("enableAutoScroll"));
         }
     }
 

@@ -44,11 +44,6 @@ public class DialogNewVariableOPCController extends AbstractController {
 
     @Override
     public void onShow(WindowEvent event) {
-        comboBoxVariableType.getItems().addAll(
-                new NamedValueType(getResourceString("boolean"), 0),
-                new NamedValueType(getResourceString("integer"), 1),
-                new NamedValueType(getResourceString("float"), 2),
-                new NamedValueType(getResourceString("string"), 3));
         buttonListTags.setOnAction(eventMouse -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
@@ -61,19 +56,28 @@ public class DialogNewVariableOPCController extends AbstractController {
 
         getSubscriber().on("opc:select", object -> editTagName.setText((String) object));
 
-        editVariableName.setText(getResourceString("TXT005"));
+        editVariableName.setText(getResourceString("newVariable"));
         comboBoxVariableType.getSelectionModel().selectFirst();
         editTagName.setText("");
     }
 
     @Override
     public void onCreate() {
-
+        comboBoxVariableType.getItems().addAll(
+                new NamedValueType(getResourceString("boolean"), 0),
+                new NamedValueType(getResourceString("integer"), 1),
+                new NamedValueType(getResourceString("float"), 2),
+                new NamedValueType(getResourceString("string"), 3));
     }
 
     public void actionOK() {
-        if (Strings.isNullOrEmpty(editTagName.getText())) {
+        if (Strings.isNullOrEmpty(editVariableName.getText())) {
             Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
+        if (Strings.isNullOrEmpty(editTagName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG002"));
             return;
         }
 
@@ -89,7 +93,7 @@ public class DialogNewVariableOPCController extends AbstractController {
             getPublisher().publish("application:addVariable", variableOPC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(getResourceString("MSG002"), variableOPC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG003"), variableOPC.getName()));
         }
     }
 

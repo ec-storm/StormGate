@@ -62,9 +62,9 @@ public class DialogNewChannelController extends AbstractController {
     @Override
     public void onCreate() {
         comboBoxChannelType.getItems().addAll(
-                new NamedValueType(getResourceString("60870Server"), CT_IEC_SERVER.ordinal()),
-                new NamedValueType(getResourceString("60870Client"), CT_IEC_CLIENT.ordinal()),
-                new NamedValueType(getResourceString("OPCClient"), CT_OPC_CLIENT.ordinal()));
+                new NamedValueType(getResourceString("CT_IEC_SERVER"), CT_IEC_SERVER.ordinal()),
+                new NamedValueType(getResourceString("CT_IEC_CLIENT"), CT_IEC_CLIENT.ordinal()),
+                new NamedValueType(getResourceString("CT_OPC_CLIENT"), CT_OPC_CLIENT.ordinal()));
 
         comboBoxChannelType.valueProperty().addListener((observable, oldValue, newValue) -> loadChannelAttribute(newValue));
 
@@ -143,6 +143,11 @@ public class DialogNewChannelController extends AbstractController {
     }
 
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editChannelName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
         NamedValueType channelType = comboBoxChannelType.getValue();
 
         switch (ChannelType.fromInt(channelType.getValue())) {
@@ -161,7 +166,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelIECServer.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelIECServer.getName()));
+                    Utils.showError(getView(), String.format(getResourceString("MSG002"), stormChannelIECServer.getName()));
                 }
 
                 break;
@@ -181,7 +186,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelIECClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelIECClient.getName()));
+                    Utils.showError(getView(), String.format(getResourceString("MSG002"), stormChannelIECClient.getName()));
                 }
 
                 break;
@@ -192,7 +197,7 @@ public class DialogNewChannelController extends AbstractController {
                 TextField editRefreshRate = (TextField) getView().getNodeById("editRefreshRate");
 
                 if (Strings.isNullOrEmpty(editProgId.getText())) {
-                    Utils.showError(getView(), getResourceString(""));
+                    Utils.showError(getView(), getResourceString("MSG003"));
                     return;
                 }
 
@@ -207,7 +212,7 @@ public class DialogNewChannelController extends AbstractController {
                     getPublisher().publish("application:addChannel", stormChannelOPCClient.getRaw());
                     close();
                 } else {
-                    Utils.showError(getView(), String.format(getResourceString(""), stormChannelOPCClient.getName()));
+                    Utils.showError(getView(), String.format(getResourceString("MSG002"), stormChannelOPCClient.getName()));
                 }
 
                 break;
