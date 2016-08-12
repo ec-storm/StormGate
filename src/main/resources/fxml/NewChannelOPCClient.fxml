@@ -19,7 +19,7 @@
             <Insets right="3.0"/>
         </GridPane.margin>
     </Label>
-    <Label text="%progID" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+    <Label text="%progId" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets right="3.0"/>
         </GridPane.margin>

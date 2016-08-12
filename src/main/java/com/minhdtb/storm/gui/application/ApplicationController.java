@@ -43,13 +43,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.minhdtb.storm.common.GlobalConstants.*;
 import static com.minhdtb.storm.core.data.StormChannelIECClient.HOST;
 import static com.minhdtb.storm.core.data.StormChannelIECClient.PORT;
 import static com.minhdtb.storm.core.data.StormChannelOPCClient.PROG_ID;
@@ -108,8 +106,6 @@ public class ApplicationController extends AbstractController {
 
     private boolean isAutoScroll;
 
-    private ResourceBundle resources;
-
     @Autowired
     public ApplicationController(DialogNewChannelView dialogNewChannelView,
                                  DialogOpenProfileView dialogOpenProfileView,
@@ -136,8 +132,12 @@ public class ApplicationController extends AbstractController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
+    public void onShow(WindowEvent event) {
+
+    }
+
+    @Override
+    public void onCreate() {
         getSubscriber().on("application:openProfile", this::openProfile);
         getSubscriber().on("application:newProfile", this::newProfile);
         getSubscriber().on("application:deleteProfile", this::deleteProfile);
@@ -159,18 +159,15 @@ public class ApplicationController extends AbstractController {
                         "-fx-fill: red;-fx-font-size: 14px;", (String) message)));
 
         initGUI();
-    }
 
-    @Override
-    public void onShow(WindowEvent event) {
         Timer timer = new Timer();
         timer.schedule(new TimeDisplayTask(), 1000, 1000);
     }
 
     private void initGUI() {
-        labelStatus.setText(resources.getString(KEY_STOPPED));
+        labelStatus.setText(getResourceString("stopped"));
 
-        setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(KEY_START));
+        setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("start"));
         buttonRun.setDisable(true);
 
         propDetail.setSearchBoxVisible(false);
@@ -199,26 +196,26 @@ public class ApplicationController extends AbstractController {
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_NEW_PROFILE))
+                .setText(getResourceString("newProfile"))
                 .setAccelerator(
                         new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, KeyCodeCombination.SHIFT_DOWN))
                 .setAction(event -> dialogNewProfileView.showDialog(
-                        getView(), resources.getString(KEY_NEW_PROFILE))).build());
+                        getView(), getResourceString("newProfile"))).build());
         menuTreeView.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_OPEN_PROFILE))
+                .setText(getResourceString("openProfile"))
                 .setIcon(MaterialDesignIcon.FOLDER, "1.5em")
                 .setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
                 .setAction(event -> dialogOpenProfileView.showDialog(
-                        getView(), resources.getString(KEY_OPEN_PROFILE))).build());
+                        getView(), getResourceString("openProfile"))).build());
 
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_CLEAR_ALL))
+                .setText(getResourceString("clearAll"))
                 .setAction(event -> textFlowLog.getChildren().clear()).build());
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_COPY_ALL))
+                .setText(getResourceString("copyAll"))
                 .setAction(event -> copyLog()).build());
         menuLog.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_DISABLE_AUTO_SCROLL))
+                .setText(getResourceString("disableAutoScroll"))
                 .setAction(event -> setAutoScroll()).build());
         isAutoScroll = true;
 
@@ -317,9 +314,9 @@ public class ApplicationController extends AbstractController {
         propDetailBox.setVisible(true);
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
-                resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), profile.getName()));
+                getResourceString("general"), getResourceString("name"), profile.getName()));
         propDetail.getItems().add(new PropertyItem(
-                resources.getString(KEY_GENERAL), resources.getString(KEY_DESCRIPTION), profile.getDescription()));
+                getResourceString("general"), getResourceString("description"), profile.getDescription()));
         Object[] userData = {ItemType.PROFILE, profile};
         propDetail.setUserData(userData);
     }
@@ -329,19 +326,21 @@ public class ApplicationController extends AbstractController {
         switch (channelAttribute.getName()) {
             case HOST:
                 if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                    name = resources.getString(KEY_SERVER_IP);
+                    name = getResourceString("serverIp");
                 } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                    name = resources.getString(KEY_BIND_IP);
+                    name = getResourceString("bindIp");
+                } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
+                    name = getResourceString("host");
                 }
                 break;
             case PORT:
-                name = resources.getString(KEY_PORT);
+                name = getResourceString("port");
                 break;
             case PROG_ID:
-                name = resources.getString(KEY_PROG_ID);
+                name = getResourceString("progId");
                 break;
             case REFRESH_RATE:
-                name = resources.getString(KEY_REFRESH_RATE);
+                name = getResourceString("refreshRate");
                 break;
         }
 
@@ -351,15 +350,15 @@ public class ApplicationController extends AbstractController {
     private void showChannel(Channel channel) {
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
-                resources.getString(KEY_GENERAL), resources.getString(KEY_NAME), channel.getName()));
+                getResourceString("general"), getResourceString("name"), channel.getName()));
         propDetail.getItems().add(new PropertyItem(
-                resources.getString(KEY_GENERAL),
-                resources.getString(KEY_DESCRIPTION),
+                getResourceString("general"),
+                getResourceString("description"),
                 channel.getDescription()));
         PropertyItem typeItem = new PropertyItem(
-                resources.getString(KEY_GENERAL),
-                resources.getString(KEY_TYPE),
-                resources.getString(channel.getType().toString()));
+                getResourceString("general"),
+                getResourceString("type"),
+                getResourceString(channel.getType().toString()));
         typeItem.setDisable();
         propDetail.getItems().add(typeItem);
         for (ChannelAttribute channelAttribute : channel.getAttributes()) {
@@ -371,7 +370,7 @@ public class ApplicationController extends AbstractController {
             }
 
             PropertyItem attributeItem =
-                    new PropertyItem(resources.getString(KEY_ATTRIBUTES), getName(channel, channelAttribute), value);
+                    new PropertyItem(getResourceString("attributes"), getName(channel, channelAttribute), value);
             if (channelAttribute.getName().equals(PROG_ID)) {
                 attributeItem.setDisable();
             }
@@ -384,7 +383,7 @@ public class ApplicationController extends AbstractController {
     }
 
     private void writeLog(String timeStyle, String textStyle, String message) {
-        String now = new SimpleDateFormat(DATE_TIME_FORMAT).format(getInstance().getTime());
+        String now = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(getInstance().getTime());
         Text txtTime = new Text(now + "> ");
         txtTime.setStyle(timeStyle);
 
@@ -410,13 +409,13 @@ public class ApplicationController extends AbstractController {
         content.putString(log.toString());
         clipboard.setContent(content);
     }
-    
+
     private void setAutoScroll() {
         isAutoScroll = !isAutoScroll;
         if (isAutoScroll) {
-            menuLog.getItems().get(2).setText(resources.getString(KEY_MENU_DISABLE_AUTO_SCROLL));
+            menuLog.getItems().get(2).setText(getResourceString("disableAutoScroll"));
         } else {
-            menuLog.getItems().get(2).setText(resources.getString(KEY_MENU_ENABLE_AUTO_SCROLL));
+            menuLog.getItems().get(2).setText(getResourceString("enableAutoScroll"));
         }
     }
 
@@ -507,12 +506,12 @@ public class ApplicationController extends AbstractController {
 
     @FXML
     public void actionNewProfile() {
-        dialogNewProfileView.showDialog(getView(), resources.getString(KEY_NEW_PROFILE));
+        dialogNewProfileView.showDialog(getView(), getResourceString("newProfile"));
     }
 
     @FXML
     public void actionOpenProfile() {
-        dialogOpenProfileView.showDialog(getView(), resources.getString(KEY_OPEN_PROFILE));
+        dialogOpenProfileView.showDialog(getView(), getResourceString("openProfile"));
     }
 
     @FXML
@@ -532,18 +531,18 @@ public class ApplicationController extends AbstractController {
     public void actionRun() {
         if (!isRunning) {
             stormEngine.start(profile -> {
-                setButtonRun(MaterialDesignIcon.STOP, "red", resources.getString(KEY_STOP));
+                setButtonRun(MaterialDesignIcon.STOP, "red", getResourceString("stop"));
                 treeViewProfile.setDisable(true);
-                labelStatus.setText(resources.getString(KEY_RUNNING));
+                labelStatus.setText(getResourceString("running"));
                 textFlowLog.getChildren().clear();
                 isRunning = true;
                 Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(true)"));
             });
         } else {
             stormEngine.stop();
-            setButtonRun(MaterialDesignIcon.PLAY, "black", resources.getString(KEY_START));
+            setButtonRun(MaterialDesignIcon.PLAY, "black", getResourceString("start"));
             isRunning = false;
-            labelStatus.setText(KEY_STOPPED);
+            labelStatus.setText(getResourceString("stopped"));
             treeViewProfile.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
@@ -556,20 +555,19 @@ public class ApplicationController extends AbstractController {
         switch ((ItemType) userData[0]) {
             case PROFILE:
                 confirmMessage = String.format(
-                        resources.getString(KEY_CONFIRM_SAVE_PROFILE), ((Profile) userData[1]).getName());
+                        getResourceString("MSG004"), ((Profile) userData[1]).getName());
                 Utils.showConfirm(
                         getView(), confirmMessage, e -> getPublisher().publish("application:saveProfile", userData[1]));
                 break;
             case CHANNEL:
                 confirmMessage = String.format(
-                        resources.getString(KEY_CONFIRM_SAVE_CHANNEL), ((Channel) userData[1]).getName());
+                        getResourceString("MSG005"), ((Channel) userData[1]).getName());
                 Utils.showConfirm(
                         getView(), confirmMessage, e -> getPublisher().publish("application:saveChannel", userData[1]));
                 break;
             case VARIABLE:
                 break;
         }
-
     }
 
     private void saveProfile(Object userData) {
@@ -582,7 +580,7 @@ public class ApplicationController extends AbstractController {
             profile.setName(currentName);
             profile.setDescription(currentDescription);
             Platform.runLater(() -> Utils.showError(
-                    getView(), String.format(resources.getString(KEY_ERROR_PROFILE_EXISTS), profile.getName())));
+                    getView(), String.format(getResourceString(""), profile.getName())));
         } else {
             profile.setDescription((String) items.get(1).getValue());
             dataManager.saveProfile((Profile) userData, null);
@@ -602,7 +600,7 @@ public class ApplicationController extends AbstractController {
         for (int i = 3; i < items.size(); i++) {
             for (ChannelAttribute channelAttribute : channel.getAttributes()) {
                 if (items.get(i).getName().equals(getName(channel, channelAttribute))) {
-                    channelAttribute.setValue((String) items.get(i).getValue());
+                    channelAttribute.setValue(String.valueOf(items.get(i).getValue()));
                 }
             }
         }
@@ -645,9 +643,9 @@ public class ApplicationController extends AbstractController {
     private final class TimeDisplayTask extends TimerTask {
         public void run() {
             Platform.runLater(() -> {
-                DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT + " ");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Calendar cal = Calendar.getInstance();
-                labelSystemTime.setText(String.format(resources.getString(KEY_NOW), dateFormat.format(cal.getTime())));
+                labelSystemTime.setText(String.format(getResourceString("now"), dateFormat.format(cal.getTime())));
             });
         }
     }
@@ -730,61 +728,61 @@ public class ApplicationController extends AbstractController {
             this.controller = controller;
 
             menuVariable.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_DELETE_VARIABLE))
+                    .setText(getResourceString("deleteVariable"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Variable variable = (Variable) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(KEY_CONFIRM_DELETE_VARIABLE), variable.getName()),
+                                String.format(getResourceString("MSG001"), variable.getName()),
                                 e -> getPublisher().publish("application:deleteVariable", variable));
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_NEW_VARIABLE))
+                    .setText(getResourceString("newVariable"))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT ||
                                 channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
                             dialogNewVariableIECView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_IEC_60870_VARIABLE));
+                                    .showDialog(getController().getView(), getResourceString("newVariable"));
                         } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
                             dialogNewVariableOPCView
                                     .setChannel(channel)
-                                    .showDialog(getController().getView(), resources.getString(KEY_NEW_OPC_VARIABLE));
+                                    .showDialog(getController().getView(), getResourceString("newVariable"));
                         }
                     }).build());
 
             menuChannel.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_DELETE_CHANNEL))
+                    .setText(getResourceString("deleteChannel"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Channel channel = (Channel) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(KEY_CONFIRM_DELETE_CHANNEL), channel.getName()),
+                                String.format(getResourceString("MSG002"), channel.getName()),
                                 e -> getPublisher().publish("application:deleteChannel", channel));
                     }).build());
 
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_NEW_CHANNEL))
+                    .setText(getResourceString("newChannel"))
                     .setAction(event -> dialogNewChannelView.showDialog(
-                            getController().getView(), resources.getString(KEY_NEW_CHANNEL)))
+                            getController().getView(), getResourceString("newChannel")))
                     .build());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_DELETE_PROFILE))
+                    .setText(getResourceString("deleteProfile"))
                     .setIcon(MaterialDesignIcon.DELETE, "1.5em")
                     .setAccelerator(new KeyCodeCombination(KeyCode.DELETE))
                     .setAction(event -> {
                         Profile profile = (Profile) treeViewProfile.getSelectionModel().getSelectedItem().getValue();
                         Utils.showConfirm(getController().getView(),
-                                String.format(resources.getString(KEY_CONFIRM_DELETE_PROFILE), profile.getName()),
+                                String.format(getResourceString("MSG003"), profile.getName()),
                                 e -> getPublisher().publish("application:deleteProfile", profile));
                     }).build());
             menuProfile.getItems().add(new SeparatorMenuItem());
             menuProfile.getItems().add(MenuItemBuilder.create()
-                    .setText(resources.getString(KEY_MENU_CLOSE))
+                    .setText(getResourceString("close"))
                     .setAction(event -> {
                         treeViewProfile.getRoot().getChildren().clear();
                         treeViewProfile.setRoot(null);

@@ -19,7 +19,7 @@ public class DialogListOpcTagView extends AbstractView {
     }
 
     public void showDialog(AbstractView owner) {
-        this.setTitle("Select OPC Tag")
+        this.setTitle(getController().getResourceString("title"))
                 .setModality(Modality.WINDOW_MODAL)
                 .setOwner(owner)
                 .setApplication(owner.getApplication())

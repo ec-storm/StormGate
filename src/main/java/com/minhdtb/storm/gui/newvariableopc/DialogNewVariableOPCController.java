@@ -18,11 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static com.minhdtb.storm.common.GlobalConstants.*;
-
 @Controller
 public class DialogNewVariableOPCController extends AbstractController {
 
@@ -39,8 +34,6 @@ public class DialogNewVariableOPCController extends AbstractController {
 
     private final DialogListOpcTagView dialogListOpcTagView;
 
-    private ResourceBundle resources;
-
     @Autowired
     public DialogNewVariableOPCController(DialogListOpcTagView dialogListOpcTagView, DataManager dataManager) {
         Assert.notNull(dataManager, "DataManager must not be null");
@@ -50,15 +43,8 @@ public class DialogNewVariableOPCController extends AbstractController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
-
-        comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString(KEY_BOOLEAN), 0),
-                new NamedValueType(resources.getString(KEY_INTEGER), 1),
-                new NamedValueType(resources.getString(KEY_FLOAT), 2),
-                new NamedValueType(resources.getString(KEY_STRING), 3));
-        buttonListTags.setOnAction(event -> {
+    public void onShow(WindowEvent event) {
+        buttonListTags.setOnAction(eventMouse -> {
             Channel channel = ((DialogNewVariableOPCView) getView()).getChannel();
             if (channel != null) {
                 StormChannelOPCClient stormChannelOPCClient = new StormChannelOPCClient(channel);
@@ -69,18 +55,29 @@ public class DialogNewVariableOPCController extends AbstractController {
         });
 
         getSubscriber().on("opc:select", object -> editTagName.setText((String) object));
-    }
 
-    @Override
-    public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
+        editVariableName.setText(getResourceString("newVariable"));
         comboBoxVariableType.getSelectionModel().selectFirst();
         editTagName.setText("");
     }
 
+    @Override
+    public void onCreate() {
+        comboBoxVariableType.getItems().addAll(
+                new NamedValueType(getResourceString("boolean"), 0),
+                new NamedValueType(getResourceString("integer"), 1),
+                new NamedValueType(getResourceString("float"), 2),
+                new NamedValueType(getResourceString("string"), 3));
+    }
+
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editVariableName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
         if (Strings.isNullOrEmpty(editTagName.getText())) {
-            Utils.showError(getView(), resources.getString(KEY_ERROR_TAGNAME_MUST_NOT_BE_EMPTY));
+            Utils.showError(getView(), getResourceString("MSG002"));
             return;
         }
 
@@ -96,7 +93,7 @@ public class DialogNewVariableOPCController extends AbstractController {
             getPublisher().publish("application:addVariable", variableOPC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_VARIABLE_EXISTS), variableOPC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG003"), variableOPC.getName()));
         }
     }
 

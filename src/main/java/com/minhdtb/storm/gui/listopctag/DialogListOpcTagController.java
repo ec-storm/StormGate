@@ -11,15 +11,10 @@ import javafx.scene.control.*;
 import javafx.stage.WindowEvent;
 import org.springframework.stereotype.Controller;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
-import static com.minhdtb.storm.common.GlobalConstants.KEY_ITEMID;
-import static com.minhdtb.storm.common.GlobalConstants.KEY_NAME;
 
 @Controller
 public class DialogListOpcTagController extends AbstractController {
@@ -30,41 +25,6 @@ public class DialogListOpcTagController extends AbstractController {
     public TableView<DataItem> tableTags;
 
     private OPCDaClient opcDaClient = new OPCDaClient();
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        TableColumn<DataItem, String> columnName = new TableColumn<>(resources.getString(KEY_NAME));
-        columnName.setPrefWidth(120);
-        columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
-
-        TableColumn<DataItem, String> columnChannels = new TableColumn<>(resources.getString(KEY_ITEMID));
-        columnChannels.setPrefWidth(300);
-        columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
-
-        tableTags.setRowFactory(tv -> {
-            TableRow<DataItem> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    actionOK();
-                }
-            });
-
-            return row;
-        });
-
-        tableTags.getColumns().add(columnName);
-        tableTags.getColumns().add(columnChannels);
-
-        treeTags.setOnMouseClicked(event -> {
-            if (treeTags.getSelectionModel().getSelectedItem() != null) {
-                DataItem selected = treeTags.getSelectionModel().getSelectedItem().getValue();
-                tableTags.getItems().clear();
-
-                tableTags.getItems().addAll(selected.getChildLeafs().stream().sorted(Comparator.
-                        comparing(DataItem::getName)).collect(Collectors.toList()));
-            }
-        });
-    }
 
     @Override
     public void onShow(WindowEvent event) {
@@ -94,6 +54,41 @@ public class DialogListOpcTagController extends AbstractController {
                         setText(dataItem.getName());
                     }
                 }
+            }
+        });
+    }
+
+    @Override
+    public void onCreate() {
+        TableColumn<DataItem, String> columnName = new TableColumn<>(getResourceString("name"));
+        columnName.setPrefWidth(120);
+        columnName.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getName()));
+
+        TableColumn<DataItem, String> columnChannels = new TableColumn<>(getResourceString("path"));
+        columnChannels.setPrefWidth(300);
+        columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getPath()));
+
+        tableTags.setRowFactory(tv -> {
+            TableRow<DataItem> row = new TableRow<>();
+            row.setOnMouseClicked(eventMouse -> {
+                if (eventMouse.getClickCount() == 2 && (!row.isEmpty())) {
+                    actionOK();
+                }
+            });
+
+            return row;
+        });
+
+        tableTags.getColumns().add(columnName);
+        tableTags.getColumns().add(columnChannels);
+
+        treeTags.setOnMouseClicked(eventMouse -> {
+            if (treeTags.getSelectionModel().getSelectedItem() != null) {
+                DataItem selected = treeTags.getSelectionModel().getSelectedItem().getValue();
+                tableTags.getItems().clear();
+
+                tableTags.getItems().addAll(selected.getChildLeafs().stream().sorted(Comparator.
+                        comparing(DataItem::getName)).collect(Collectors.toList()));
             }
         });
     }

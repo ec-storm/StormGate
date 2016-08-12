@@ -18,11 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static com.minhdtb.storm.common.GlobalConstants.*;
-
 @Controller
 public class DialogOpenProfileController extends AbstractController {
 
@@ -38,21 +33,34 @@ public class DialogOpenProfileController extends AbstractController {
         this.dataManager = dataManager;
     }
 
+    public void actionOK() {
+        Profile profile = tableProfile.getSelectionModel().getSelectedItem();
+        if (profile != null) {
+            getPublisher().publish("application:openProfile", profile);
+            close();
+        }
+    }
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        TableColumn<Profile, String> columnName = new TableColumn<>(resources.getString(KEY_NAME));
+    public void onShow(WindowEvent event) {
+        
+    }
+
+    @Override
+    public void onCreate() {
+        TableColumn<Profile, String> columnName = new TableColumn<>(getResourceString("name"));
         columnName.setPrefWidth(310);
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Profile, Integer> columnChannels = new TableColumn<>(resources.getString(KEY_CHANNELS));
+        TableColumn<Profile, Integer> columnChannels = new TableColumn<>(getResourceString("channels"));
         columnChannels.setPrefWidth(120);
         columnChannels.setStyle("-fx-alignment: CENTER;");
         columnChannels.setCellValueFactory(tableCell -> new ReadOnlyObjectWrapper<>(tableCell.getValue().getChannels().size()));
 
         tableProfile.setRowFactory(tv -> {
             TableRow<Profile> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+            row.setOnMouseClicked(eventMouse -> {
+                if (eventMouse.getClickCount() == 2 && (!row.isEmpty())) {
                     actionOK();
                 }
             });
@@ -65,11 +73,11 @@ public class DialogOpenProfileController extends AbstractController {
 
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().add(MenuItemBuilder.create()
-                .setText(resources.getString(KEY_MENU_DELETE_PROFILE)).setAction(event -> {
+                .setText(getResourceString("deleteProfile")).setAction(eventMouse -> {
                     Profile profile = tableProfile.getSelectionModel().getSelectedItem();
 
                     Utils.showConfirm(this.getView(),
-                            String.format(resources.getString(KEY_CONFIRM_DELETE_PROFILE), profile.getName()),
+                            String.format(getResourceString("MSG001"), profile.getName()),
                             e -> {
                                 tableProfile.getItems().remove(profile);
                                 getPublisher().publish("application:deleteProfile", profile);
@@ -77,18 +85,6 @@ public class DialogOpenProfileController extends AbstractController {
                 }).build());
 
         tableProfile.setContextMenu(contextMenu);
-    }
-
-    public void actionOK() {
-        Profile profile = tableProfile.getSelectionModel().getSelectedItem();
-        if (profile != null) {
-            getPublisher().publish("application:openProfile", profile);
-            close();
-        }
-    }
-
-    @Override
-    public void onShow(WindowEvent event) {
         tableProfile.setItems(FXCollections.observableArrayList(dataManager.getProfiles()));
     }
 

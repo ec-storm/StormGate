@@ -15,10 +15,6 @@ import reactor.bus.EventBus;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ResourceBundle;
-
-import static com.minhdtb.storm.common.GlobalConstants.BUNDLE_NAME;
-import static com.minhdtb.storm.common.GlobalConstants.KEY_COPYRIGHT;
 
 @SpringBootApplication
 public class StormGateApplication extends AbstractApplication {
@@ -46,7 +42,7 @@ public class StormGateApplication extends AbstractApplication {
 
         applicationView
                 .setApplication(this)
-                .setTitle(ResourceBundle.getBundle(BUNDLE_NAME).getString(KEY_COPYRIGHT))
+                .setTitle("Storm Gateway Service - Copyright © 2016")
                 .setIcon(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")))
                 .setStage(primaryStage)
                 .show(true);

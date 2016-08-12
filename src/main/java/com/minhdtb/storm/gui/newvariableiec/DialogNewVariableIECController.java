@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.newvariableiec;
 
+import com.google.common.base.Strings;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.NamedValueType;
 import com.minhdtb.storm.common.Utils;
@@ -16,11 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static com.minhdtb.storm.common.GlobalConstants.*;
-
 @Controller
 public class DialogNewVariableIECController extends AbstractController {
 
@@ -35,8 +31,6 @@ public class DialogNewVariableIECController extends AbstractController {
 
     private final DataManager dataManager;
 
-    private ResourceBundle resources;
-
     @Autowired
     public DialogNewVariableIECController(DataManager dataManager) {
         Assert.notNull(dataManager, "DataManager must not be null");
@@ -44,27 +38,31 @@ public class DialogNewVariableIECController extends AbstractController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
-        comboBoxVariableType.getItems().addAll(
-                new NamedValueType(resources.getString(KEY_T09), TypeId.M_ME_NA_1.getId()),
-                new NamedValueType(resources.getString(KEY_T13), TypeId.M_ME_NC_1.getId()),
-                new NamedValueType(resources.getString(KEY_T45), TypeId.C_SC_NA_1.getId()),
-                new NamedValueType(resources.getString(KEY_T46), TypeId.C_DC_NA_1.getId()));
-
-        editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
-        editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
-    }
-
-    @Override
     public void onShow(WindowEvent event) {
-        editVariableName.setText(resources.getString(KEY_NEW_VARIABLE));
+        editVariableName.setText(getResourceString("newVariable"));
         editSectorAddress.setText("3");
         editInformationObjectAddress.setText("1");
         comboBoxVariableType.getSelectionModel().selectFirst();
     }
 
+    @Override
+    public void onCreate() {
+        comboBoxVariableType.getItems().addAll(
+                new NamedValueType(getResourceString("T09"), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(getResourceString("T13"), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(getResourceString("T45"), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(getResourceString("T46"), TypeId.C_DC_NA_1.getId()));
+
+        editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
+        editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
+    }
+
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editVariableName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
         NamedValueType variableType = comboBoxVariableType.getValue();
         StormVariableIEC variableIEC = new StormVariableIEC();
         variableIEC.setName(editVariableName.getText());
@@ -78,7 +76,7 @@ public class DialogNewVariableIECController extends AbstractController {
             getPublisher().publish("application:addVariable", variableIEC.getRaw());
             close();
         } else {
-            Utils.showError(getView(), String.format(resources.getString(KEY_ERROR_VARIABLE_EXISTS), variableIEC.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG002"), variableIEC.getName()));
         }
     }
 
