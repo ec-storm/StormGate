@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 
+import static com.minhdtb.storm.gui.newvariableopc.DialogNewVariableOPCController.OPCDataType.*;
+
 @Controller
 public class DialogNewVariableOPCController extends AbstractController {
 
@@ -33,6 +35,14 @@ public class DialogNewVariableOPCController extends AbstractController {
     private final DataManager dataManager;
 
     private final DialogListOpcTagView dialogListOpcTagView;
+
+    public enum OPCDataType {
+        DT_BOOLEAN, DT_INTEGER, DT_FLOAT, DT_STRING;
+
+        public static OPCDataType fromInt(int i) {
+            return OPCDataType.values()[i];
+        }
+    }
 
     @Autowired
     public DialogNewVariableOPCController(DialogListOpcTagView dialogListOpcTagView, DataManager dataManager) {
@@ -64,10 +74,10 @@ public class DialogNewVariableOPCController extends AbstractController {
     @Override
     public void onCreate() {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(getResourceString("boolean"), 0),
-                new NamedValueType(getResourceString("integer"), 1),
-                new NamedValueType(getResourceString("float"), 2),
-                new NamedValueType(getResourceString("string"), 3));
+                new NamedValueType(getResourceString("DT_BOOLEAN"), DT_BOOLEAN.ordinal()),
+                new NamedValueType(getResourceString("DT_INTEGER"), DT_INTEGER.ordinal()),
+                new NamedValueType(getResourceString("DT_FLOAT"), DT_FLOAT.ordinal()),
+                new NamedValueType(getResourceString("DT_STRING"), DT_STRING.ordinal()));
     }
 
     public void actionOK() {

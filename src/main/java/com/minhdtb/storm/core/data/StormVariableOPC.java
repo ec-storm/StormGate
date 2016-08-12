@@ -21,11 +21,11 @@ public class StormVariableOPC extends StormVariable {
     }
 
     public int getDataType() {
-        return Integer.parseInt(getAttribute("dataType"));
+        return Integer.parseInt(getAttribute("opcDataType"));
     }
 
     public void setDataType(int dataType) {
-        setAttribute("dataType", dataType);
+        setAttribute("opcDataType", dataType);
     }
 
     @Override

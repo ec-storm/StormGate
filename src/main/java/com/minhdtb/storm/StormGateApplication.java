@@ -49,17 +49,17 @@ public class StormGateApplication extends AbstractApplication {
     }
 
     public static void main(String[] args) {
-        System.setErr(new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-
-            }
-        }) {
-            @Override
-            public void write(byte buf[], int off, int len) {
-                Utils.log(new String(buf));
-            }
-        });
+//        System.setErr(new PrintStream(new OutputStream() {
+//            @Override
+//            public void write(int b) throws IOException {
+//
+//            }
+//        }) {
+//            @Override
+//            public void write(byte buf[], int off, int len) {
+//                Utils.log(new String(buf));
+//            }
+//        });
 
         launchApp(StormGateApplication.class, args);
     }

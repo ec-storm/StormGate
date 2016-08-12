@@ -5,13 +5,12 @@ import com.minhdtb.storm.common.GraphicItemBuilder;
 import com.minhdtb.storm.common.MenuItemBuilder;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.core.engine.StormEngine;
-import com.minhdtb.storm.entities.Channel;
-import com.minhdtb.storm.entities.ChannelAttribute;
-import com.minhdtb.storm.entities.Profile;
-import com.minhdtb.storm.entities.Variable;
+import com.minhdtb.storm.core.lib.j60870.TypeId;
+import com.minhdtb.storm.entities.*;
 import com.minhdtb.storm.gui.newchannel.DialogNewChannelView;
 import com.minhdtb.storm.gui.newprofile.DialogNewProfileView;
 import com.minhdtb.storm.gui.newvariableiec.DialogNewVariableIECView;
+import com.minhdtb.storm.gui.newvariableopc.DialogNewVariableOPCController;
 import com.minhdtb.storm.gui.newvariableopc.DialogNewVariableOPCView;
 import com.minhdtb.storm.gui.openprofile.DialogOpenProfileView;
 import com.minhdtb.storm.services.DataManager;
@@ -48,10 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.minhdtb.storm.core.data.StormChannelIECClient.HOST;
-import static com.minhdtb.storm.core.data.StormChannelIECClient.PORT;
-import static com.minhdtb.storm.core.data.StormChannelOPCClient.PROG_ID;
-import static com.minhdtb.storm.core.data.StormChannelOPCClient.REFRESH_RATE;
 import static java.util.Calendar.getInstance;
 
 @Controller
@@ -228,6 +223,8 @@ public class ApplicationController extends AbstractController {
                     showProfile((Profile) selected);
                 } else if (selected instanceof Channel) {
                     showChannel((Channel) selected);
+                } else if (selected instanceof Variable) {
+                    showVariable((Variable) selected);
                 } else {
                     propDetail.getItems().clear();
                 }
@@ -312,6 +309,7 @@ public class ApplicationController extends AbstractController {
 
     private void showProfile(Profile profile) {
         propDetailBox.setVisible(true);
+
         propDetail.getItems().clear();
         propDetail.getItems().add(new PropertyItem(
                 getResourceString("general"), getResourceString("name"), profile.getName()));
@@ -319,32 +317,6 @@ public class ApplicationController extends AbstractController {
                 getResourceString("general"), getResourceString("description"), profile.getDescription()));
         Object[] userData = {ItemType.PROFILE, profile};
         propDetail.setUserData(userData);
-    }
-
-    private String getName(Channel channel, ChannelAttribute channelAttribute) {
-        String name = "";
-        switch (channelAttribute.getName()) {
-            case HOST:
-                if (channel.getType() == Channel.ChannelType.CT_IEC_CLIENT) {
-                    name = getResourceString("serverIp");
-                } else if (channel.getType() == Channel.ChannelType.CT_IEC_SERVER) {
-                    name = getResourceString("bindIp");
-                } else if (channel.getType() == Channel.ChannelType.CT_OPC_CLIENT) {
-                    name = getResourceString("host");
-                }
-                break;
-            case PORT:
-                name = getResourceString("port");
-                break;
-            case PROG_ID:
-                name = getResourceString("progId");
-                break;
-            case REFRESH_RATE:
-                name = getResourceString("refreshRate");
-                break;
-        }
-
-        return name;
     }
 
     private void showChannel(Channel channel) {
@@ -370,8 +342,8 @@ public class ApplicationController extends AbstractController {
             }
 
             PropertyItem attributeItem =
-                    new PropertyItem(getResourceString("attributes"), getName(channel, channelAttribute), value);
-            if (channelAttribute.getName().equals(PROG_ID)) {
+                    new PropertyItem(getResourceString("attributes"), getResourceString(channelAttribute.getName()), value);
+            if ("progId".equals(channelAttribute.getName())) {
                 attributeItem.setDisable();
             }
 
@@ -379,6 +351,40 @@ public class ApplicationController extends AbstractController {
         }
 
         Object[] userData = {ItemType.CHANNEL, channel};
+        propDetail.setUserData(userData);
+    }
+
+    private void showVariable(Variable variable) {
+        propDetail.getItems().clear();
+        propDetail.getItems().add(new PropertyItem(
+                getResourceString("general"), getResourceString("name"), variable.getName()));
+
+        for (VariableAttribute variableAttribute : variable.getAttributes()) {
+            Object value = null;
+            if (Objects.equals(variableAttribute.getType(), "java.lang.String")) {
+                value = variableAttribute.getValue();
+            } else if (Objects.equals(variableAttribute.getType(), "java.lang.Integer")) {
+                value = Integer.parseInt(variableAttribute.getValue());
+            }
+
+            PropertyItem attributeItem =
+                    new PropertyItem(getResourceString("attributes"), getResourceString(variableAttribute.getName()), value);
+            if ("opcDataType".equals(variableAttribute.getName())) {
+                attributeItem.setValue(getResourceString(DialogNewVariableOPCController.OPCDataType.fromInt((int)
+                        attributeItem.getValue()).toString()));
+                attributeItem.setDisable();
+            }
+
+            if ("iecDataType".equals(variableAttribute.getName())) {
+                attributeItem.setValue(getResourceString(TypeId.getInstance((int)
+                        attributeItem.getValue()).toString()));
+                attributeItem.setDisable();
+            }
+
+            propDetail.getItems().add(attributeItem);
+        }
+
+        Object[] userData = {ItemType.VARIABLE, variable};
         propDetail.setUserData(userData);
     }
 
@@ -599,7 +605,7 @@ public class ApplicationController extends AbstractController {
 
         for (int i = 3; i < items.size(); i++) {
             for (ChannelAttribute channelAttribute : channel.getAttributes()) {
-                if (items.get(i).getName().equals(getName(channel, channelAttribute))) {
+                if (items.get(i).getName().equals(getResourceString(channelAttribute.getName()))) {
                     channelAttribute.setValue(String.valueOf(items.get(i).getValue()));
                 }
             }

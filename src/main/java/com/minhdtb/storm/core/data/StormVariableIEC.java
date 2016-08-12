@@ -34,11 +34,11 @@ public class StormVariableIEC extends StormVariable {
     }
 
     private int getDataType() {
-        return Integer.parseInt(getAttribute("dataType"));
+        return Integer.parseInt(getAttribute("iecDataType"));
     }
 
     public void setDataType(int dataType) {
-        setAttribute("dataType", dataType);
+        setAttribute("iecDataType", dataType);
     }
 
     @Override

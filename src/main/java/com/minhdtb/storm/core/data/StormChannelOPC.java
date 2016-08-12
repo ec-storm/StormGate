@@ -25,9 +25,9 @@ abstract class StormChannelOPC extends StormChannel {
         }
     }
 
-    public static final String HOST = "host";
-    public static final String PROG_ID = "progId";
-    public static final String REFRESH_RATE = "refreshRate";
+    private static final String HOST = "host";
+    private static final String PROG_ID = "progId";
+    private static final String REFRESH_RATE = "refreshRate";
 
     public String getHost() {
         return getAttribute(HOST);

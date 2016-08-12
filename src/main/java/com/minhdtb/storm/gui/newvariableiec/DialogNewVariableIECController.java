@@ -48,10 +48,10 @@ public class DialogNewVariableIECController extends AbstractController {
     @Override
     public void onCreate() {
         comboBoxVariableType.getItems().addAll(
-                new NamedValueType(getResourceString("T09"), TypeId.M_ME_NA_1.getId()),
-                new NamedValueType(getResourceString("T13"), TypeId.M_ME_NC_1.getId()),
-                new NamedValueType(getResourceString("T45"), TypeId.C_SC_NA_1.getId()),
-                new NamedValueType(getResourceString("T46"), TypeId.C_DC_NA_1.getId()));
+                new NamedValueType(getResourceString("M_ME_NA_1"), TypeId.M_ME_NA_1.getId()),
+                new NamedValueType(getResourceString("M_ME_NC_1"), TypeId.M_ME_NC_1.getId()),
+                new NamedValueType(getResourceString("C_SC_NA_1"), TypeId.C_SC_NA_1.getId()),
+                new NamedValueType(getResourceString("C_DC_NA_1"), TypeId.C_DC_NA_1.getId()));
 
         editSectorAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));
         editInformationObjectAddress.addEventFilter(KeyEvent.KEY_TYPED, Utils.numericValidation(5));

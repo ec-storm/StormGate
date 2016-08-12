@@ -11,8 +11,8 @@ abstract class StormChannelIEC extends StormChannel {
 
     final int TIMEOUT = 5000;
 
-    public static final String HOST = "host";
-    public static final String PORT = "port";
+    private static final String HOST = "host";
+    private static final String PORT = "port";
 
     private List<IStormVariable> variables = new ArrayList<>();
 
