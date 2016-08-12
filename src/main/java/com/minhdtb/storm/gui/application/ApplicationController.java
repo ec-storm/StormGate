@@ -539,6 +539,7 @@ public class ApplicationController extends AbstractController {
             stormEngine.start(profile -> {
                 setButtonRun(MaterialDesignIcon.STOP, "red", getResourceString("stop"));
                 treeViewProfile.setDisable(true);
+                propDetail.setDisable(true);
                 labelStatus.setText(getResourceString("running"));
                 textFlowLog.getChildren().clear();
                 isRunning = true;
@@ -550,6 +551,7 @@ public class ApplicationController extends AbstractController {
             isRunning = false;
             labelStatus.setText(getResourceString("stopped"));
             treeViewProfile.setDisable(false);
+            propDetail.setDisable(false);
             Platform.runLater(() -> webViewScript.getEngine().executeScript("editor.setReadOnly(false)"));
         }
     }
@@ -572,6 +574,10 @@ public class ApplicationController extends AbstractController {
                         getView(), confirmMessage, e -> getPublisher().publish("application:saveChannel", userData[1]));
                 break;
             case VARIABLE:
+                confirmMessage = String.format(
+                        getResourceString("MSG006"), ((Variable) userData[1]).getName());
+                Utils.showConfirm(
+                        getView(), confirmMessage, e -> getPublisher().publish("application:saveVariable", userData[1]));
                 break;
         }
     }
