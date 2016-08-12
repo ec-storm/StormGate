@@ -1,5 +1,6 @@
 package com.minhdtb.storm.gui.newprofile;
 
+import com.google.common.base.Strings;
 import com.minhdtb.storm.base.AbstractController;
 import com.minhdtb.storm.common.Utils;
 import com.minhdtb.storm.entities.Profile;
@@ -30,13 +31,18 @@ public class DialogNewProfileController extends AbstractController {
     }
 
     public void actionOK() {
+        if (Strings.isNullOrEmpty(editNewProfileName.getText())) {
+            Utils.showError(getView(), getResourceString("MSG001"));
+            return;
+        }
+
         Profile profile = new Profile(editNewProfileName.getText());
 
         if (!dataManager.existProfile(profile)) {
             getPublisher().publish("application:newProfile", profile);
             close();
         } else {
-            Utils.showError(getView(), String.format(getResourceString("MSG001"), profile.getName()));
+            Utils.showError(getView(), String.format(getResourceString("MSG002"), profile.getName()));
         }
     }
 
